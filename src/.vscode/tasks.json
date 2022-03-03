@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++.exe Aktive Datei kompilieren",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+			"args": [
+				"-g",
+				"${fileDirname}\\**.cpp",
+				//"${fileDirname}\\**.h",
+				"-o",
+				//"-Wall",
+				"${fileDirname}\\..\\Solver.exe",
+			],
+			"options": {
+			"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "Compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
+		}
+	]
+}
