@@ -1,5 +1,6 @@
 #include "RubicsCubeState.h"
 #include "StringUtils.h"
+#include "Turn.h"
 #include <iostream>
 
 RubicsCubeState::RubicsCubeState(RubicsCubePiece* edgePieces, RubicsCubePiece* cornerPieces) {
@@ -7,35 +8,40 @@ RubicsCubeState::RubicsCubeState(RubicsCubePiece* edgePieces, RubicsCubePiece* c
     this->cornerPieces = cornerPieces;
 }
 
+RubicsCubeState* RubicsCubeState::initialState = nullptr;
+
 RubicsCubeState* RubicsCubeState::InitialState() {
-    //RubicsCubePiece* edgePieces = (RubicsCubePiece*) malloc(sizeof(RubicsCubePiece) * 12);
-    RubicsCubePiece* edgePieces = new RubicsCubePiece[12] {
-        RubicsCubePiece(0, 0),
-        RubicsCubePiece(1, 0),
-        RubicsCubePiece(2, 0),
-        RubicsCubePiece(3, 0),
-        RubicsCubePiece(4, 0),
-        RubicsCubePiece(5, 0),
-        RubicsCubePiece(6, 0),
-        RubicsCubePiece(7, 0),
-        RubicsCubePiece(8, 0),
-        RubicsCubePiece(9, 0),
-        RubicsCubePiece(10, 0),
-        RubicsCubePiece(11, 0)
-    };
+    if (RubicsCubeState::initialState == nullptr) {
+        RubicsCubePiece* edgePieces = new RubicsCubePiece[12] {
+            RubicsCubePiece(0, 0),
+            RubicsCubePiece(1, 0),
+            RubicsCubePiece(2, 0),
+            RubicsCubePiece(3, 0),
+            RubicsCubePiece(4, 0),
+            RubicsCubePiece(5, 0),
+            RubicsCubePiece(6, 0),
+            RubicsCubePiece(7, 0),
+            RubicsCubePiece(8, 0),
+            RubicsCubePiece(9, 0),
+            RubicsCubePiece(10, 0),
+            RubicsCubePiece(11, 0)
+        };
 
-    RubicsCubePiece* cornerPieces = new RubicsCubePiece [8] {
-        RubicsCubePiece(0, 0),
-        RubicsCubePiece(1, 0),
-        RubicsCubePiece(2, 0),
-        RubicsCubePiece(3, 0),
-        RubicsCubePiece(4, 0),
-        RubicsCubePiece(5, 0),
-        RubicsCubePiece(6, 0),
-        RubicsCubePiece(7, 0)
-    };
+        RubicsCubePiece* cornerPieces = new RubicsCubePiece [8] {
+            RubicsCubePiece(0, 0),
+            RubicsCubePiece(1, 0),
+            RubicsCubePiece(2, 0),
+            RubicsCubePiece(3, 0),
+            RubicsCubePiece(4, 0),
+            RubicsCubePiece(5, 0),
+            RubicsCubePiece(6, 0),
+            RubicsCubePiece(7, 0)
+        };
 
-    return new RubicsCubeState(edgePieces, cornerPieces);
+        RubicsCubeState::initialState = new RubicsCubeState(edgePieces, cornerPieces);
+    }
+
+    return RubicsCubeState::initialState;
 }
 
 RubicsCubeState* RubicsCubeState::Copy() {
@@ -108,4 +114,37 @@ RubicsCubePiece* RubicsCubeState::GetEdgePieces() {
 
 RubicsCubePiece* RubicsCubeState::GetCornerPieces() {
     return this->cornerPieces;
+}
+
+Turn RubicsCubeState::GetTurnTo(RubicsCubeState* other) {
+    RubicsCubeState* state;
+
+    for (int i = 0; i < Turn::CountAllTurns; i++) {
+        state = Copy();
+        state->ApplyTurn(Turn::AllTurns[i]);
+
+        if (state->Equals(other)) {
+            return Turn::AllTurns[i];
+        }
+    }
+
+    return Turn::Empty();
+}
+
+bool RubicsCubeState::Equals(RubicsCubeState* other) {
+    for (int i = 0; i < 12; i++) {
+        if (edgePieces[i].index != other->edgePieces[i].index
+         || edgePieces[i].rotation != other->edgePieces[i].rotation) {
+             return false;
+         }
+    }
+
+    for (int i = 0; i < 8; i++) {
+        if (cornerPieces[i].index != other->cornerPieces[i].index
+         || cornerPieces[i].rotation != other->cornerPieces[i].rotation) {
+             return false;
+         }
+    }
+
+    return true;
 }

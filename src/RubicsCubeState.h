@@ -10,8 +10,10 @@ class RubicsCubeState {
     private:
         RubicsCubePiece* edgePieces;
         RubicsCubePiece* cornerPieces;
+        static RubicsCubeState* initialState;
 
     public:
+        int* edgeNeighbourIndicieRotations[];
         static RubicsCubeState* InitialState();
         RubicsCubeState (RubicsCubePiece* edgePieces, RubicsCubePiece* cornerPieces);
         string GetStateString();
@@ -20,4 +22,6 @@ class RubicsCubeState {
         RubicsCubePiece* GetEdgePieces();
         RubicsCubePiece* GetCornerPieces();
         void ApplyTurn(Turn turn);
+        bool Equals(RubicsCubeState* other);
+        Turn GetTurnTo(RubicsCubeState* other);
 };

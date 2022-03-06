@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 /**
  * Internal representation of a turn.
  * The side that is turned equals index / 3;
@@ -14,11 +15,15 @@ using namespace std;
  */
 struct Turn {
     int index;
-
+    
     Turn(int index) {
         this->index = index;
     }
+
+    static Turn Empty() { return Turn(-1); }
     
+    const static inline int CountAllTurns = 18;
+    static Turn AllTurns[];
     /**
      * Convert a string representing a turn to the internal representation of a turn.
      * String must follow the format [side]('/2) e.g. "L", "l", "U2", "b'", "L'" or "r2"
@@ -39,7 +44,7 @@ struct Turn {
             side = 3;
         } else if (turnString.at(0) == 'L' || turnString.at(0) == 'l') {
             side = 4;
-        } else if (turnString.at(0) == 'B' || turnString.at(0) == 'd') {
+        } else if (turnString.at(0) == 'D' || turnString.at(0) == 'd') {
             side = 5;
         }
 
@@ -55,4 +60,67 @@ struct Turn {
 
         return Turn(index);
     }
+
+string ToString() {
+        string result = "";
+
+        int side = index / 3;
+        int angle = index % 3;
+
+        switch (side) {
+            case 0: result += "U"; break;
+            case 1: result += "F"; break;
+            case 2: result += "R"; break;
+            case 3: result += "B"; break;
+            case 4: result += "L"; break;
+            case 5: result += "D"; break;
+        }
+
+        switch (angle) {
+            case 1: result += "2"; break;
+            case 2: result += "'"; break;
+        }
+
+        return result;
+    }
+
+    bool IsTurnBacktracking(Turn lastTurn) {
+        if (lastTurn.Equals(Turn::Empty())) {
+            return false;
+        }
+
+        int thisSide = index / 3;
+        int lastSide = lastTurn.index / 3;
+        
+        return 
+            (thisSide == lastSide) ||
+            (thisSide == 0 && lastSide == 5) || 
+            (thisSide == 1 && lastSide == 3) ||
+            (thisSide == 2 && lastSide == 4); 
+    }
+
+    bool Equals(Turn other) {
+        return index == other.index;
+    }
+};
+
+Turn inline Turn::AllTurns[] = {
+    Turn(0),
+    Turn(1),
+    Turn(2),
+    Turn(3),
+    Turn(4),
+    Turn(5),
+    Turn(6),
+    Turn(7),
+    Turn(8),
+    Turn(9),
+    Turn(10),
+    Turn(11),
+    Turn(12),
+    Turn(13),
+    Turn(14),
+    Turn(15),
+    Turn(16),
+    Turn(17)
 };
