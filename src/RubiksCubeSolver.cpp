@@ -5,6 +5,7 @@
 #include "StringUtils.h"
 #include <vector>
 #include "Solver.h"
+#include "Stopwatch.h"
 
 using namespace std;
 
@@ -28,7 +29,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    //std::cout << Solver::GetDistanceHeuristic(state, RubicsCubeState::InitialState()) << endl;
+    Stopwatch::StartTimer();
     vector<Turn> solution = Solver::IterativeDeepeningAStar(state);
+    Stopwatch::StopTimer();
+
+    std::cout << "Time required: " << Stopwatch::GetFormattedTimeInSeconds() << endl;
 
     for (int i = 0; i < solution.size(); i++) {
         std::cout << solution[i].ToString();
@@ -37,12 +43,8 @@ int main(int argc, char *argv[]) {
             std::cout << " ";
         }
     }
-    
     /*
-    if (state != nullptr) {
-        std::cout << state->GetStateString() << endl;
-    }
-    */
-
+    */  
+    
     return 0;
 } 

@@ -3,8 +3,8 @@
 	"tasks": [
 		{
 			"type": "cppbuild",
-			"label": "C/C++: g++.exe Projekt kompilieren",
-			"command": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+			"label": "C/C++: g++.exe Aktive Datei kompilieren",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
 			"args": [
 				"-g",
 				"${fileDirname}\\**.cpp",
@@ -12,7 +12,6 @@
 				"-o",
 				//"-Wall",
 				"${fileDirname}\\..\\Solver.exe",
-				"-w",
 			],
 			"options": {
 			"cwd": "${fileDirname}"
@@ -21,7 +20,29 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "Compiler: C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe"
+			"detail": "Compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
+		},
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++.exe Aktive Datei kompilieren (optimiert)",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+			"args": [
+				"-O3",
+				"-g",
+				"${fileDirname}\\**.cpp",
+				//"${fileDirname}\\**.h",
+				"-o",
+				//"-Wall",
+				"${fileDirname}\\..\\Solver.exe",
+			],
+			"options": {
+			"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "Compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
 		}
 	]
 }

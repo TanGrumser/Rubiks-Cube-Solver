@@ -35,14 +35,47 @@ const int EDGE_CORNER_ROTATION_OFFSET[12][4] = {
 };
 
 int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to);
-int** GetEdgeNeighbourIndiciesRotations();
+int** GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state);
 
 int Solver::GetDistanceHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
     return GetNeighbourHeuristic(from, to);
 }
 
 int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
-    return 0;
+    int progress = 0;
+    int** otherEdgeNeighbourIndiciesRotation = GetEdgeNeighbourIndiciesRotations(to);
+    int leftNeightbourIndex = -1;
+    int rightNeightbourIndex = -1;
+    int leftNeightbourRotation= -1;
+    int rightNeightbourRotation = -1;
+
+    for (int i = 0 ; i < 12; i++) {
+        int* otherNeighboursPositionRotations = otherEdgeNeighbourIndiciesRotation[from->edgePieces[i].index];
+        leftNeightbourIndex = from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 0 : 1]].index;
+        rightNeightbourIndex = from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 1 : 0]].index;
+
+        leftNeightbourRotation = (from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 0 : 1]].rotation
+            + EDGE_CORNER_ROTATION_OFFSET[i][0 + (from->edgePieces[i].rotation == 0 ? 0 : 2)]) % 3;
+        rightNeightbourRotation = (from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 1 : 0]].rotation
+            + EDGE_CORNER_ROTATION_OFFSET[i][1 + (from->edgePieces[i].rotation == 0 ? 0 : 2)]) % 3;
+        
+        
+        if (leftNeightbourIndex == otherNeighboursPositionRotations[0] // are edges correct
+            && leftNeightbourRotation == otherNeighboursPositionRotations[2] // are they correclty rotated
+        ) {
+
+            progress++;
+        }
+
+        
+        if (rightNeightbourIndex == otherNeighboursPositionRotations[1]
+            && rightNeightbourRotation == otherNeighboursPositionRotations[3]
+        ) {
+            progress++;
+        }
+    }
+
+    return 6 - progress / 4;
 }
 
 
@@ -65,42 +98,6 @@ int** GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state) {
             };
         }
     }
-}
-
-
-int GetDistanceHeuristic(RubicsCubeState* other) {
-    int progress = 0;
-    int** otherEdgeNeighbourIndiciesRotation = other->edgeNeighbourIndicieRotations;
-    int leftNeightbourIndex = -1;
-    int rightNeightbourIndex = -1;
-    int leftNeightbourRotation= -1;
-    int rightNeightbourRotation = -1;
-
-    for (int i = 0 ; i < 12; i++) {
-        byte[] otherNeighboursPositionRotations = otherEdgeNeighbourIndiciesRotation[edgePieces[i].index];
-        leftNeightbourIndex = cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][edgePieces[i].rotation == 0 ? 0 : 1]].index;
-        rightNeightbourIndex = cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][edgePieces[i].rotation == 0 ? 1 : 0]].index;
-
-        leftNeightbourRotation = (byte)((cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][edgePieces[i].rotation == 0 ? 0 : 1]].rotation
-            + EDGE_CORNER_ROTATION_OFFSET[i][0 + (edgePieces[i].rotation == 0 ? 0 : 2)]) % 3);
-        rightNeightbourRotation = (byte)((cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][edgePieces[i].rotation == 0 ? 1 : 0]].rotation
-            + EDGE_CORNER_ROTATION_OFFSET[i][1 + (edgePieces[i].rotation == 0 ? 0 : 2)]) % 3);
-        
-        
-        if (leftNeightbourIndex == otherNeighboursPositionRotations[0] // are edges correct
-            && leftNeightbourRotation == otherNeighboursPositionRotations[2] // are they correclty rotated
-        ) {
-
-            progress++;
-        }
-
-        
-        if (rightNeightbourIndex == otherNeighboursPositionRotations[1]
-            && rightNeightbourRotation == otherNeighboursPositionRotations[3]
-        ) {
-            progress++;
-        }
-    }
-
-    return progress;
+    
+    return state->edgeNeighbourIndicieRotations;
 }
