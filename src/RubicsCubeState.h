@@ -8,12 +8,12 @@ using namespace std;
 
 class RubicsCubeState {
     private:
+    public:
         RubicsCubePiece* edgePieces;
         RubicsCubePiece* cornerPieces;
         static RubicsCubeState* initialState;
 
-    public:
-        int* edgeNeighbourIndicieRotations[];
+        int** edgeNeighbourIndicieRotations;
         static RubicsCubeState* InitialState();
         RubicsCubeState (RubicsCubePiece* edgePieces, RubicsCubePiece* cornerPieces);
         string GetStateString();
