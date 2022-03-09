@@ -8,14 +8,19 @@
 int Search(vector<RubicsCubeState*> *path, int depth, int bound, Turn lastTurn);
 vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);
 const int MAX_BOUND = 100000;
+int searchedStates = 0;
 
 vector<Turn> Solver::IterativeDeepeningAStar(RubicsCubeState* startState) {
 
+        std::cout << startState->GetStateString() << endl;
         int bound = Solver::GetDistanceHeuristic(startState, RubicsCubeState::InitialState());
+        std::cout << "here 1" << endl;
         vector<RubicsCubeState*> path = {};
         path.push_back(startState);
 
         while (true) {
+            std::cout << searchedStates++ << endl;
+
             int newBound = Search(&path, 0, bound, Turn::Empty());
 
             if (newBound == -1) {
@@ -47,13 +52,15 @@ int Search(vector<RubicsCubeState*> *path, int depth, int bound, Turn lastTurn) 
     int min = MAX_BOUND;
 
     for (int i = 0; i < Turn::CountAllTurns; i++) {
+
         RubicsCubeState* succesor = node->Copy();
         succesor->ApplyTurn(Turn::AllTurns[i]);
 
         if (!Turn::AllTurns[i].IsTurnBacktracking(lastTurn)) {
             path->push_back(succesor);
+            std::cout << searchedStates++ << endl;
             int newBound = Search(path, depth + 1, bound, Turn::AllTurns[i]);
-            
+
             if (newBound == -1) {
                 return -1;
             }

@@ -28,7 +28,8 @@ int main(int argc, char *argv[]) {
             }
         }
     }
-
+    
+    std::cout << "starting solve." << endl;
     //std::cout << Solver::GetDistanceHeuristic(state, RubicsCubeState::InitialState()) << endl;
     Stopwatch::StartTimer();
     vector<Turn> solution = Solver::IterativeDeepeningAStar(state);

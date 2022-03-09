@@ -4,7 +4,7 @@
 		{
 			"type": "cppbuild",
 			"label": "C/C++: g++.exe Aktive Datei kompilieren",
-			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+			"command": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
 			"args": [
 				"-g",
 				"${fileDirname}\\**.cpp",
@@ -20,12 +20,12 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "Compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
+			"detail": "Compiler: C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe"
 		},
 		{
 			"type": "cppbuild",
 			"label": "C/C++: g++.exe Aktive Datei kompilieren (optimiert)",
-			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+			"command": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
 			"args": [
 				"-O3",
 				"-g",
@@ -42,7 +42,7 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "Compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
+			"detail": "Compiler: C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe"
 		}
 	]
 }

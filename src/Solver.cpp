@@ -1,4 +1,5 @@
 #include "Solver.h"
+#include <iostream>
 #include "RubicsCubeState.h"
 
 
@@ -49,8 +50,13 @@ int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
     int leftNeightbourRotation= -1;
     int rightNeightbourRotation = -1;
 
+    std::cout << "here 2" << endl;
+
     for (int i = 0 ; i < 12; i++) {
-        int* otherNeighboursPositionRotations = otherEdgeNeighbourIndiciesRotation[from->edgePieces[i].index];
+        std::cout << "here 3" << endl;
+        int lookupIndex = from->edgePieces[i].index;
+        int* otherNeighboursPositionRotations = otherEdgeNeighbourIndiciesRotation[lookupIndex];
+        std::cout << "here 4" << endl;
         leftNeightbourIndex = from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 0 : 1]].index;
         rightNeightbourIndex = from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 1 : 0]].index;
 
@@ -60,6 +66,7 @@ int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
             + EDGE_CORNER_ROTATION_OFFSET[i][1 + (from->edgePieces[i].rotation == 0 ? 0 : 2)]) % 3;
         
         
+
         if (leftNeightbourIndex == otherNeighboursPositionRotations[0] // are edges correct
             && leftNeightbourRotation == otherNeighboursPositionRotations[2] // are they correclty rotated
         ) {
