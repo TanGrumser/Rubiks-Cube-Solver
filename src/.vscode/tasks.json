@@ -4,10 +4,11 @@
 		{
 			"type": "cppbuild",
 			"label": "C/C++: g++.exe Aktive Datei kompilieren",
-			"command": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
 			"args": [
 				"-g",
 				"${fileDirname}\\**.cpp",
+				//"-std=c++20",
 				//"${fileDirname}\\**.h",
 				"-o",
 				//"-Wall",
@@ -20,15 +21,14 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "Compiler: C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe"
+			"detail": "Compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
 		},
 		{
 			"type": "cppbuild",
 			"label": "C/C++: g++.exe Aktive Datei kompilieren (optimiert)",
-			"command": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
 			"args": [
 				"-O3",
-				"-g",
 				"${fileDirname}\\**.cpp",
 				//"${fileDirname}\\**.h",
 				"-o",
@@ -42,7 +42,7 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "Compiler: C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe"
+			"detail": "Compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
 		}
 	]
 }

@@ -6,46 +6,36 @@
 #include <vector>
 #include "Solver.h"
 #include "Stopwatch.h"
+#include "LookupTable.h"
+#include <thread>
+#include <mutex>
+#include "FileManagement.h"
+#include "CommandLineHandler.h"
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
-    RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
+    int maxDepth = std::stoi(argv[1]);
+    LookupTable::GenerateCornerLookupTable("cornerLookupTable", maxDepth);
 
-    for (int i = 1; i < argc; i++) {
-        if (((string) argv[i]).compare("-s") == 0) {
-            string stateString = (string) argv[i + 1];
-            state = RubicsCubeState::ParseStateString(stateString);
-        }
+    int* size = new int();
+    char* lookupTable = FileManagement::LoadBufferFromFile("cornerLookupTable", size);
 
-        if (((string) argv[i]).compare("-t") == 0) {
-            string turnString = (string) argv[i + 1];
-            vector<string> turns = StringUtils::Split(turnString, " ");
-            
-            for (int i = 0; i < turns.size(); i++) {
-                Turn turn = Turn::Parse(turns[i]);
-                state->ApplyTurn(turn);
-            }
+    std::vector<int> occurences(12, 0);
+    std::cout << "size: " << *size << endl;
+    
+    for (int i = 0; i < LookupTable::CORNER_STATES_COUNT; i++) {
+        if (lookupTable[i] != -1) {
+            //std::cout << lookupTable[i] << endl;
+            occurences[lookupTable[i]]++;
         }
     }
     
-    std::cout << "starting solve." << endl;
-    //std::cout << Solver::GetDistanceHeuristic(state, RubicsCubeState::InitialState()) << endl;
-    Stopwatch::StartTimer();
-    vector<Turn> solution = Solver::IterativeDeepeningAStar(state);
-    Stopwatch::StopTimer();
-
-    std::cout << "Time required: " << Stopwatch::GetFormattedTimeInSeconds() << endl;
-
-    for (int i = 0; i < solution.size(); i++) {
-        std::cout << solution[i].ToString();
-
-        if (i < solution.size() - 1) {
-            std::cout << " ";
-        }
+    for (int i = 0; i < 12; i++) {
+        std::cout << occurences[i] << endl;
     }
-    /*
-    */  
-    
+
+    //CommandLineHandler::Start(argc, argv);
+
     return 0;
-} 
+}

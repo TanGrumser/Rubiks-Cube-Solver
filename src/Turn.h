@@ -1,9 +1,9 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 using namespace std;
-
 
 /**
  * Internal representation of a turn.
@@ -23,7 +23,11 @@ struct Turn {
     static Turn Empty() { return Turn(-1); }
     
     const static inline int CountAllTurns = 18;
-    static Turn AllTurns[];
+    Turn Inverse();
+    static const std::vector<Turn> AllTurns;
+    static Turn Random();
+    
+    static void Test();
     /**
      * Convert a string representing a turn to the internal representation of a turn.
      * String must follow the format [side]('/2) e.g. "L", "l", "U2", "b'", "L'" or "r2"
@@ -84,7 +88,7 @@ string ToString() {
         return result;
     }
 
-    bool IsTurnBacktracking(Turn lastTurn) {
+    bool IsTurnBacktracking(const Turn lastTurn) const {
         if (lastTurn.Equals(Turn::Empty())) {
             return false;
         }
@@ -99,28 +103,7 @@ string ToString() {
             (thisSide == 2 && lastSide == 4); 
     }
 
-    bool Equals(Turn other) {
+    bool Equals(const Turn other) const {
         return index == other.index;
     }
-};
-
-Turn inline Turn::AllTurns[] = {
-    Turn(0),
-    Turn(1),
-    Turn(2),
-    Turn(3),
-    Turn(4),
-    Turn(5),
-    Turn(6),
-    Turn(7),
-    Turn(8),
-    Turn(9),
-    Turn(10),
-    Turn(11),
-    Turn(12),
-    Turn(13),
-    Turn(14),
-    Turn(15),
-    Turn(16),
-    Turn(17)
 };

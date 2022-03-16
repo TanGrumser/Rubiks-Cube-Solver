@@ -148,3 +148,22 @@ bool RubicsCubeState::Equals(RubicsCubeState* other) {
 
     return true;
 }
+
+bool RubicsCubeState::ContainsNegativeNumber() {
+    for (int i = 0; i < 12; i++) {
+        if (edgePieces[i].index < 0
+         || edgePieces[i].rotation < 0) {
+             return true;
+         }
+    }
+
+    for (int i = 0; i < 8; i++) {
+        if (cornerPieces[i].index < 0
+         || cornerPieces[i].rotation < 0) {
+             return true;
+         }
+    }
+
+    return false;
+
+}

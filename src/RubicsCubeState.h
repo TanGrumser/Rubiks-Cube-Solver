@@ -24,4 +24,5 @@ class RubicsCubeState {
         void ApplyTurn(Turn turn);
         bool Equals(RubicsCubeState* other);
         Turn GetTurnTo(RubicsCubeState* other);
+        bool ContainsNegativeNumber();
 };
