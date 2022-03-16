@@ -16,6 +16,10 @@ using namespace std;
 struct Turn {
     int index;
     
+    Turn() {
+        this->index = 0;
+    }
+
     Turn(int index) {
         this->index = index;
     }

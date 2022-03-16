@@ -34,6 +34,16 @@ const long long int statesAtDepth[12] = {
 // TODO put this somewhere else
 int currentDepthStates = 0;
 
+struct BufferEntry {
+    char distance;
+    Turn turn;
+
+    BufferEntry(char distance, Turn turn) {
+        this->distance = distance;
+        this->turn = turn;
+    }
+};
+
 // This is just a helper Object to bundle some data, that need to get distributed between various threads.
 struct ConcurrencyData {
     int threadCount;
@@ -51,8 +61,8 @@ const int THREAD_COUNT = 6;
 const int MAX_DEPTH = 11;
 
 void Logger(int* reachedStates, bool* hasGenerationFinished, char* currentDepth, std::vector<long long int*>* threadProgresses);
-void EvaluatePositionWithIterativeDeepening(char maxDepth, char* currentDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses);
-void EvaluatePosition(RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress);
+void EvaluatePositionWithIterativeDeepening(char maxDepth, char* currentDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses);
+void EvaluatePosition(RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress);
 
 void ClenaupFlags(std::vector<char>* buffer) {
     for (int i = 0; i < CORNER_STATES_COUNT; i++) {
@@ -78,7 +88,7 @@ void LookupTable::GenerateCornerLookupTable(string path, int maxDepth = 11) {
     char* currentDepth = new char(0);
     bool* hasGenerationFinished = new bool(false);
     std::vector<long long int*>* threadProgresses = new std::vector<long long int*>(THREAD_COUNT, new long long int(0));
-    std::vector<char>* shortestPossibleMoves = new std::vector<char>(CORNER_STATES_COUNT, UNINITIALIIZED);
+    std::vector<BufferEntry>* shortestPossibleMoves = new std::vector<BufferEntry>(CORNER_STATES_COUNT, BufferEntry(-1, Turn::Empty()));
 
     std::vector<std::thread> threads = {};
     std::mutex* bufferMutex = new std::mutex();
@@ -93,7 +103,13 @@ void LookupTable::GenerateCornerLookupTable(string path, int maxDepth = 11) {
 
     // Write the content of the lookup table buffer into a file.
     std::cout << endl << "Writing to file." << endl;
-    FileManagement::WriteBufferToFile(path, shortestPossibleMoves->data(), CORNER_STATES_COUNT);
+    std::vector<char> buffer(CORNER_STATES_COUNT, UNINITIALIIZED);
+    
+    for (int i = 0; i < CORNER_STATES_COUNT; i++) {
+        buffer[i] = (*shortestPossibleMoves)[i].distance;
+    }
+
+    FileManagement::WriteBufferToFile(path, buffer.data(), CORNER_STATES_COUNT);
 }
 
 void Logger(int* reachedStates, bool* hasGenerationFinished, char* currentDepth, std::vector<long long int*>* threadProgresses) {
@@ -123,14 +139,14 @@ void Logger(int* reachedStates, bool* hasGenerationFinished, char* currentDepth,
     std::cout << "Finished Logger" << endl;
 }
 
-void EvaluatePositionWithIterativeDeepening(char maxDepth, char* currentDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses) {
+void EvaluatePositionWithIterativeDeepening(char maxDepth, char* currentDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses) {
     std::vector<std::thread> threads(THREAD_COUNT);
     
     while (*currentDepth <= maxDepth) {
         
         for (int i = 0; i < THREAD_COUNT; i++) {
             *(*threadProgresses)[i] = 0ll;
-            std::vector exploredTurns = std::vector<Turn> {Turn(i * 3), Turn(i * 3 + 1), Turn(i * 3 + 2)};
+            std::vector<Turn> exploredTurns = std::vector<Turn> {Turn(i * 3), Turn(i * 3 + 1), Turn(i * 3 + 2)};
             std::thread thread = std::thread(EvaluatePosition, RubicsCubeState::InitialState()->Copy(), 0, Turn::Empty(), exploredTurns, *currentDepth, shortestMovesPossible, reachedStates, mutex, (*threadProgresses)[0]);
             threads[i] = std::move(thread);
         }
@@ -145,7 +161,7 @@ void EvaluatePositionWithIterativeDeepening(char maxDepth, char* currentDepth, s
     }
 }
 
-void EvaluatePosition(RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress) {
+void EvaluatePosition(RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress) {
     if (*reachedStates == (*shortestMovesPossible).size()) {
         return;
     }
@@ -154,12 +170,14 @@ void EvaluatePosition(RubicsCubeState* state, char depth, Turn lastTurn, std::ve
 
     mutex->lock();
 	
-    if ((*shortestMovesPossible)[lookupIndex] == UNINITIALIIZED) {
+    if ((*shortestMovesPossible)[lookupIndex].distance == UNINITIALIIZED) {
 		// This state has never been reached before.
-		(*shortestMovesPossible)[lookupIndex] = depth;
+		(*shortestMovesPossible)[lookupIndex].distance = depth;
+		(*shortestMovesPossible)[lookupIndex].turn = lastTurn;
 		(*reachedStates)++;
         currentDepthStates++;
-	} else if (depth > (*shortestMovesPossible)[lookupIndex]) {
+        
+	} else if (depth > (*shortestMovesPossible)[lookupIndex].distance || ! (*shortestMovesPossible)[lookupIndex].turn.Equals(lastTurn)) {
         // we reached an explored state, with a longer path and don't want to continue, since there are no follwoing states will habve shorter paths.
         mutex->unlock();
         //*threadProgress += statesAtDepth[maxDepth - depth];

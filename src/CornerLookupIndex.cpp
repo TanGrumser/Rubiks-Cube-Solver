@@ -110,7 +110,7 @@ void LookupTable::SetStateToCornerStateByIndex(int index, RubicsCubeState* state
 
 int* GetCornerPositionsPerIndex(int index) {
     int permutationIndex = index / CORNER_ROTATIONS_COUNT;
-    int* positions = new int[] {7, 7, 7, 7, 7, 7, 7, 7};
+    int* positions = new int[8] {7, 7, 7, 7, 7, 7, 7, 7};
 
     const int coefficients[] = {
         1 * 2 * 3 * 4 * 5 * 6 * 7 * 8,
