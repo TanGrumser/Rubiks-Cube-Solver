@@ -10,39 +10,24 @@ inline bool exists_test0 (const std::string& name) {
 }
     
 //template<typename T>
-int FileManagement::WriteBufferToFile(std::string path, const char* buffer, int bufferSize) {
-    std::ofstream ofs;
-    ofs.open(path);
+    int FileManagement::WriteBufferToFile(std::string path, const char* buffer, int bufferSize) {
+        std::ofstream ofs;
+        ofs.open(path, std::ios::binary);
 
-    if (!ofs) {
-        return 1;
+        if (!ofs) {
+            return 1;
+        }
+
+        ofs.write(buffer, bufferSize);    
+
+        if (!ofs) {
+            return 2;
+        }
+
+        ofs.close();
+
+        return 0;
     }
-
-    ofs.write(buffer, bufferSize);    
-
-    if (!ofs) {
-        return 2;
-    }
-
-    ofs.close();
-    /*
-    char array[] = "YOUR TEXT HERE";
-
-    // Open a file for writing. 
-    // (This will replace any existing file. Use "w+" for appending)
-    FILE *file = fopen(path, "w");
-
-    int results = fputs(buffer, file);
-    
-    fclose(file);
-
-    if (results == EOF) {
-        return 1;    
-    }
-    */
-
-    return 0;
-}
 
 char* FileManagement::LoadBufferFromFile(std::string path, int* bufferSize) {
     std::streampos size;
@@ -57,7 +42,6 @@ char* FileManagement::LoadBufferFromFile(std::string path, int* bufferSize) {
     
     if (file.is_open()) {
         size = file.tellg();
-        std::cout <<"found size " << size << std::endl;
         memblock = new char [size];
         file.seekg (0, std::ios::beg);
         file.read (memblock, size);
@@ -71,17 +55,25 @@ char* FileManagement::LoadBufferFromFile(std::string path, int* bufferSize) {
     }
 
     return 0;
-  /*
-    std::ofstream file;
-    file.open("test.txt");
-    
-    if(!file) {  
-        return 1;
+}
+void FileManagement::CompareFiles(std::string firstPath, std::string secondPath) {
+    int* localSize = new int(0);
+    int* downloadSize = new int(0);
+    char* local = FileManagement::LoadBufferFromFile(firstPath, localSize);
+    char* download = FileManagement::LoadBufferFromFile(secondPath, downloadSize);
+
+    if (*localSize != *downloadSize) {
+        std::cout << "sizes are not equal. " << *localSize << ", " << *downloadSize << std::endl;
+        return;
+    }
+ 
+    for (int i = 0; i < *localSize; i++) {
+        if (local[i] != download[i]) {
+            std::cout << "Files differ at " << i << " with " << std::to_string(local[i]) << " and " << std::to_string(download[i]) << std::endl;
+        }
     }
 
-    auto input = file.rdbuf();
-    input.
-    file.close();
-    return 0;
-  */
+    std::cout << "Comparison finished. Everything is fine." << std::endl;
 }
+
+

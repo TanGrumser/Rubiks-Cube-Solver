@@ -11,16 +11,11 @@ const int MAX_BOUND = 100000;
 int searchedStates = 0;
 
 vector<Turn> Solver::IterativeDeepeningAStar(RubicsCubeState* startState) {
-
-        std::cout << startState->GetStateString() << endl;
         int bound = Solver::GetDistanceHeuristic(startState, RubicsCubeState::InitialState());
-        std::cout << "here 1" << endl;
         vector<RubicsCubeState*> path = {};
         path.push_back(startState);
 
         while (true) {
-            std::cout << searchedStates++ << endl;
-
             int newBound = Search(&path, 0, bound, Turn::Empty());
 
             if (newBound == -1) {
@@ -51,14 +46,15 @@ int Search(vector<RubicsCubeState*> *path, int depth, int bound, Turn lastTurn) 
 
     int min = MAX_BOUND;
 
+    // TODO allocating over and over again isn't necessary. Rather a stack with pre allocated states should be used.
+
+    RubicsCubeState* succesor = node->Copy();
+    path->push_back(succesor);
+
     for (int i = 0; i < Turn::CountAllTurns; i++) {
-
-        RubicsCubeState* succesor = node->Copy();
-        succesor->ApplyTurn(Turn::AllTurns[i]);
-
         if (!Turn::AllTurns[i].IsTurnBacktracking(lastTurn)) {
-            path->push_back(succesor);
-            std::cout << searchedStates++ << endl;
+            succesor->ApplyTurn(Turn::AllTurns[i]);
+            
             int newBound = Search(path, depth + 1, bound, Turn::AllTurns[i]);
 
             if (newBound == -1) {
@@ -69,9 +65,12 @@ int Search(vector<RubicsCubeState*> *path, int depth, int bound, Turn lastTurn) 
                 min = newBound;
             } 
 
-            path->pop_back();
+            succesor->ApplyTurn(Turn::AllTurns[i].Inverse());
         }
     }
+
+    delete path->back();
+    path->pop_back();
 
     return min;
 }
@@ -83,8 +82,9 @@ vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stat
 
     while (stateSequence.size() != 0) {
         RubicsCubeState* currentState = stateSequence.back();
-        stateSequence.pop_back();
         turnSequence.push_back(currentState->GetTurnTo(lastState));
+        stateSequence.pop_back();
+        delete lastState;
         lastState = currentState;
     }    
 

@@ -6,15 +6,21 @@
 #include "StringUtils.h"
 #include "Solver.h"
 #include "Stopwatch.h"
+#include "LookupTable.h"
 
 void CommandLineHandler::Start(int argc, char *argv[]) {
     RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
+    LookupTable::LoadLookupTables();
 
     //Parse all command line arguments.
     for (int i = 1; i < argc; i++) {
         if (((string) argv[i]).compare("-s") == 0) {
             string stateString = (string) argv[i + 1];
             state = RubicsCubeState::ParseStateString(stateString);
+        }
+
+        if (((string) argv[i]).compare("-h") == 0) {
+            Solver::heuristicMode = std::atoi(argv[i + 1]);
         }
 
         if (((string) argv[i]).compare("-t") == 0) {
@@ -27,6 +33,9 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
             }
         }
     }
+    
+
+    //std::cout << LookupTable::GetCornerStateDistance(state) << endl;
     
     std::cout << "starting solve." << endl;
     //std::cout << Solver::GetDistanceHeuristic(state, RubicsCubeState::InitialState()) << endl;
@@ -43,5 +52,5 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
             std::cout << " ";
         }
     }
- 
+
 }

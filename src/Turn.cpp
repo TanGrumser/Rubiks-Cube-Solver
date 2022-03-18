@@ -18,7 +18,7 @@ Turn Turn::Random() {
     return Turn(distr(gen));
 }
 
-Turn Turn::Inverse() {
+Turn Turn::Inverse() const {
     int side = index / 3;
     int rotation = index % 3;
 

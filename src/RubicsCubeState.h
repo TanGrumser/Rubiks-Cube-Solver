@@ -15,7 +15,8 @@ class RubicsCubeState {
 
         int** edgeNeighbourIndicieRotations;
         static RubicsCubeState* InitialState();
-        RubicsCubeState (RubicsCubePiece* edgePieces, RubicsCubePiece* cornerPieces);
+        RubicsCubeState(RubicsCubePiece* edgePieces, RubicsCubePiece* cornerPieces);
+        ~RubicsCubeState();
         string GetStateString();
         static RubicsCubeState* ParseStateString(string stateString);
         RubicsCubeState* Copy();

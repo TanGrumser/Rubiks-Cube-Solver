@@ -1,7 +1,9 @@
-#include "Solver.h"
 #include <iostream>
-#include "RubicsCubeState.h"
+#include <algorithm>
 
+#include "Solver.h"
+#include "RubicsCubeState.h"
+#include "LookupTable.h"
 
 const int EDGE_CORNER_NEIGHBOR_INIDICIES[12][2] = {
     {0, 1},
@@ -35,28 +37,36 @@ const int EDGE_CORNER_ROTATION_OFFSET[12][4] = {
     {0, 0, 1, 2}
 };
 
+namespace Solver {
+    int heuristicMode = 0;
+}
+
 int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to);
-int** GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state);
 
 int Solver::GetDistanceHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
-    return GetNeighbourHeuristic(from, to);
+    if (Solver::heuristicMode == 0) {
+        int neihbhourDistanceHeuristic = GetNeighbourHeuristic(from, to);
+        int cornerStateDistance = LookupTable::GetCornerStateDistance(from);
+
+        return std::max(neihbhourDistanceHeuristic, cornerStateDistance);
+    } else if (Solver::heuristicMode == 1) {
+        return GetNeighbourHeuristic(from, to);
+    } else {
+        return LookupTable::GetCornerStateDistance(from);
+    }
 }
 
 int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
     int progress = 0;
-    int** otherEdgeNeighbourIndiciesRotation = GetEdgeNeighbourIndiciesRotations(to);
+    int** otherEdgeNeighbourIndiciesRotation = Solver::GetEdgeNeighbourIndiciesRotations(to);
     int leftNeightbourIndex = -1;
     int rightNeightbourIndex = -1;
     int leftNeightbourRotation= -1;
     int rightNeightbourRotation = -1;
 
-    std::cout << "here 2" << endl;
-
     for (int i = 0 ; i < 12; i++) {
-        std::cout << "here 3" << endl;
         int lookupIndex = from->edgePieces[i].index;
         int* otherNeighboursPositionRotations = otherEdgeNeighbourIndiciesRotation[lookupIndex];
-        std::cout << "here 4" << endl;
         leftNeightbourIndex = from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 0 : 1]].index;
         rightNeightbourIndex = from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 1 : 0]].index;
 
@@ -86,7 +96,7 @@ int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
 }
 
 
-int** GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state) {
+int** Solver::GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state) {
     if (state->edgeNeighbourIndicieRotations == nullptr) {
         int** edgeNeighbourIndicieRotations = (int**) malloc(sizeof(int) * 12 * 4);
         state->edgeNeighbourIndicieRotations = edgeNeighbourIndicieRotations;

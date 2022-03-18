@@ -1,0 +1,12 @@
+htop nachschauen
+nohup prozess läuft ohne console weiter
+output in file
+
+$command > OUT & 
+tail -f OUT 
+
+$command 2>&1 > OUT &
+
+valgrind    
+valgrind --tool=callgrind 
+kcachegrind 

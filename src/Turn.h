@@ -27,7 +27,7 @@ struct Turn {
     static Turn Empty() { return Turn(-1); }
     
     const static inline int CountAllTurns = 18;
-    Turn Inverse();
+    Turn Inverse() const;
     static const std::vector<Turn> AllTurns;
     static Turn Random();
     

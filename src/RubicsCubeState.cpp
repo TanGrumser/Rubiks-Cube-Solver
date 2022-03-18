@@ -6,7 +6,15 @@
 RubicsCubeState::RubicsCubeState(RubicsCubePiece* edgePieces, RubicsCubePiece* cornerPieces) {
     this->edgePieces = edgePieces;
     this->cornerPieces = cornerPieces;
+    this->edgeNeighbourIndicieRotations = nullptr;
 }
+
+RubicsCubeState::~RubicsCubeState() {
+    delete[] cornerPieces;
+    delete[] edgePieces;
+    delete[] edgeNeighbourIndicieRotations;
+}
+
 
 RubicsCubeState* RubicsCubeState::initialState = nullptr;
 
@@ -128,7 +136,7 @@ Turn RubicsCubeState::GetTurnTo(RubicsCubeState* other) {
         }
     }
 
-    return Turn::Empty();
+    throw std::runtime_error("Couldn't find turn");
 }
 
 bool RubicsCubeState::Equals(RubicsCubeState* other) {
