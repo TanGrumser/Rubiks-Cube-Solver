@@ -12,6 +12,8 @@ RubicsCubeState::RubicsCubeState(RubicsCubePiece* edgePieces, RubicsCubePiece* c
 RubicsCubeState::~RubicsCubeState() {
     delete[] cornerPieces;
     delete[] edgePieces;
+    
+    // deleting a null pointer seems to be safe (https://stackoverflow.com/questions/6731331/is-it-still-safe-to-delete-nullptr-in-c0x)
     delete[] edgeNeighbourIndicieRotations;
 }
 
@@ -66,6 +68,17 @@ RubicsCubeState* RubicsCubeState::Copy() {
 
     return new RubicsCubeState(edgePieces, cornerPieces);
 }
+
+void RubicsCubeState::CopyInto(RubicsCubeState* state) {
+    for (int i = 0; i < 12; i++) {
+        state->edgePieces[i] = this->edgePieces[i].Copy();
+    }
+
+    for (int i = 0; i < 8; i++) {
+        cornerPieces[i] = this->cornerPieces[i].Copy();
+    }
+}
+
 
 string RubicsCubeState::GetStateString() {
     string result = "";

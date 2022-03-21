@@ -20,6 +20,7 @@ class RubicsCubeState {
         string GetStateString();
         static RubicsCubeState* ParseStateString(string stateString);
         RubicsCubeState* Copy();
+        void CopyInto(RubicsCubeState* state);
         RubicsCubePiece* GetEdgePieces();
         RubicsCubePiece* GetCornerPieces();
         void ApplyTurn(Turn turn);

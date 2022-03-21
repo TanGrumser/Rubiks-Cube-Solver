@@ -10,8 +10,6 @@ using LookupTable::CORNER_ROTATIONS_COUNT;
 using LookupTable::CORNER_STATES_COUNT;
 using LookupTable::CORNER_LOOKUP_TABLE_PATH;
 
-char* cornerLookupTable;
-
 // Helper Methods
 int GetRotationIndex(RubicsCubeState* state);
 int GetPermutationIndex(RubicsCubeState* state);
@@ -27,16 +25,6 @@ const int powersOfThree[] = {
     3 * 3 * 3 * 3 * 3 * 3,
     3 * 3 * 3 * 3 * 3 * 3 * 3, // 3^7
 };
-
-void LookupTable::LoadLookupTables() {
-    int* size = new int(0);
-    cornerLookupTable = FileManagement::LoadBufferFromFile(CORNER_LOOKUP_TABLE_PATH, size);
-}
-
-int LookupTable::GetCornerStateDistance(RubicsCubeState* state) {
-    int index = GetCornerLookupIndex(state);
-    return cornerLookupTable[index];
-}
 
 void LookupTable::TestCornerLookupCaluclation() {
     RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
@@ -74,7 +62,7 @@ int GetPermutationIndex(RubicsCubeState* state) {
     int result = 0;
 
     const int coefficients[] = {
-        1 * 2 * 3 * 4 * 5 * 6 * 7,
+        1 * 2 * 3 * 4 * 5 * 6 * 7, 
         1 * 2 * 3 * 4 * 5 * 6,
         1 * 2 * 3 * 4 * 5,
         1 * 2 * 3 * 4,
