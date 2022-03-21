@@ -13,16 +13,10 @@
 #include "CommandLineHandler.h"
 
 int main(int argc, char *argv[]) {
-    //LookupTable::LoadLookupTables();
-
-    //Solver::GetEdgeNeighbourIndiciesRotations(RubicsCubeState::InitialState());
-    //CommandLineHandler::Start(argc, argv);
-    LookupTable::GenerateBigUpperEdgeLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH);
-    LookupTable::GenerateBigLowerEdgeLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH);
-    //LookupTable::GenerateLowerEdgeLookupTable(LookupTable::LOWER_EDGE_LOOKUP_TABLE_PATH);
+    CommandLineHandler::Start(argc, argv);
     
-    //int maxDepth = std::stoi(argv[1]);
-    
+    //LookupTable::GenerateBigUpperEdgeLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH);
+    //LookupTable::GenerateBigLowerEdgeLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH);    
 
     return 0;
 }

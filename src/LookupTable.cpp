@@ -82,6 +82,7 @@ void LookupTable::LoadLookupTables() {
     cornerLookupTable = FileManagement::LoadBufferFromFile(CORNER_LOOKUP_TABLE_PATH, size);
     upperEdgeLookupTable = FileManagement::LoadBufferFromFile(UPPER_EDGE_LOOKUP_TABLE_PATH, size);
     lowerEdgeLookupTable = FileManagement::LoadBufferFromFile(LOWER_EDGE_LOOKUP_TABLE_PATH, size);
+    bigUpperEdgeLookupTable = FileManagement::LoadBufferFromFile(BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, size);
 }
 
 int LookupTable::GetCornerStateDistance(RubicsCubeState* state) {

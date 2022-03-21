@@ -47,7 +47,7 @@ int Solver::GetDistanceHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
     if (Solver::heuristicMode == 0) {
         int neihbhourDistanceHeuristic = GetNeighbourHeuristic(from, to);
         int cornerStateDistance = LookupTable::GetCornerStateDistance(from);
-        int upperEdgeStateDistance = LookupTable::GetUpperEdgeStateDistance(from);
+        int upperEdgeStateDistance = LookupTable::GetBigUpperEdgeStateDistance(from);
         int lowerEdgeStateDistance = LookupTable::GetLowerEdgeStateDistance(from);
         
         return std::max(std::max(neihbhourDistanceHeuristic, cornerStateDistance), std::max(upperEdgeStateDistance, lowerEdgeStateDistance));
