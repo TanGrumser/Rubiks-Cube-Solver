@@ -37,6 +37,8 @@ int currentDepthStates = 0;
 char* cornerLookupTable;
 char* upperEdgeLookupTable;
 char* lowerEdgeLookupTable;
+char* bigUpperEdgeLookupTable;
+char* bigLowerEdgeLookupTable;
 
 struct BufferEntry {
     char distance;
@@ -71,6 +73,8 @@ void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeS
 void LookupTable::GenerateCornerLookupTable(string path) { GenerateLookupTable(path, GetCornerLookupIndex, CORNER_STATES_COUNT); }
 void LookupTable::GenerateUpperEdgeLookupTable(string path) { GenerateLookupTable(path, GetUpperEdgeLookupIndex, EDGE_STATES_COUNT); }
 void LookupTable::GenerateLowerEdgeLookupTable(string path) { GenerateLookupTable(path, GetLowerEdgeLookupIndex, EDGE_STATES_COUNT); }
+void LookupTable::GenerateBigUpperEdgeLookupTable(string path) { GenerateLookupTable(path, GetBigUpperEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
+void LookupTable::GenerateBigLowerEdgeLookupTable(string path) { GenerateLookupTable(path, GetBigLowerEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
 
 
 void LookupTable::LoadLookupTables() {
@@ -93,6 +97,16 @@ int LookupTable::GetUpperEdgeStateDistance(RubicsCubeState* state) {
 int LookupTable::GetLowerEdgeStateDistance(RubicsCubeState* state) {
     int index = GetLowerEdgeLookupIndex(state);
     return lowerEdgeLookupTable[index];
+}
+
+int LookupTable::GetBigUpperEdgeStateDistance(RubicsCubeState* state) {
+    int index = GetBigUpperEdgeLookupIndex(state);
+    return bigUpperEdgeLookupTable[index];
+}
+
+int LookupTable::GetBigLowerEdgeStateDistance(RubicsCubeState* state) {
+    int index = GetBigLowerEdgeLookupIndex(state);
+    return bigLowerEdgeLookupTable[index];
 }
 
 void ClenaupFlags(std::vector<char>* buffer) {
@@ -140,6 +154,7 @@ void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalcula
     FileManagement::WriteBufferToFile(path, buffer.data(), maxReachableStates);
     
     std::cout << endl << "Finished writing to file. Table has succesfuly been generated." << endl;
+    delete[] shortestPossibleMoves;
 }
 
 void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses) {
@@ -169,13 +184,13 @@ void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeS
 
     int lookupIndex = IndexCalculator(state);
 
-    
+    /*
     if (lookupIndex >= LookupTable::EDGE_STATES_COUNT) {
         std::cout << state->GetStateString() << endl;
         std::cout << lookupIndex << endl;
         throw std::exception();
     }
-    
+    */
 
     mutex->lock();
     
