@@ -41,18 +41,19 @@ namespace Solver {
     int heuristicMode = 0;
     int solverIndex = 0;
     int threadCount = 1;
+    int searchedStates = 0;
 }
 
 int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to);
 
 int Solver::GetDistanceHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
     if (Solver::heuristicMode == 0) {
-        int neihbhourDistanceHeuristic = GetNeighbourHeuristic(from, to);
+        //int neihbhourDistanceHeuristic = GetNeighbourHeuristic(from, to);
         int cornerStateDistance = LookupTable::GetCornerStateDistance(from);
         int upperEdgeStateDistance = LookupTable::GetBigUpperEdgeStateDistance(from);
         int lowerEdgeStateDistance = LookupTable::GetLowerEdgeStateDistance(from);
         
-        return std::max(std::max(neihbhourDistanceHeuristic, cornerStateDistance), std::max(upperEdgeStateDistance, lowerEdgeStateDistance));
+        return std::max(cornerStateDistance, std::max(upperEdgeStateDistance, lowerEdgeStateDistance));
     } else if (Solver::heuristicMode == 1) {
         int neihbhourDistanceHeuristic = GetNeighbourHeuristic(from, to);
         int cornerStateDistance = LookupTable::GetCornerStateDistance(from);

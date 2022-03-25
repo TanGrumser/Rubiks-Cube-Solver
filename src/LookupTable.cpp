@@ -63,18 +63,19 @@ struct ConcurrencyData {
     }
 };
 
-const int THREAD_COUNT = 6;
-const int MAX_DEPTH = 11;
+namespace LookupTable {
+    int threadCount = 1;
+}
 
 void Logger(int* reachedStates, bool* hasGenerationFinished, char* currentDepth, int maxReachableStates, std::vector<long long int*>* threadProgresses);
 void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses);
 void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress);
 
-void LookupTable::GenerateCornerLookupTable(string path) { GenerateLookupTable(path, GetCornerLookupIndex, CORNER_STATES_COUNT); }
-void LookupTable::GenerateUpperEdgeLookupTable(string path) { GenerateLookupTable(path, GetUpperEdgeLookupIndex, EDGE_STATES_COUNT); }
-void LookupTable::GenerateLowerEdgeLookupTable(string path) { GenerateLookupTable(path, GetLowerEdgeLookupIndex, EDGE_STATES_COUNT); }
-void LookupTable::GenerateBigUpperEdgeLookupTable(string path) { GenerateLookupTable(path, GetBigUpperEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
-void LookupTable::GenerateBigLowerEdgeLookupTable(string path) { GenerateLookupTable(path, GetBigLowerEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
+void LookupTable::GenerateCornerLookupTable() { GenerateLookupTable(LookupTable::CORNER_LOOKUP_TABLE_PATH, GetCornerLookupIndex, CORNER_STATES_COUNT); }
+void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::UPPER_EDGE_LOOKUP_TABLE_PATH, GetUpperEdgeLookupIndex, EDGE_STATES_COUNT); }
+void LookupTable::GenerateLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::LOWER_EDGE_LOOKUP_TABLE_PATH, GetLowerEdgeLookupIndex, EDGE_STATES_COUNT); }
+void LookupTable::GenerateBigUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, GetBigUpperEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
+void LookupTable::GenerateBigLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, GetBigLowerEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
 
 
 void LookupTable::LoadLookupTables() {
@@ -131,13 +132,13 @@ void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalcula
     int* finishedThreads = new int(0);
     char* currentDepth = new char(0);
     bool* hasGenerationFinished = new bool(false);
-    std::vector<long long int*>* threadProgresses = new std::vector<long long int*>(THREAD_COUNT, new long long int(0));
+    std::vector<long long int*>* threadProgresses = new std::vector<long long int*>(LookupTable::threadCount, new long long int(0));
     std::vector<BufferEntry>* shortestPossibleMoves = new std::vector<BufferEntry>(maxReachableStates, BufferEntry(-1, Turn::Empty()));
 
     std::vector<std::thread> threads = {};
     std::mutex* bufferMutex = new std::mutex();
 
-    ConcurrencyData concurrencyData(THREAD_COUNT, reachedStates, finishedThreads);
+    ConcurrencyData concurrencyData(LookupTable::threadCount, reachedStates, finishedThreads);
 
     std::thread(Logger, reachedStates, hasGenerationFinished, currentDepth, maxReachableStates, threadProgresses).detach();
     EvaluatePositionWithIterativeDeepening(IndexCalculator, maxReachableStates, currentDepth, shortestPossibleMoves, reachedStates, bufferMutex, threadProgresses);
@@ -159,17 +160,17 @@ void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalcula
 }
 
 void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses) {
-    std::vector<std::thread> threads(THREAD_COUNT);
+    std::vector<std::thread> threads(LookupTable::threadCount);
     
     while (*reachedStates < maxReachableStates) {
-        for (int i = 0; i < THREAD_COUNT; i++) {
+        for (int i = 0; i < LookupTable::threadCount; i++) {
             *(*threadProgresses)[i] = 0ll;
-            std::vector<Turn> exploredTurns = std::vector<Turn> {Turn(i * 3), Turn(i * 3 + 1), Turn(i * 3 + 2)};
+            std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i, LookupTable::threadCount);
             std::thread thread = std::thread(EvaluatePosition, IndexCalculator, RubicsCubeState::InitialState()->Copy(), 0, Turn::Empty(), exploredTurns, *currentDepth, shortestMovesPossible, reachedStates, mutex, (*threadProgresses)[0]);
             threads[i] = std::move(thread);
         }
 
-        for (int i = 0; i < THREAD_COUNT; i++) {
+        for (int i = 0; i < LookupTable::threadCount; i++) {
             threads[i].join();
         }
 
@@ -239,7 +240,7 @@ void Logger(int* reachedStates, bool* hasGenerationFinished, char* currentDepth,
         std::cout  << "Elapsed Time: " << timeSinceStart.count() / 1000000000 << "s"
             << ", reachedStates: " << (*reachedStates) 
             << ", progress: " << setprecision(4) << fixed << progress << "%"
-            << ", depth: (" << to_string(*currentDepth) << "/" << MAX_DEPTH << ")"
+            << ", depth: " << to_string(*currentDepth)
             << ", states at depth: " << currentDepthStates
             << "\r";
         

@@ -11,6 +11,7 @@
 
 void SolveCube(RubicsCubeState* state);
 void ParseFile(std::string path);
+void GenerateLookupTable(int table);
 
 void CommandLineHandler::Start(int argc, char *argv[]) {
     RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
@@ -18,6 +19,10 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
 
     //Parse all command line arguments.
     for (int i = 1; i < argc; i++) {
+        if (((string) argv[i]).compare("--generateLookupTable") == 0 || ((string) argv[i]).compare("-glt") == 0) {
+            GenerateLookupTable(std::atoi(argv[i + 1]));
+        }
+
         if (((string) argv[i]).compare("-s") == 0) {
             string stateString = (string) argv[i + 1];
             state = RubicsCubeState::ParseStateString(stateString);
@@ -33,6 +38,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
 
         if (((string) argv[i]).compare("-threads") == 0) {
             Solver::threadCount = std::atoi(argv[i + 1]);
+            LookupTable::threadCount = std::atoi(argv[i + 1]);
         }
 
         if (((string) argv[i]).compare("-t") == 0) {
@@ -74,6 +80,18 @@ void SolveCube(RubicsCubeState* state) {
         if (i < solution.size() - 1) {
             std::cout << " ";
         }
+    }
+}
+void GenerateLookupTable(int lookupTableIndex) {
+    switch (lookupTableIndex)
+    {
+        case 0: LookupTable::GenerateCornerLookupTable(); break;
+        case 1: LookupTable::GenerateBigUpperEdgeLookupTable(); break;
+        case 2: LookupTable::GenerateBigLowerEdgeLookupTable(); break;
+        case 4: LookupTable::GenerateUpperEdgeLookupTable(); break;
+        case 5: LookupTable::GenerateLowerEdgeLookupTable(); break;
+            
+        default: throw std::runtime_error("Provided lookup table index is invalid: " + lookupTableIndex);
     }
 }
 

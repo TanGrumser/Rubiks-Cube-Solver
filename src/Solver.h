@@ -7,7 +7,7 @@ namespace Solver {
     extern int heuristicMode;
     extern int solverIndex;
     extern int threadCount;
-    static int searchedStates = 0;
+    extern int searchedStates;
     /**
      * @brief 
      * A parallel recusrive implementation of the IDA* algorithm, which  is parallelized by splitting all possible moves from the first state up onto threads.

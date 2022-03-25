@@ -6,12 +6,22 @@
 using std::string;
 
 namespace LookupTable {
+    extern int threadCount;
     typedef int(*IndexCalculation)(RubicsCubeState*);
-    const string CORNER_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\cornerLookupTable";
-    const string UPPER_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\upperEdgeLookupTable";
-    const string LOWER_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\lowerEdgeLookupTable";
-    const string BIG_UPPER_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\bigUpperEdgeLookupTable";
-    const string BIG_LOWER_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\bigLowerEdgeLookupTable";
+    
+    #if DEBUG
+        const string CORNER_LOOKUP_TABLE_PATH         = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\cornerLookupTable";
+        const string UPPER_EDGE_LOOKUP_TABLE_PATH     = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\upperEdgeLookupTable";
+        const string LOWER_EDGE_LOOKUP_TABLE_PATH     = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\lowerEdgeLookupTable";
+        const string BIG_UPPER_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\bigUpperEdgeLookupTable";
+        const string BIG_LOWER_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\bigLowerEdgeLookupTable";
+    #else
+        const string CORNER_LOOKUP_TABLE_PATH         = "cornerLookupTable";
+        const string UPPER_EDGE_LOOKUP_TABLE_PATH     = "upperEdgeLookupTable";
+        const string LOWER_EDGE_LOOKUP_TABLE_PATH     = "lowerEdgeLookupTable";
+        const string BIG_UPPER_EDGE_LOOKUP_TABLE_PATH = "bigUpperEdgeLookupTable";
+        const string BIG_LOWER_EDGE_LOOKUP_TABLE_PATH = "bigLowerEdgeLookupTable";
+    #endif
 
     const int CORNER_ROTATIONS_COUNT = 3 * 3 * 3 * 3 * 3 * 3 * 3; // 3^7
     const int CORNER_PERMUTATIONS_COUNT = 8 * 7 * 6 * 5 * 4 * 3 * 2 * 1; // 8!
@@ -43,10 +53,10 @@ namespace LookupTable {
     void TestCornerLookupCaluclation();
     void SetStateToCornerStateByIndex(int index, RubicsCubeState* state);
     
-    void GenerateCornerLookupTable(string path);
-    void GenerateUpperEdgeLookupTable(string path);
-    void GenerateLowerEdgeLookupTable(string path);
-    void GenerateBigUpperEdgeLookupTable(string path);
-    void GenerateBigLowerEdgeLookupTable(string path);
+    void GenerateCornerLookupTable();
+    void GenerateUpperEdgeLookupTable();
+    void GenerateLowerEdgeLookupTable();
+    void GenerateBigUpperEdgeLookupTable();
+    void GenerateBigLowerEdgeLookupTable();
 }
 

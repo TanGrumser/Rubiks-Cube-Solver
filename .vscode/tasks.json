@@ -6,6 +6,7 @@
 			"label": "C/C++: g++.exe Aktive Datei kompilieren",
 			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
 			"args": [
+				"-DDEBUG",
 				"-g",
 				"${fileDirname}\\**.cpp",
 				//"-std=c++20",
