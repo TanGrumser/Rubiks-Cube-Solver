@@ -34,7 +34,7 @@ char* FileManagement::LoadBufferFromFile(std::string path, int* bufferSize) {
     char* memblock;
 
     if (!exists_test0(path)) {
-        std::cout << "File couldn't be found." << std::endl;
+        std::cout << "File couldn't be found. (" << path << ")" << std::endl;
         return nullptr;
     }
 

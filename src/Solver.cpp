@@ -39,6 +39,8 @@ const int EDGE_CORNER_ROTATION_OFFSET[12][4] = {
 
 namespace Solver {
     int heuristicMode = 0;
+    int solverIndex = 0;
+    int threadCount = 1;
 }
 
 int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to);
@@ -125,4 +127,22 @@ int** Solver::GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state) {
     }
     
     return state->edgeNeighbourIndicieRotations;
+}
+
+
+vector<Turn> Solver::GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence) {
+    vector<Turn> turnSequence = {};
+    RubicsCubeState* lastState = stateSequence.back();
+    stateSequence.pop_back();
+
+    while (stateSequence.size() != 0) {
+        RubicsCubeState* currentState = stateSequence.back();
+        turnSequence.push_back(currentState->GetTurnTo(lastState));
+        stateSequence.pop_back();
+        delete lastState;
+        lastState = currentState;
+    }    
+
+    std::reverse(turnSequence.begin(), turnSequence.end());
+    return turnSequence;
 }

@@ -43,6 +43,21 @@ void Turn::Test() {
     std::cout << "No errors found." << endl;
 }
 
+std::vector<Turn> Turn::GetSubsetTurns(int index, int parts) {
+    if (Turn::AllTurns.size() % parts != 0) {
+        throw std::runtime_error("Couldn't split turns into " + parts);
+    }
+    
+    int subsetSize = Turn::AllTurns.size() / parts;
+    vector<Turn> turns(subsetSize);
+
+    for (int i = 0; i < subsetSize; i++) {
+        turns[i] = Turn::AllTurns[index * subsetSize + i];
+    }
+
+    return turns;
+}
+
 const std::vector<Turn> Turn::AllTurns = {
     Turn(0),
     Turn(1),

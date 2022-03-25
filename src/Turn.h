@@ -28,6 +28,7 @@ struct Turn {
     
     const static inline int CountAllTurns = 18;
     Turn Inverse() const;
+    static std::vector<Turn> GetSubsetTurns(int index, int parts);
     static const std::vector<Turn> AllTurns;
     static Turn Random();
     

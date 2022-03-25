@@ -26,6 +26,14 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         if (((string) argv[i]).compare("-h") == 0) {
             Solver::heuristicMode = std::atoi(argv[i + 1]);
         }
+        
+        if (((string) argv[i]).compare("-a") == 0) {
+            Solver::solverIndex = std::atoi(argv[i + 1]);
+        }
+
+        if (((string) argv[i]).compare("-threads") == 0) {
+            Solver::threadCount = std::atoi(argv[i + 1]);
+        }
 
         if (((string) argv[i]).compare("-t") == 0) {
             string turnString = (string) argv[i + 1];
@@ -38,16 +46,24 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         }
     }
 
-    //ParseFile(LookupTable::LOWER_EDGE_LOOKUP_TABLE_PATH);
+     
     SolveCube(state);
     //std::cout << LookupTable::GetUpperEdgeStateDistance(state) << endl;
 }
 
 void SolveCube(RubicsCubeState* state) {
     std::cout << "starting solve." << endl;
-    //std::cout << Solver::GetDistanceHeuristic(state, RubicsCubeState::InitialState()) << endl;
+    vector<Turn> solution;
+
     Stopwatch::StartTimer();
-    vector<Turn> solution = Solver::IterativeDeepeningAStar(state);
+    
+    switch (Solver::solverIndex) {
+        case 0: solution = Solver::PR_IterativeDeepeningAStar(state); break;
+        case 1: solution = Solver::SR_IterativeDeepeningAStar(state); break;
+
+        default: throw std::runtime_error("Specified solver index isn't refferencing a solver: " + Solver::solverIndex);
+    }
+
     Stopwatch::StopTimer();
 
     std::cout << "Time required: " << Stopwatch::GetFormattedTimeInSeconds() << endl;
