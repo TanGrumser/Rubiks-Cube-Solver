@@ -68,8 +68,8 @@ namespace LookupTable {
 }
 
 void Logger(int* reachedStates, bool* hasGenerationFinished, char* currentDepth, int maxReachableStates, std::vector<long long int*>* threadProgresses);
-void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses);
-void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress);
+void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses);
+void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress);
 
 void LookupTable::GenerateCornerLookupTable() { GenerateLookupTable(LookupTable::CORNER_LOOKUP_TABLE_PATH, GetCornerLookupIndex, CORNER_STATES_COUNT); }
 void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::UPPER_EDGE_LOOKUP_TABLE_PATH, GetUpperEdgeLookupIndex, EDGE_STATES_COUNT); }
@@ -111,19 +111,19 @@ int LookupTable::GetBigLowerEdgeStateDistance(RubicsCubeState* state) {
     return bigLowerEdgeLookupTable[index];
 }
 
-void ClenaupFlags(std::vector<char>* buffer) {
-    for (int i = 0; i < CORNER_STATES_COUNT; i++) {
+void inline ClenaupReachedFlags(std::vector<char>* buffer) {
+    for (int i = 0; i < buffer->capacity(); i++) {
         if ((*buffer)[i] != UNINITIALIIZED) {
-            (*buffer)[i] &= 0b00111111;
+            (*buffer)[i] &= 0b01111111;
         }
     }
 }
 
-void SetIrrelevantFlag(int index, std::vector<char>* buffer) {
-    (*buffer)[index] =  ((*buffer)[index] & 0b00111111) | 0b10000000;
+void inline SetReachedFlag(int index, std::vector<char>* buffer) {
+    (*buffer)[index] = (*buffer)[index] | 0b10000000;
 }
 
-bool IsIrrelevantFlagSet(int index, std::vector<char>* buffer) {
+bool GetReachedFlag(int index, std::vector<char>* buffer) {
     return (*buffer)[index] != UNINITIALIIZED && ((*buffer)[index] & 0b10000000) != 0;
 }
 
@@ -133,7 +133,7 @@ void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalcula
     char* currentDepth = new char(0);
     bool* hasGenerationFinished = new bool(false);
     std::vector<long long int*>* threadProgresses = new std::vector<long long int*>(LookupTable::threadCount, new long long int(0));
-    std::vector<BufferEntry>* shortestPossibleMoves = new std::vector<BufferEntry>(maxReachableStates, BufferEntry(-1, Turn::Empty()));
+    std::vector<char>* shortestPossibleMoves = new std::vector<char>(maxReachableStates, UNINITIALIIZED);
 
     std::vector<std::thread> threads = {};
     std::mutex* bufferMutex = new std::mutex();
@@ -147,19 +147,14 @@ void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalcula
 
     // Write the content of the lookup table buffer into a file.
     std::cout << endl << "Writing to file." << endl;
-    std::vector<char> buffer(maxReachableStates, UNINITIALIIZED);
-    
-    for (int i = 0; i < maxReachableStates; i++) {
-        buffer[i] = (*shortestPossibleMoves)[i].distance;
-    }
 
-    FileManagement::WriteBufferToFile(path, buffer.data(), maxReachableStates);
+    FileManagement::WriteBufferToFile(path, shortestPossibleMoves->data(), maxReachableStates);
     
     std::cout << endl << "Finished writing to file. Table has succesfuly been generated." << endl;
     delete[] shortestPossibleMoves;
 }
 
-void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses) {
+void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses) {
     std::vector<std::thread> threads(LookupTable::threadCount);
     
     while (*reachedStates < maxReachableStates) {
@@ -174,43 +169,45 @@ void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexC
             threads[i].join();
         }
 
+        // Reset all reached state flags.
+        ClenaupReachedFlags(shortestMovesPossible);
+
         currentDepthStates = 0;
         (*currentDepth)++;
     }
 }
 
-void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<BufferEntry>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress) {
+void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress) {
     if (*reachedStates == (*shortestMovesPossible).size()) {
         return;
     }
 
     int lookupIndex = IndexCalculator(state);
 
-    /*
-    if (lookupIndex >= LookupTable::EDGE_STATES_COUNT) {
-        std::cout << state->GetStateString() << endl;
-        std::cout << lookupIndex << endl;
-        throw std::exception();
+    if (lookupIndex != 0 && GetReachedFlag(lookupIndex, shortestMovesPossible)) {
+        return;
     }
-    */
 
     mutex->lock();
+
+    char& entry = (*shortestMovesPossible)[lookupIndex];
     
-    if ((*shortestMovesPossible)[lookupIndex].distance == UNINITIALIIZED) {
+    if (entry == UNINITIALIIZED) {
 		// This state has never been reached before.
-		(*shortestMovesPossible)[lookupIndex].distance = depth;
-		(*shortestMovesPossible)[lookupIndex].turn = lastTurn;
+		entry = depth;
+		SetReachedFlag(lookupIndex, shortestMovesPossible);
 		(*reachedStates)++;
         currentDepthStates++;
         
-	} else if (depth > (*shortestMovesPossible)[lookupIndex].distance || ! (*shortestMovesPossible)[lookupIndex].turn.Equals(lastTurn)) {
-        // we reached an explored state, with a longer path and don't want to continue, since there are no follwoing states will habve shorter paths.
-        mutex->unlock();
-        //*threadProgress += statesAtDepth[maxDepth - depth];
-		return;
 	}
 
     mutex->unlock();
+
+    if (depth > entry) {
+        // we reached an explored state, with a longer path and don't want to continue, since there are no follwoing states will habve shorter paths.
+        //*threadProgress += statesAtDepth[maxDepth - depth];
+		return;
+	}
 
     if (depth < maxDepth) {
         for (Turn turn : exploredTurns) {

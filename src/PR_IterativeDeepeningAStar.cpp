@@ -1,3 +1,7 @@
+// This is a parrallel recursive Implementation of the iterative deepening A* algorithm for solving the rubiks cube.
+// It is parralelized by spliting the different paths going off from the initial state into different searches that are assigned to individual processes.
+// This method has the restrictio, that it currently requires a number of threads that is a valid divisor of 18 (Number of adjacent nodes for the start state)
+
 #include <iostream>
 #include <vector>
 #include "RubicsCubeState.h"
@@ -7,6 +11,8 @@
 #include <thread>
 
 using std::vector;
+
+
 
 int Search(vector<RubicsCubeState*>* path, int depth, int bound, Turn lastTurn, int* minBound, vector<Turn> nextTurns, bool* isSolutionFound);
 vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);

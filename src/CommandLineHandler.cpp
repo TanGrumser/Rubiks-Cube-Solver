@@ -12,6 +12,7 @@
 void SolveCube(RubicsCubeState* state);
 void ParseFile(std::string path);
 void GenerateLookupTable(int table);
+void PrintHelp();
 
 void CommandLineHandler::Start(int argc, char *argv[]) {
     RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
@@ -21,6 +22,10 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
     for (int i = 1; i < argc; i++) {
         if (((string) argv[i]).compare("--generateLookupTable") == 0 || ((string) argv[i]).compare("-glt") == 0) {
             GenerateLookupTable(std::atoi(argv[i + 1]));
+        }
+
+        if (((string) argv[i]).compare("--help") == 0) {
+            PrintHelp();
         }
 
         if (((string) argv[i]).compare("-s") == 0) {
@@ -37,6 +42,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         }
 
         if (((string) argv[i]).compare("-threads") == 0) {
+            std::cout << "Set threads" << endl;
             Solver::threadCount = std::atoi(argv[i + 1]);
             LookupTable::threadCount = std::atoi(argv[i + 1]);
         }
@@ -118,4 +124,11 @@ void ParseFile(std::string path) {
     }
 
     std::cout << "sum: " << sum << endl;
+}
+
+void PrintHelp() {
+    std::string help = 
+        "Use --turn or -t to pass a sequence of shuffle tunrs (e.g.: -t U L' D2 r l')\n"
+        "";
+    std::cout << help << endl;
 }
