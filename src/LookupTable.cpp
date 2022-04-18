@@ -10,12 +10,16 @@
 #include "RubicsCubeState.h"
 #include "LookupTable.h"
 #include <bitset>
+#include <atomic>
 
 using std::string;
 using LookupTable::CORNER_STATES_COUNT;
 using LookupTable::EDGE_STATES_COUNT;
 
 const char UNINITIALIIZED = -1;
+int reachedDuplicates = 0;
+std::atomic_int a_reachedStates;
+std::mutex consoleMutex;
 
 const long long int statesAtDepth[12] = {
     1ll, //18^0
@@ -123,7 +127,7 @@ void inline SetReachedFlag(int index, std::vector<char>* buffer) {
     (*buffer)[index] = (*buffer)[index] | 0b10000000;
 }
 
-bool GetReachedFlag(int index, std::vector<char>* buffer) {
+bool inline GetReachedFlag(int index, std::vector<char>* buffer) {
     return (*buffer)[index] != UNINITIALIIZED && ((*buffer)[index] & 0b10000000) != 0;
 }
 
@@ -156,8 +160,9 @@ void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalcula
 
 void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses) {
     std::vector<std::thread> threads(LookupTable::threadCount);
-    
-    while (*reachedStates < maxReachableStates) {
+    a_reachedStates = 0;
+
+    while (a_reachedStates < maxReachableStates) {
         for (int i = 0; i < LookupTable::threadCount; i++) {
             *(*threadProgresses)[i] = 0ll;
             std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i, LookupTable::threadCount);
@@ -168,6 +173,10 @@ void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexC
         for (int i = 0; i < LookupTable::threadCount; i++) {
             threads[i].join();
         }
+        
+        consoleMutex.lock();
+        std::cout << "\33[2K" << "Reached states at depth " << ((int)*currentDepth) << " are " << currentDepthStates << endl;
+        consoleMutex.unlock();
 
         // Reset all reached state flags.
         ClenaupReachedFlags(shortestMovesPossible);
@@ -178,36 +187,45 @@ void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexC
 }
 
 void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress) {
-    if (*reachedStates == (*shortestMovesPossible).size()) {
+    if (a_reachedStates == (*shortestMovesPossible).size()) {
         return;
     }
 
     int lookupIndex = IndexCalculator(state);
-
+    
+    
     if (lookupIndex != 0 && GetReachedFlag(lookupIndex, shortestMovesPossible)) {
+        reachedDuplicates++;
+        //mutex->unlock();
         return;
     }
 
-    mutex->lock();
-
     char& entry = (*shortestMovesPossible)[lookupIndex];
+    
+    mutex->lock();
     
     if (entry == UNINITIALIIZED) {
 		// This state has never been reached before.
 		entry = depth;
-		SetReachedFlag(lookupIndex, shortestMovesPossible);
-		(*reachedStates)++;
-        currentDepthStates++;
-        
+		a_reachedStates++;
+        currentDepthStates++;        
 	}
 
     mutex->unlock();
+      
+    char entryDepth = entry & 0b01111111;
 
-    if (depth > entry) {
+    if (depth > entryDepth) {
         // we reached an explored state, with a longer path and don't want to continue, since there are no follwoing states will habve shorter paths.
         //*threadProgress += statesAtDepth[maxDepth - depth];
+        //mutex->unlock();
 		return;
 	}
+    
+    
+    SetReachedFlag(lookupIndex, shortestMovesPossible);
+
+    
 
     if (depth < maxDepth) {
         for (Turn turn : exploredTurns) {
@@ -232,15 +250,20 @@ void Logger(int* reachedStates, bool* hasGenerationFinished, char* currentDepth,
     
     while (!(*hasGenerationFinished)) {
         auto timeSinceStart = (std::chrono::system_clock::now() - startTime);
-        double progress = ((double)(*reachedStates) / (double)maxReachableStates * 100);
+        double progress = ((double)(a_reachedStates) / (double)maxReachableStates * 100);
+        
+        consoleMutex.lock();
         
         std::cout  << "Elapsed Time: " << timeSinceStart.count() / 1000000000 << "s"
-            << ", reachedStates: " << (*reachedStates) 
+            << ", reachedStates: " << a_reachedStates 
             << ", progress: " << setprecision(4) << fixed << progress << "%"
             << ", depth: " << to_string(*currentDepth)
             << ", states at depth: " << currentDepthStates
+            << ", duplicates: " << reachedDuplicates
             << "\r";
         
+        consoleMutex.unlock();
+
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 

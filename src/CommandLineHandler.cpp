@@ -57,9 +57,10 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
             }
         }
     }
-
-     
-    SolveCube(state);
+    
+    LookupTable::GenerateCornerLookupTable();
+    //ParseFile(LookupTable::CORNER_LOOKUP_TABLE_PATH);
+    //SolveCube(state);
     //std::cout << LookupTable::GetUpperEdgeStateDistance(state) << endl;
 }
 
