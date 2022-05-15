@@ -3,6 +3,7 @@
 #include <string>
 #include "RubicsCubePiece.h"
 #include "Turn.h"
+#include "StateIndex.h"
 
 using namespace std;
 
@@ -27,4 +28,5 @@ class RubicsCubeState {
         bool Equals(RubicsCubeState* other);
         Turn GetTurnTo(RubicsCubeState* other);
         bool ContainsNegativeNumber();
+        StateIndex GetLookupIndex();
 };

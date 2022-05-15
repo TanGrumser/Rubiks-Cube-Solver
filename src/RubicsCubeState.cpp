@@ -2,6 +2,7 @@
 #include "StringUtils.h"
 #include "Turn.h"
 #include <iostream>
+#include "LookupTable.h"
 
 RubicsCubeState::RubicsCubeState(RubicsCubePiece* edgePieces, RubicsCubePiece* cornerPieces) {
     this->edgePieces = edgePieces;
@@ -186,5 +187,13 @@ bool RubicsCubeState::ContainsNegativeNumber() {
     }
 
     return false;
+}
 
+StateIndex RubicsCubeState::GetLookupIndex() {
+    StateIndex index;
+
+    index.cornerIndex = LookupTable::GetCornerLookupIndex(this);
+    index.edgeIndex = LookupTable::GetFullEdgeLookupIndex(this);
+
+    return index;
 }

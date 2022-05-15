@@ -10,9 +10,11 @@
 #include <thread>
 #include <mutex>
 #include "FileManagement.h"
+#include "LookupTable.h"
 #include "CommandLineHandler.h"
 
 int main(int argc, char *argv[]) {
+
     CommandLineHandler::Start(argc, argv);
     
     //LookupTable::GenerateBigUpperEdgeLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH);

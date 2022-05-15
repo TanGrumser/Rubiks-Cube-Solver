@@ -1,0 +1,93 @@
+Fragen fürs Meeting
+
+- std::unordered_map ist eine hashtable, aber die Frage ist ob die Optimierung für beliebeiges hinzufügen von Elementen nicht die access zeiten zu weit verschlechtert.
+    Was sind alternativen? Soll man mit der Optimimierung bis zum Ende warten?
+
+- Mulitpiple reched state problem.
+    Generierung der Lookup Table: 
+        Es werden states aus mehreren Richtungen erreicht. Das kann verhindert werden, indem man bei jeder Iterationstiefe zu jeden State eine flag
+        speichert, die sagt ob der State schon erreicht wurde. Daraus ergibt sich die Frage:
+            Kann ein state als abgehackt gelten, obwohl er mit einer nicht optimalen Tiefe erreicht wurde? 
+            Und können damit alle folgenden States nicht korrekt abgearbeitet weren?
+        -> aktuelle Vermutung: Nein, da ein Weg zu diesem State der nicht optimal ist früher schon durch die Tiefenabfrage abgefangen werden würde.
+        Beweis fehlt.
+
+    Lösen eines Zustands:
+        Die Detektierung von mehrfach erreichbaren Zuständen beim lösen stellt ein größeres Problem beim lösen als beim generieren der Lookup Tables dar,
+        da sowohl der Raum aller Zustände berücksichtigt werden muss und die Tiefe für Zustände nicht gespeichert ist. 
+        Ein naiver Ansatz um das Problem zu lösen wäre für alle erreichten Zustände die Tiefe zu setzen und beim erreichen abzufragen ob die gepseicherte Tiefe echt
+        größer ist als die aktuelle Tiefe. Gleichgroß bedeutete, dass wir nur erneut die gleich Arbeit verrichten würden und damit wäre nichts gewonnen. 
+        Wenn die aktuelle Tiefe größer ist als die gespeicherte, hat man den Zustand auf einen nicht optimalen Weg erreicht und und der Ast muss auch nicht weiter verfolgt
+        werden. Man beachte, dass es nicht reicht nur eine Flag zu setzen, ob der Zustand schon erreicht wurde, da im Gegensatz zu der Erstellung der Lookup Tables nicht 
+        ausgeschlossen werden kann, dass der Zustand unoptimal erreicht worden sein könnte. Damit würden die folgende Zustände nicht mehr durch den optimal Hinweg 
+        abgearbeitet werden und es kann keine opitmale Lösung mehr garantiert werden.
+        Das Problem ist, dass selbst mit IDA* zu viele Zustände erreicht werden würden, um für jeden die Tiefe zu speichern. Deshalb ist ein neuer Ansatz, dass man 
+        sowie für die pruning heuristiken offline eine Tabelle mit Zuständen benutzt werden kann in der nur die kritischen Zustände gespeichert werden, wobei kritisch bedeutet,
+        dass nur Zustände die mit gleicher Pfadlänge durch zwei Wege erreicht werden können gespeichert werden müssen. 
+        Beim lösen wird nun einfach in jedem Schritt gefragt, ob sich der Zustand in der Tabelle befindet und falls ja wird die aktuelle und gespeicherte Tiefe verglichen
+        und nur bei echt kleineren Tiefe oder einem noch nicht gesetzem Eintrag die Suche fortgeführt. 
+
+        Wichig: 
+        Beim generieren der Tabelle ist zu beachteten, dass falls Zustand X optimal nur über die Pfade P und Q erreicht werden kann, P und Q aber schon vorher ein Zustand Y teilen,
+        X nicht in die Tabelle mitaufgenommen werden muss, da bei der Suche der Zustand Y zuerst erreicht werden muss, da X nicht optimal ohne Y erreicht werden kann, wenn alle
+        optimalen Pfade über Y führen. Da falls Y erreicht wurde Q (oBdA P erreicht zuerst) nicht mehr weiter sucht und X nicht mehr optimal erreichen wird. Und damit X kein
+        kritischer State mehr ist.
+
+
+- Vergleich verschiedener paralleler Implementierungen von IDA*
+    IDA* kann parallel implementiert werden. Entweder durch ein Jobpool (Mehtode 1) auf den mehrere Arbeiter threads gleichzeitig zugreifen oder indem man den 
+    Baum in Teilbäume aufteilt (Methode 2) und diese auf mehrer Threads verteilt. Der wichtigste Unterschied bei den beiden Ansätzen ist, dass bei Mehtode 1
+    die Suche wie bei einer sequentziellen Implemntierung verhält, also Pfade vom Anfangszustand ausgehend erst komplett abgesucht werden bevor andere Pfade abgearbeitet werden.
+    Das hat den Nachteil, dass die Suche erst komplett in die Tiefe geht und damit viele Zustände die erreicht werden nicht den optimalen Pfad haben und die Optimierungsstrategien
+    dadurch abgeschwächt werden könnten (pure Hypothese, impirischer Nachweis erforderlich. Konkretere theorethische Überlegungen sollten beim Nachweis folgen.)
+    Mehtode 2 hat ein klein bisschen mehr BFS Chrachteristiken, da mehrere Pfade auf einmal von Startknoten aus abgearbeitet werden (und diese zwar auch erst in voller 
+    Tiefe abgearbeitet werden), aber dadurch eher Zustände durch den optimalen Pfad erreicht werden und damit für andere Threads nicht mehr abzuarbeiten sind.
+
+
+- State index abbildung
+    Es gibt 8! * 3^7 Zustände für die Ecken, (12! / 2!) * 2^11 Zustände für die Kanten. Und 4.3 * 10^19 Zustände insgesamt.
+    log2 (4.3 * 10^19) ~ 65 > 64 -> der Index kann nicht in einer 8 byte Variable gespeichert werden.
+    Was ist eine elegante Lösung für das Problem? 
+    Im Moment wurde ein struct angelegt das edgeIndex als auch cornerIndex einzeln jeweils als uint64 speichert und eine custom hashFunktion bildet.
+
+- Symetien und Anwenden eines relativen State index
+    Ein weiteres Problem beim Einsatz von einer Tabelle die mehrfach erreichbare Zustände speichert, ist dass für die Indiezierung der Zustände immer ein Nullzustand definiert
+    werden muss. Das ist ein Zustand der den Index 0 besitzt und zu dem alle anderen Zustände relativ aus Indiziert werden. Die akutelle Implementierung nimmt den 
+    gelösten Zustand als Nullzustand. Aber bei einer Suche von einem ungelösten Zustand sind somit alle Indizierungen verschoben und die Tabelle damit nutzlos.
+    Es müssen mathematische/gruppentheorethische Werkzeuge gebaut werden, um die Indizierung von jeden Zustand aus möglich zu machen, sodass gleiche Drehungen 
+    gleiche Änderungen des Index hervorrufen. Der gelöste Zustand hat Index 0. Dreht man die Linke Seite um 90° (L) so erhält man einen neuen Index X. 
+    Wir fordern, dass die relative Indizierung für einen beliebigen Nullzustand auch nach L den gleichen Index X liefert. Allgemeiner formuliert soll also
+    für jede Zugfolge p (Element aller Zugfolgen) und jeden Zustand z (Element aller Zustände) : 
+        wenn z der Nullzustand ist und p darauf angewendet wird soll der berechnete Index immer gleich dem Index des Zustands sein, der erreicht wird wenn
+        man p auf den gelösten Zustand anwendet. Wobei in beiden Fällen jweiels z bzw. der gelöste Zustand als der Nullzustand gewählt ist.
+
+    
+
+- lexicographic rank of a state
+    All possible states of the rubics cube or any subgroup (like only the corners of the cube) can be ordered by their so called lexicographic rank.
+    This rank is what is used to calculate the index for the lookup tables.
+    All math involved is described in [2].
+
+TODOs
+
+    Auslagern der Index berechnug in eigens Skript, da sowohl Lookup Tables als auch Duplicate state Tables darauf zugreifen.
+    Baue einen Test der die Korrektheit der egdeIndex berechnung prüft.
+        Falls möglich generiere zufällige Indizes im Zustandsraum des edgeIndex, berechne Zustand und dann wieder Index und prüfe Gleichheit.
+        Alternativ benute BFS und prüfe, dass kein Zustand bis zu einer Tiefe sich wiederholt (falls nicht gleicher Zustand)
+
+    Implementiere Lookup Tables, die auch in dem Artikel [1] benutzt werden und vergleiche Performance
+
+
+
+[1] https://medium.com/@benjamin.botto/implementing-an-optimal-rubiks-cube-solver-using-korf-s-algorithm-bf750b332cf9
+[2] https://medium.com/@benjamin.botto/sequentially-indexing-permutations-a-linear-algorithm-for-computing-lexicographic-rank-a22220ffd6e3
+
+
+/globalData -> 7,2 TB frei
+
+
+https://github.com/Tessil/robin-map -> Läuft stabiler
+https://github.com/martinus/robin-hood-hashing -> ist instabil bei schlechten hashfunktionen
+
+valgrind -> callgrind
+kcachegrind 
