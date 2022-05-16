@@ -58,6 +58,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         }
     }
     
+    //std::cout << LookupTable::GetFullEdgeLookupIndex(state) << endl;
     LookupTable::GenerateCornerLookupTable();
     //ParseFile(LookupTable::CORNER_LOOKUP_TABLE_PATH);
     //SolveCube(state);

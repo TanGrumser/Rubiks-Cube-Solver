@@ -43,16 +43,7 @@ char* upperEdgeLookupTable;
 char* lowerEdgeLookupTable;
 char* bigUpperEdgeLookupTable;
 char* bigLowerEdgeLookupTable;
-
-struct BufferEntry {
-    char distance;
-    Turn turn;
-
-    BufferEntry(char distance, Turn turn) {
-        this->distance = distance;
-        this->turn = turn;
-    }
-};
+char* fullEdgeLookupTable;
 
 // This is just a helper Object to bundle some data, that need to get distributed between various threads.
 struct ConcurrencyData {
@@ -80,6 +71,7 @@ void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTab
 void LookupTable::GenerateLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::LOWER_EDGE_LOOKUP_TABLE_PATH, GetLowerEdgeLookupIndex, EDGE_STATES_COUNT); }
 void LookupTable::GenerateBigUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, GetBigUpperEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
 void LookupTable::GenerateBigLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, GetBigLowerEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
+void LookupTable::GenerateFullEdgeLookupTable() { GenerateLookupTable(LookupTable::FULL_EDGE_LOOKUP_TABLE_PATH, GetFullEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
 
 
 void LookupTable::LoadLookupTables() {
@@ -113,6 +105,11 @@ int LookupTable::GetBigUpperEdgeStateDistance(RubicsCubeState* state) {
 int LookupTable::GetBigLowerEdgeStateDistance(RubicsCubeState* state) {
     int index = GetBigLowerEdgeLookupIndex(state);
     return bigLowerEdgeLookupTable[index];
+}
+
+int LookupTable::GetFullEdgeStateDistance(RubicsCubeState* state) {
+    int index = GetFullEdgeLookupIndex(state);
+    return fullEdgeLookupTable[index];
 }
 
 void inline ClenaupReachedFlags(std::vector<char>* buffer) {
@@ -191,7 +188,7 @@ void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeS
         return;
     }
 
-    int lookupIndex = IndexCalculator(state);
+    uint64 lookupIndex = IndexCalculator(state);
     
     
     if (lookupIndex != 0 && GetReachedFlag(lookupIndex, shortestMovesPossible)) {

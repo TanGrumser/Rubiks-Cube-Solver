@@ -39,19 +39,19 @@ const int powersOfTwo[] = {
     2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2, 
 };
 
-int LookupTable::GetUpperEdgeLookupIndex(RubicsCubeState* state) {
+uint64 LookupTable::GetUpperEdgeLookupIndex(RubicsCubeState* state) {
     return GetEdgeStateIndex(state, UPPER_EDGE_INDICIES);
 } 
 
-int LookupTable::GetLowerEdgeLookupIndex(RubicsCubeState* state) {
+uint64 LookupTable::GetLowerEdgeLookupIndex(RubicsCubeState* state) {
     return GetEdgeStateIndex(state, LOWER_EDGE_INDICIES);
 } 
 
-int LookupTable::GetBigUpperEdgeLookupIndex(RubicsCubeState* state) {
+uint64 LookupTable::GetBigUpperEdgeLookupIndex(RubicsCubeState* state) {
     return GetBigEdgeStateIndex(state, BIG_UPPER_EDGE_INDICIES);
 } 
 
-int LookupTable::GetBigLowerEdgeLookupIndex(RubicsCubeState* state) {
+uint64 LookupTable::GetBigLowerEdgeLookupIndex(RubicsCubeState* state) {
     return GetBigEdgeStateIndex(state, BIG_LOWER_EDGE_INDICIES);
 } 
 

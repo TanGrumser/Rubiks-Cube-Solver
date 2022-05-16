@@ -26,7 +26,7 @@ struct Turn {
 
     static Turn Empty() { return Turn(-1); }
     
-    const static inline int CountAllTurns = 18;
+    const static int CountAllTurns = 18;
     Turn Inverse() const;
     static std::vector<Turn> GetSubsetTurns(int index, int parts);
     static const std::vector<Turn> AllTurns;

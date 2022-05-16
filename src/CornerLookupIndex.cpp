@@ -44,7 +44,7 @@ void LookupTable::TestCornerLookupCaluclation() {
     std::cout << "Finsihed testing. No errors were found." << endl;
 }
 
-int LookupTable::GetCornerLookupIndex(RubicsCubeState* state) {
+uint64 LookupTable::GetCornerLookupIndex(RubicsCubeState* state) {
     return GetPermutationIndex(state) * CORNER_ROTATIONS_COUNT + GetRotationIndex(state);
 }
 

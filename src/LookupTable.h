@@ -9,7 +9,7 @@ using std::string;
 
 namespace LookupTable {
     extern int threadCount;
-    typedef int(*IndexCalculation)(RubicsCubeState*);
+    typedef uint64(*IndexCalculation)(RubicsCubeState*);
 
     
     #if DEBUG
@@ -24,6 +24,7 @@ namespace LookupTable {
         const string LOWER_EDGE_LOOKUP_TABLE_PATH     = "lowerEdgeLookupTable";
         const string BIG_UPPER_EDGE_LOOKUP_TABLE_PATH = "bigUpperEdgeLookupTable";
         const string BIG_LOWER_EDGE_LOOKUP_TABLE_PATH = "bigLowerEdgeLookupTable";
+        const string FULL_EDGE_LOOKUP_TABLE_PATH = "fullEdgeLookupTable";
     #endif
 
     const int CORNER_ROTATIONS_COUNT = 3 * 3 * 3 * 3 * 3 * 3 * 3; // 3^7
@@ -44,7 +45,7 @@ namespace LookupTable {
 
     const unsigned long long ALL_STATES_COUNT = FULL_EDGE_STATES_COUNT * CORNER_STATES_COUNT;
 
-    void GenerateLookupTable(string path, IndexCalculation IndexCalculator, int maxReachableStates);
+    void GenerateLookupTable(string path, IndexCalculation indexCalculator, int maxReachableStates);
     void LoadLookupTables();
     
     int GetCornerStateDistance(RubicsCubeState* state);
@@ -52,13 +53,14 @@ namespace LookupTable {
     int GetLowerEdgeStateDistance(RubicsCubeState* state);
     int GetBigUpperEdgeStateDistance(RubicsCubeState* state);
     int GetBigLowerEdgeStateDistance(RubicsCubeState* state);
+    int GetFullEdgeStateDistance(RubicsCubeState* state);
     
     // TODO comment what these do
-    int GetCornerLookupIndex(RubicsCubeState* state);
-    int GetUpperEdgeLookupIndex(RubicsCubeState* state);
-    int GetLowerEdgeLookupIndex(RubicsCubeState* state);
-    int GetBigUpperEdgeLookupIndex(RubicsCubeState* state);
-    int GetBigLowerEdgeLookupIndex(RubicsCubeState* state);
+    uint64 GetCornerLookupIndex(RubicsCubeState* state);
+    uint64 GetUpperEdgeLookupIndex(RubicsCubeState* state);
+    uint64 GetLowerEdgeLookupIndex(RubicsCubeState* state);
+    uint64 GetBigUpperEdgeLookupIndex(RubicsCubeState* state);
+    uint64 GetBigLowerEdgeLookupIndex(RubicsCubeState* state);
     uint64 GetFullEdgeLookupIndex(RubicsCubeState* state);
     
     void TestCornerLookupCaluclation();
@@ -69,5 +71,6 @@ namespace LookupTable {
     void GenerateLowerEdgeLookupTable();
     void GenerateBigUpperEdgeLookupTable();
     void GenerateBigLowerEdgeLookupTable();
+    void GenerateFullEdgeLookupTable();
 }
 
