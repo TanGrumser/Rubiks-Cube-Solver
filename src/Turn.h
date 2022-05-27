@@ -86,6 +86,7 @@ string ToString() {
         }
 
         switch (angle) {
+            case 0: result += " "; break;
             case 1: result += "2"; break;
             case 2: result += "'"; break;
         }

@@ -71,7 +71,7 @@ void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTab
 void LookupTable::GenerateLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::LOWER_EDGE_LOOKUP_TABLE_PATH, GetLowerEdgeLookupIndex, EDGE_STATES_COUNT); }
 void LookupTable::GenerateBigUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, GetBigUpperEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
 void LookupTable::GenerateBigLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, GetBigLowerEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
-void LookupTable::GenerateFullEdgeLookupTable() { GenerateLookupTable(LookupTable::FULL_EDGE_LOOKUP_TABLE_PATH, GetFullEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
+void LookupTable::GenerateFullEdgeLookupTable() { GenerateLookupTable(LookupTable::FULL_EDGE_LOOKUP_TABLE_PATH, GetFullEdgeLookupIndex, FULL_EDGE_STATES_COUNT); }
 
 
 void LookupTable::LoadLookupTables() {
@@ -128,7 +128,7 @@ bool inline GetReachedFlag(int index, std::vector<char>* buffer) {
     return (*buffer)[index] != UNINITIALIIZED && ((*buffer)[index] & 0b10000000) != 0;
 }
 
-void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalculator, int maxReachableStates) {
+void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalculator, uint64 maxReachableStates) {
     int* reachedStates = new int(0);
     int* finishedThreads = new int(0);
     char* currentDepth = new char(0);

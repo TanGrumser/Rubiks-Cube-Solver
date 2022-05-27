@@ -33,6 +33,20 @@ Fragen fürs Meeting
         optimalen Pfade über Y führen. Da falls Y erreicht wurde Q (oBdA P erreicht zuerst) nicht mehr weiter sucht und X nicht mehr optimal erreichen wird. Und damit X kein
         kritischer State mehr ist.
 
+Fortsetzung muliple reached states
+    Die Generierung der multiple rechead states tabelle kann auf mehrere arten erfolgen. Die erste prüft nur ob ein Zustand mit gleich langen Pfaden erreicht werden kann, indem sie
+    eine hash Tabelle der nur bei der aktuellen maximalen Tiefe Zustände hält und prüft, ob ein Eintrag schon angelegt wurde wenn sie einen Zustand erreicht. Falls ja ist dieser Zustand offenbar schon von einem
+    anderen Pfad erreicht worden und kann damit mehrfach erreicht werden und sollte in die finale multiple reachable states tabelle mitaufgenommen werden. 
+    Diese Art der Tabellengenerierung hat den Vorteil, dass die reached states hash tabelle nur so groß ist wie die Menge der erreichbaren Zustände einer festen Pfadlänge 
+    (wobei triviale Pfade ausgschlossen sind z.b LLLL oder LR wenn RL schon abgearbeitet ist). Der Nachteil ist jedoch, dass Zustände die durch Pfade unterschiedliche Länge erreicht werden können
+    nicht mehr gefunden werden, da wenn Zustand X durch ein Pfad der Länge l erreicht wird, dieser bei der Suche mit Länge l + m nicht mehr in der reached states hash table liegt und somit nicht als
+    doppelt erreicht erkannt wird. Wie schwerwiegend ist dieser Nachteil? Kombiniert mit den Lookuptabellen für die Mindestdistanz ist zu vermuten, dass kein großer Nachteil eintritt, da ein Zustand der doppelt
+    erreichbar ist über zwei Pfade mit unterschiedlicher Länge nicht abgearbeitet wird, da dieser in dem Pfad mit höheren Länge mit einer schlechteren Heuristik abschätzung aus der Suche sowieso ausgeschlossen wird.
+    Das ist eine starke vereinfachung und sollte noch praktisch nachgewiesen werden, in einer Suche vor allem am Anfang viele Zustände trotzdem doppelt abgearbeitet werden müssen, weil der Schwellwert für die Heuristik 
+    noch sehr weit entfernt sein kann.
+    Die alternative Methode für die Generierung soll eine reached states lookup table behalten die Zustände beliebiger Tiefe speichert. Das bringt den Nachteil, dass die Generierung einen größeren Speicherplatz erfordert
+    aber jedoch auch Zustände finet die durch Pfade unterschiedlicher Länge erreichbar sind.
+
 
 - Vergleich verschiedener paralleler Implementierungen von IDA*
     IDA* kann parallel implementiert werden. Entweder durch ein Jobpool (Mehtode 1) auf den mehrere Arbeiter threads gleichzeitig zugreifen oder indem man den 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #define uint64 unsigned long long
 
 struct StateIndex {
@@ -8,5 +10,9 @@ struct StateIndex {
 
     bool operator==(const StateIndex &other) const { 
         return cornerIndex == other.cornerIndex && edgeIndex == other.edgeIndex;
+    }
+
+    string toString() {
+        return std::to_string(cornerIndex) + " " + std::to_string(edgeIndex);
     }
 };

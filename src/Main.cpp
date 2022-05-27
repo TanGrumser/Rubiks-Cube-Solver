@@ -12,11 +12,13 @@
 #include "FileManagement.h"
 #include "LookupTable.h"
 #include "CommandLineHandler.h"
+#include "DuplicateState.h"
+#include "utils.h"
 
 int main(int argc, char *argv[]) {
-
-    CommandLineHandler::Start(argc, argv);
+    DuplicateState::GenerateLookupTable();
     
+    //CommandLineHandler::Start(argc, argv);
     //LookupTable::GenerateBigUpperEdgeLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH);
     //LookupTable::GenerateBigLowerEdgeLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH);    
 

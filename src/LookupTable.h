@@ -18,6 +18,7 @@ namespace LookupTable {
         const string LOWER_EDGE_LOOKUP_TABLE_PATH     = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\lowerEdgeLookupTable";
         const string BIG_UPPER_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\bigUpperEdgeLookupTable";
         const string BIG_LOWER_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\bigLowerEdgeLookupTable";
+        const string FULL_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\fullEdgeLookupTable";
     #else
         const string CORNER_LOOKUP_TABLE_PATH         = "cornerLookupTable";
         const string UPPER_EDGE_LOOKUP_TABLE_PATH     = "upperEdgeLookupTable";
@@ -45,7 +46,7 @@ namespace LookupTable {
 
     const unsigned long long ALL_STATES_COUNT = FULL_EDGE_STATES_COUNT * CORNER_STATES_COUNT;
 
-    void GenerateLookupTable(string path, IndexCalculation indexCalculator, int maxReachableStates);
+    void GenerateLookupTable(string path, IndexCalculation indexCalculator, uint64 maxReachableStates);
     void LoadLookupTables();
     
     int GetCornerStateDistance(RubicsCubeState* state);
