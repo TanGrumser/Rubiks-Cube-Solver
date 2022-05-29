@@ -10,7 +10,6 @@ using std::string;
 namespace LookupTable {
     extern int threadCount;
     typedef uint64(*IndexCalculation)(RubicsCubeState*);
-
     
     #if DEBUG
         const string CORNER_LOOKUP_TABLE_PATH         = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\cornerLookupTable";

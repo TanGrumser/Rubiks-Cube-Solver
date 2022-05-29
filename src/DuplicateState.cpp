@@ -12,19 +12,82 @@
 #include <exception>
 #include <tuple>
 #include "utils.h"
+#include "FileManagement.h"
 
 #define uint64 unsigned long long
 
 tsl::robin_map<StateIndex, tuple<string, char>, StateIndexHasher> reachedStates;
 tsl::robin_map<StateIndex, bool, StateIndexHasher> duplicateReachableStates;
+tsl::robin_map<StateIndex, bool, StateIndexHasher> duplicateReachableStates2;
 int foundDuplicates = 0;
 
 void EvaluateState(RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
 uint64 CalculateStateIndex(RubicsCubeState* state);
 
+char* cornerIndiciesMapping;
+char* cornerRotationOffset;
+char* edgeIndiciesMapping;
+char* edgeRotationOffset;
+
+void DuplicateState::SetBaseState(RubicsCubeState* state) {
+    cornerIndiciesMapping = (char*) malloc(sizeof(char) * 12);
+    cornerRotationOffset  = (char*) malloc(sizeof(char) * 12);
+    edgeIndiciesMapping   = (char*) malloc(sizeof(char) * 8);
+    edgeRotationOffset    = (char*) malloc(sizeof(char) * 8);
+
+    for (int i = 0; i < 8; i++) {
+        cornerIndiciesMapping[i] = state->cornerPieces[i].index;
+        cornerRotationOffset[i]  = state->cornerPieces[i].rotation;
+    }
+
+    for (int i = 0; i < 12; i++) {
+        edgeIndiciesMapping[i] = state->edgePieces[i].index;
+        edgeRotationOffset[i]  = state->edgePieces[i].rotation;
+    }
+}
+
+bool CheckAndSetDuplicateReachableState(RubicsCubeState* state) {
+    StateIndex shiftedStateIndex;
+
+    if (duplicateReachableStates.find(shiftedStateIndex) != duplicateReachableStates.end()) {
+        if (duplicateReachableStates[shiftedStateIndex]) {
+            return true;
+        } else { 
+            duplicateReachableStates[shiftedStateIndex] = true;
+            return false;
+        }
+    }
+
+    return false;
+}
+
+void DuplicateState::LoadDuplicateStateIndex() {
+    int* bufferSize = new int();
+    char* buffer = FileManagement::LoadBufferFromFile(DUPLICATE_STATE_PATH, bufferSize);
+
+    for (int entry = 0; entry < *bufferSize / 16; entry++) {
+        StateIndex stateIndex;
+        stateIndex.cornerIndex = 0;
+        stateIndex.edgeIndex   = 0;
+
+        for (int i = 0; i < 8; i++) {
+            stateIndex.edgeIndex |= buffer[entry + i] << (8 * i);
+            stateIndex.cornerIndex |= buffer[entry + i + 8] << (8 * i);
+        }
+
+        duplicateReachableStates2[stateIndex] = false;
+    }
+
+    std::cout << "Loaded duplicate states:" << endl;
+
+    for (auto it = duplicateReachableStates2.begin(); it != duplicateReachableStates2.end(); ++it) {
+        std::cout << it.key().toString() << endl;
+    }
+}
+
 void DuplicateState::GenerateLookupTable() {
     RubicsCubeState* initialState = RubicsCubeState::InitialState()->Copy();
-    const int MAX_DEPTH = 7;
+    const int MAX_DEPTH = 4;
     vector<Turn> lastTurns;
 
     for (int depth = 0; depth <= MAX_DEPTH; depth++) {
@@ -40,11 +103,23 @@ void DuplicateState::GenerateLookupTable() {
         }
         
 
-        for(auto it = reachedStates.begin(); it != reachedStates.end(); ++it) {
-            it.value() = {std::get<0>(it.value()), std::get<1>(it.value()) & 0b01111111};
-        }
         */
     }
+
+    std::cout << "Completed duplicate state generation. Found state indicies:" << endl;
+
+    for(auto it = duplicateReachableStates.begin(); it != duplicateReachableStates.end(); ++it) {
+        std::cout << it.key().toString() << endl;
+    }
+
+    vector<StateIndex> duplicteStatesBuffer;
+
+
+    for(auto it = duplicateReachableStates.begin(); it != duplicateReachableStates.end(); ++it) {
+        duplicteStatesBuffer.push_back(it.key());
+    }
+
+    FileManagement::WriteBufferToFile(DUPLICATE_STATE_PATH, (char*)duplicteStatesBuffer.data(), duplicteStatesBuffer.size() * sizeof(StateIndex));
 
 }
 
@@ -55,7 +130,6 @@ void EvaluateState(RubicsCubeState* state, char depth, Turn lastTurn, std::vecto
     for (int i = 0; i < lastTurns.size(); i++)  {
         turnString += lastTurns[i].ToString() + " ";
     }
-    /*
     
     // we found a state, that is reachable from more than one path.
     if (duplicateReachableStates.find(stateIndex) != duplicateReachableStates.end()) {
@@ -68,6 +142,7 @@ void EvaluateState(RubicsCubeState* state, char depth, Turn lastTurn, std::vecto
             duplicateReachableStates[stateIndex] = true;
         }
     }
+    /*
     */
 
     if (depth == maxDepth) {
@@ -78,8 +153,8 @@ void EvaluateState(RubicsCubeState* state, char depth, Turn lastTurn, std::vecto
             if (Utils::IsMostSignificantBitSet(entry)) {
                 duplicateReachableStates[stateIndex] = false;
 
-                //std::cout << std::get<0>(reachedStates[stateIndex]) << endl;
-                //std::cout << turnString << "\n" << endl;
+                std::cout << std::get<0>(reachedStates[stateIndex]) << endl;
+                std::cout << turnString << "\n" << endl;
                 
                 foundDuplicates++;
 

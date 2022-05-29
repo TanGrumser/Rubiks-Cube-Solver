@@ -17,6 +17,7 @@
 
 int main(int argc, char *argv[]) {
     DuplicateState::GenerateLookupTable();
+    DuplicateState::LoadDuplicateStateIndex();
     
     //CommandLineHandler::Start(argc, argv);
     //LookupTable::GenerateBigUpperEdgeLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH);

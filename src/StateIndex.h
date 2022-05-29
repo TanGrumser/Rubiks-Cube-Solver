@@ -12,7 +12,7 @@ struct StateIndex {
         return cornerIndex == other.cornerIndex && edgeIndex == other.edgeIndex;
     }
 
-    string toString() {
+    string toString() const {
         return std::to_string(cornerIndex) + " " + std::to_string(edgeIndex);
     }
 };
