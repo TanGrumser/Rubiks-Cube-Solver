@@ -82,6 +82,17 @@ Fortsetzung muliple reached states
     This rank is what is used to calculate the index for the lookup tables.
     All math involved is described in [2].
 
+- performance State indizierung
+    Eine Milliarde berechnungen des lexikograpfischen Rang mit meiner und mit der lineare Methode dauerten jeweils 14.735254s und 3.177278s, was bedeutet es eine circa 4,7-fache Beschleunigung.
+    Eher eine 5-fache wenn man den Overhead rausrechnet.
+    
+    Calculating corner lexicographic rank one billion times with old method took 12.778335s
+    Calculating corner lexicographic rank one billion times with new method took 2.884751s
+        Corner performance ration of old/new = 4.42961
+    Calculating edge lexicographic rank one billion times with old method took 23.314177s
+    Calculating edge lexicographic rank one billion times with new method took 5.784288s
+        Corner performance ration of old/new = 4.0306
+
 TODOs
 
     Auslagern der Index berechnug in eigens Skript, da sowohl Lookup Tables als auch Duplicate state Tables darauf zugreifen.
@@ -91,7 +102,7 @@ TODOs
 
     Implementiere Lookup Tables, die auch in dem Artikel [1] benutzt werden und vergleiche Performance
 
-
+    Change representation of cube by changing corner, edge permutations to array<char, 8 / 12>, so the premutation indexer can be called without copying.
 
 [1] https://medium.com/@benjamin.botto/implementing-an-optimal-rubiks-cube-solver-using-korf-s-algorithm-bf750b332cf9
 [2] https://medium.com/@benjamin.botto/sequentially-indexing-permutations-a-linear-algorithm-for-computing-lexicographic-rank-a22220ffd6e3
@@ -105,3 +116,24 @@ https://github.com/martinus/robin-hood-hashing -> ist instabil bei schlechten ha
 
 valgrind -> callgrind
 kcachegrind 
+
+
+
+
+
+
+Big Edge Lookup Table entries
+
+1
+15
+191
+2455
+30519
+356462
+3766700
+32719467
+186297009
+274719633
+13042507
+81
+sum: 510935040

@@ -4,15 +4,21 @@
 #include <iostream>
 #include "LookupTable.h"
 
-RubicsCubeState::RubicsCubeState(RubicsCubePiece* edgePieces, RubicsCubePiece* cornerPieces) {
-    this->edgePieces = edgePieces;
-    this->cornerPieces = cornerPieces;
+
+/*
+RubicsCubeState::RubicsCubeState(array<unsigned int, 8> cornerPermutation, array<unsigned int, 8> cornerRotation, array<unsigned int, 12> edgePermutation, array<unsigned int, 12> edgeRotation) {
+    this->cornerPermutaion = cornerPermutaion;
+    this->cornerRotation = cornerRotation;
+    this->edgePermutaion = edgePermutaion;
+    this->edgeRotation = edgeRotation;
+
+
     this->edgeNeighbourIndicieRotations = nullptr;
 }
+*/
+
 
 RubicsCubeState::~RubicsCubeState() {
-    delete[] cornerPieces;
-    delete[] edgePieces;
     
     // deleting a null pointer seems to be safe (https://stackoverflow.com/questions/6731331/is-it-still-safe-to-delete-nullptr-in-c0x)
     delete[] edgeNeighbourIndicieRotations;
@@ -23,69 +29,43 @@ RubicsCubeState* RubicsCubeState::initialState = nullptr;
 
 RubicsCubeState* RubicsCubeState::InitialState() {
     if (RubicsCubeState::initialState == nullptr) {
-        RubicsCubePiece* edgePieces = new RubicsCubePiece[12] {
-            RubicsCubePiece(0, 0),
-            RubicsCubePiece(1, 0),
-            RubicsCubePiece(2, 0),
-            RubicsCubePiece(3, 0),
-            RubicsCubePiece(4, 0),
-            RubicsCubePiece(5, 0),
-            RubicsCubePiece(6, 0),
-            RubicsCubePiece(7, 0),
-            RubicsCubePiece(8, 0),
-            RubicsCubePiece(9, 0),
-            RubicsCubePiece(10, 0),
-            RubicsCubePiece(11, 0)
-        };
+        RubicsCubeState::initialState = new RubicsCubeState();
 
-        RubicsCubePiece* cornerPieces = new RubicsCubePiece [8] {
-            RubicsCubePiece(0, 0),
-            RubicsCubePiece(1, 0),
-            RubicsCubePiece(2, 0),
-            RubicsCubePiece(3, 0),
-            RubicsCubePiece(4, 0),
-            RubicsCubePiece(5, 0),
-            RubicsCubePiece(6, 0),
-            RubicsCubePiece(7, 0)
-        };
-
-        RubicsCubeState::initialState = new RubicsCubeState(edgePieces, cornerPieces);
+        for (int i = 0; i < 8; i++) {
+            RubicsCubeState::initialState->cornerPermutaion[i] = i;
+            RubicsCubeState::initialState->cornerRotation[i] = 0;
+        }
+        
+        for (int i = 0; i < 12; i++) {
+            RubicsCubeState::initialState->edgePermutaion[i] = i;
+            RubicsCubeState::initialState->edgeRotation[i] = 0;
+        }
     }
 
     return RubicsCubeState::initialState;
 }
 
 RubicsCubeState* RubicsCubeState::Copy() {
-    RubicsCubePiece* edgePieces   = (RubicsCubePiece*) malloc(sizeof(RubicsCubePiece) * 12);
-    RubicsCubePiece* cornerPieces = (RubicsCubePiece*) malloc(sizeof(RubicsCubePiece) * 8);
-
-    for (int i = 0; i < 12; i++) {
-        edgePieces[i] = this->edgePieces[i].Copy();
-    }
+    RubicsCubeState* copy = new RubicsCubeState();
 
     for (int i = 0; i < 8; i++) {
-        cornerPieces[i] = this->cornerPieces[i].Copy();
+        copy->cornerPermutaion[i] = this->cornerPermutaion[i];
+        copy->cornerRotation[i] = this->cornerRotation[i];
     }
 
-    return new RubicsCubeState(edgePieces, cornerPieces);
-}
-
-void RubicsCubeState::CopyInto(RubicsCubeState* state) {
     for (int i = 0; i < 12; i++) {
-        state->edgePieces[i] = this->edgePieces[i].Copy();
+        copy->edgePermutaion[i] = this->edgePermutaion[i];
+        copy->edgeRotation[i] = this->edgeRotation[i];
     }
 
-    for (int i = 0; i < 8; i++) {
-        cornerPieces[i] = this->cornerPieces[i].Copy();
-    }
+    return copy;
 }
-
 
 string RubicsCubeState::GetStateString() {
     string result = "";
 
     for (int i = 0; i < 12; i++) {
-        result += edgePieces[i].ToString();
+        result += std::to_string(edgePermutaion[i]) + "," + std::to_string(edgeRotation[i]);
 
         if (i < 12 - 1) {
             result +=  ";";
@@ -95,7 +75,7 @@ string RubicsCubeState::GetStateString() {
     result += "|";
 
     for (int i = 0; i < 8; i++) {
-        result += cornerPieces[i].ToString();
+        result += std::to_string(cornerPermutaion[i]) + "," + std::to_string(cornerRotation[i]);
 
         if (i < 8 - 1) {
             result += ";";
@@ -106,8 +86,7 @@ string RubicsCubeState::GetStateString() {
 }
 
 RubicsCubeState* RubicsCubeState::ParseStateString(string stateString) {
-    RubicsCubePiece* edgePieces   = (RubicsCubePiece*) malloc(sizeof(RubicsCubePiece) * 12);
-    RubicsCubePiece* cornerPieces = (RubicsCubePiece*) malloc(sizeof(RubicsCubePiece) * 8);
+    RubicsCubeState* state = new RubicsCubeState();
 
     vector<string> lines = StringUtils::Split(stateString, "|");
     vector<string> edgeValues = StringUtils::Split(lines[0], ";");
@@ -116,26 +95,18 @@ RubicsCubeState* RubicsCubeState::ParseStateString(string stateString) {
     for (int i = 0; i < edgeValues.size(); i++) {
         vector<string> values = StringUtils::Split(edgeValues[i], ",");
         
-        edgePieces[i].index = stoi(values[0]);
-        edgePieces[i].rotation = stoi(values[1]);
+        state->edgePermutaion[i] = stoi(values[0]);
+        state->edgeRotation[i] = stoi(values[1]);
     }
 
     for (int i = 0; i < cornerValues.size(); i++) {
         vector<string> values = StringUtils::Split(cornerValues[i], ",");
         
-        cornerPieces[i].index = stoi(values[0]);
-        cornerPieces[i].rotation = stoi(values[1]);
+        state->cornerPermutaion[i] = stoi(values[0]);
+        state->cornerRotation[i] = stoi(values[1]);
     }
     
-    return new RubicsCubeState(edgePieces, cornerPieces);
-}
-
-RubicsCubePiece* RubicsCubeState::GetEdgePieces() {
-    return this->edgePieces;
-}
-
-RubicsCubePiece* RubicsCubeState::GetCornerPieces() {
-    return this->cornerPieces;
+    return state;
 }
 
 Turn RubicsCubeState::GetTurnTo(RubicsCubeState* other) {
@@ -155,38 +126,20 @@ Turn RubicsCubeState::GetTurnTo(RubicsCubeState* other) {
 
 bool RubicsCubeState::Equals(RubicsCubeState* other) {
     for (int i = 0; i < 12; i++) {
-        if (edgePieces[i].index != other->edgePieces[i].index
-         || edgePieces[i].rotation != other->edgePieces[i].rotation) {
+        if (edgePermutaion[i] != other->edgePermutaion[i]
+         || edgeRotation[i] != other->edgeRotation[i]) {
              return false;
          }
     }
 
     for (int i = 0; i < 8; i++) {
-        if (cornerPieces[i].index != other->cornerPieces[i].index
-         || cornerPieces[i].rotation != other->cornerPieces[i].rotation) {
+        if (cornerPermutaion[i] != other->cornerPermutaion[i]
+         || cornerRotation[i] != other->cornerRotation[i]) {
              return false;
          }
     }
 
     return true;
-}
-
-bool RubicsCubeState::ContainsNegativeNumber() {
-    for (int i = 0; i < 12; i++) {
-        if (edgePieces[i].index < 0
-         || edgePieces[i].rotation < 0) {
-             return true;
-         }
-    }
-
-    for (int i = 0; i < 8; i++) {
-        if (cornerPieces[i].index < 0
-         || cornerPieces[i].rotation < 0) {
-             return true;
-         }
-    }
-
-    return false;
 }
 
 StateIndex RubicsCubeState::GetLookupIndex() {
@@ -196,4 +149,20 @@ StateIndex RubicsCubeState::GetLookupIndex() {
     index.edgeIndex = LookupTable::GetFullEdgeLookupIndex(this);
 
     return index;
+}
+
+void RubicsCubeState::scramble(int turns) {
+    Turn turn, lastTurn = Turn::Empty();
+        
+    for (int j = 0; j < turns; j++) {
+        turn = Turn::Random();
+
+        while (turn.IsTurnBacktracking(lastTurn)) {
+            turn = Turn::Random();
+        }
+
+        lastTurn = turn;
+        
+        this->ApplyTurn(turn);
+    }
 }

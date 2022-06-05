@@ -8,6 +8,7 @@
 #include "Stopwatch.h"
 #include "LookupTable.h"
 #include "FileManagement.h"
+#include "DuplicateState.h"
 
 void SolveCube(RubicsCubeState* state);
 void ParseFile(std::string path);
@@ -16,7 +17,6 @@ void PrintHelp();
 
 void CommandLineHandler::Start(int argc, char *argv[]) {
     RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
-    LookupTable::LoadLookupTables();
 
     //Parse all command line arguments.
     for (int i = 1; i < argc; i++) {
@@ -58,15 +58,18 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         }
     }
     
-    //std::cout << LookupTable::GetFullEdgeLookupIndex(state) << endl;
-    LookupTable::GenerateFullEdgeLookupTable();
-    //ParseFile(LookupTable::CORNER_LOOKUP_TABLE_PATH);
-    //SolveCube(state);
-    //std::cout << LookupTable::GetUpperEdgeStateDistance(state) << endl;
+    
+    SolveCube(state);
 }
 
 void SolveCube(RubicsCubeState* state) {
-    std::cout << "starting solve." << endl;
+    std::cout << "Loading lookup tables and duplicate state table." << endl;
+        LookupTable::LoadLookupTables();
+        DuplicateState::LoadDuplicateStateIndex();
+    std::cout << "Finished Loading." << endl;
+
+    
+    std::cout << "Starting solve." << endl;
     vector<Turn> solution;
 
     Stopwatch::StartTimer();

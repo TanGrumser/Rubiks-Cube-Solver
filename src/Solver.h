@@ -30,7 +30,7 @@ namespace Solver {
 
 
     int GetDistanceHeuristic(RubicsCubeState* state, RubicsCubeState* destination);
-    int** GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state);
+    unsigned int** GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state);
     vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);
 
 }

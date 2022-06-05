@@ -9,6 +9,8 @@
 #include "Turn.h"
 #include <algorithm>
 #include <thread>
+#include "DuplicateState.h"
+#include "RubicsCubeStateShift.h"
 
 using std::vector;
 
@@ -18,11 +20,17 @@ int Search(vector<RubicsCubeState*>* path, int depth, int bound, Turn lastTurn, 
 vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);
 const int MAX_BOUND = 100000;
 const int SOLUTION_FOUND = -1;
+unsigned long long traversedStates = 0;
+unsigned long long duplicateStates = 0;
+
+RubicsCubeStateShift* shift;
 
 vector<Turn> Solver::PR_IterativeDeepeningAStar(RubicsCubeState* startState) {
     int bound = Solver::GetDistanceHeuristic(startState, RubicsCubeState::InitialState());
     vector<RubicsCubeState*> path = {};
     bool* isSolutionFound = new bool(false);
+
+    shift = new RubicsCubeStateShift(startState);
 
     path.push_back(startState);
 
@@ -46,6 +54,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubicsCubeState* startState) {
         }
 
         std::cout << "Searching with an heuristic bound of " << bound << endl;
+
         bound = MAX_BOUND;
         // Wait for all threads to finish.
         for (int i = 0; i < Solver::threadCount; i++) { 
@@ -61,23 +70,37 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubicsCubeState* startState) {
                 bound = *newBounds[i];
             }
         } 
-
+    
         if (bound == SOLUTION_FOUND) {
             break;
         }
+
+        DuplicateState::ResetAllStates();
     }
+
+    std::cout << "Searched States: " << traversedStates << endl;
+    std::cout << "Duplicate States: " << duplicateStates << endl;
 
     return Solver::GenerateTurnSequenceFromStateSequence(*solutionPath);
 }
 
 int Search(vector<RubicsCubeState*>* path, int depth, int bound, Turn lastTurn, int* minBound, vector<Turn> nextTurns, bool* isSolutionFound) {
     RubicsCubeState* node = path->back();
-    int totalEstimatedCost = depth + Solver::GetDistanceHeuristic(node, RubicsCubeState::InitialState());
+    ++traversedStates;
     
+    if (DuplicateState::WasStateReached(shift->GetShiftedState(node))) {
+        duplicateStates++;
+        return 200;
+    }
+
+    int totalEstimatedCost = depth + Solver::GetDistanceHeuristic(node, RubicsCubeState::InitialState());
+
     if (totalEstimatedCost > bound || *isSolutionFound) {
         *minBound = totalEstimatedCost;
         return totalEstimatedCost;
     } 
+
+    
 
     if (node->Equals(RubicsCubeState::InitialState())) {
         *isSolutionFound = true;
@@ -91,7 +114,7 @@ int Search(vector<RubicsCubeState*>* path, int depth, int bound, Turn lastTurn, 
 
     RubicsCubeState* succesor = node->Copy();
     path->push_back(succesor);
-
+    
     for (int i = 0; i < nextTurns.size(); i++) {
         if (!nextTurns[i].IsTurnBacktracking(lastTurn)) {
             succesor->ApplyTurn(nextTurns[i]);

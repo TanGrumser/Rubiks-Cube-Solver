@@ -51,7 +51,7 @@ int Solver::GetDistanceHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
         //int neihbhourDistanceHeuristic = GetNeighbourHeuristic(from, to);
         int cornerStateDistance = LookupTable::GetCornerStateDistance(from);
         int upperEdgeStateDistance = LookupTable::GetBigUpperEdgeStateDistance(from);
-        int lowerEdgeStateDistance = LookupTable::GetLowerEdgeStateDistance(from);
+        int lowerEdgeStateDistance = LookupTable::GetBigLowerEdgeStateDistance(from);
         
         return std::max(cornerStateDistance, std::max(upperEdgeStateDistance, lowerEdgeStateDistance));
     } else if (Solver::heuristicMode == 1) {
@@ -69,22 +69,22 @@ int Solver::GetDistanceHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
 
 int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
     int progress = 0;
-    int** otherEdgeNeighbourIndiciesRotation = Solver::GetEdgeNeighbourIndiciesRotations(to);
+    unsigned int** otherEdgeNeighbourIndiciesRotation = Solver::GetEdgeNeighbourIndiciesRotations(to);
     int leftNeightbourIndex = -1;
     int rightNeightbourIndex = -1;
     int leftNeightbourRotation= -1;
     int rightNeightbourRotation = -1;
 
     for (int i = 0 ; i < 12; i++) {
-        int lookupIndex = from->edgePieces[i].index;
-        int* otherNeighboursPositionRotations = otherEdgeNeighbourIndiciesRotation[lookupIndex];
-        leftNeightbourIndex = from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 0 : 1]].index;
-        rightNeightbourIndex = from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 1 : 0]].index;
+        int lookupIndex = from->edgePermutaion[i];
+        unsigned int* otherNeighboursPositionRotations = otherEdgeNeighbourIndiciesRotation[lookupIndex];
+        leftNeightbourIndex = from->cornerPermutaion[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgeRotation[i] == 0 ? 0 : 1]];
+        rightNeightbourIndex = from->cornerPermutaion[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgeRotation[i] == 0 ? 1 : 0]];
 
-        leftNeightbourRotation = (from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 0 : 1]].rotation
-            + EDGE_CORNER_ROTATION_OFFSET[i][0 + (from->edgePieces[i].rotation == 0 ? 0 : 2)]) % 3;
-        rightNeightbourRotation = (from->cornerPieces[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgePieces[i].rotation == 0 ? 1 : 0]].rotation
-            + EDGE_CORNER_ROTATION_OFFSET[i][1 + (from->edgePieces[i].rotation == 0 ? 0 : 2)]) % 3;
+        leftNeightbourRotation = (from->cornerRotation[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgeRotation[i] == 0 ? 0 : 1]]
+            + EDGE_CORNER_ROTATION_OFFSET[i][0 + (from->edgeRotation[i] == 0 ? 0 : 2)]) % 3;
+        rightNeightbourRotation = (from->cornerRotation[EDGE_CORNER_NEIGHBOR_INIDICIES[i][from->edgeRotation[i] == 0 ? 1 : 0]]
+            + EDGE_CORNER_ROTATION_OFFSET[i][1 + (from->edgeRotation[i] == 0 ? 0 : 2)]) % 3;
         
         
 
@@ -107,22 +107,22 @@ int GetNeighbourHeuristic(RubicsCubeState* from, RubicsCubeState* to) {
 }
 
 
-int** Solver::GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state) {
+unsigned int** Solver::GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state) {
     if (state->edgeNeighbourIndicieRotations == nullptr) {
-        int** edgeNeighbourIndicieRotations = (int**) malloc(sizeof(int) * 12 * 4);
+        unsigned int** edgeNeighbourIndicieRotations = (unsigned int**) malloc(sizeof(int) * 12 * 4);
         state->edgeNeighbourIndicieRotations = edgeNeighbourIndicieRotations;
 
         for (int i = 0; i < 12; i++) {
-            int leftCornerNeighbourIndex = EDGE_CORNER_NEIGHBOR_INIDICIES[i][state->edgePieces[i].rotation == 0 ? 0 : 1];
-            int rightCornerNeighbourIndex = EDGE_CORNER_NEIGHBOR_INIDICIES[i][state->edgePieces[i].rotation == 0 ? 1 : 0];
-            int leftCornerRotationOffset = EDGE_CORNER_ROTATION_OFFSET[i][0 + (state->edgePieces[i].rotation == 0 ? 0 : 2)];
-            int rightCornerRotationOffset = EDGE_CORNER_ROTATION_OFFSET[i][1 + (state->edgePieces[i].rotation == 0 ? 0 : 2)];
+            int leftCornerNeighbourIndex = EDGE_CORNER_NEIGHBOR_INIDICIES[i][state->edgeRotation[i] == 0 ? 0 : 1];
+            int rightCornerNeighbourIndex = EDGE_CORNER_NEIGHBOR_INIDICIES[i][state->edgeRotation[i] == 0 ? 1 : 0];
+            int leftCornerRotationOffset = EDGE_CORNER_ROTATION_OFFSET[i][0 + (state->edgeRotation[i] == 0 ? 0 : 2)];
+            int rightCornerRotationOffset = EDGE_CORNER_ROTATION_OFFSET[i][1 + (state->edgeRotation[i] == 0 ? 0 : 2)];
 
-            edgeNeighbourIndicieRotations[state->edgePieces[i].index] = new int[4] {
-                state->cornerPieces[leftCornerNeighbourIndex].index,
-                state->cornerPieces[rightCornerNeighbourIndex].index,
-                (state->cornerPieces[leftCornerNeighbourIndex].rotation + leftCornerRotationOffset) % 3,
-                (state->cornerPieces[rightCornerNeighbourIndex].rotation + rightCornerRotationOffset) % 3
+            edgeNeighbourIndicieRotations[state->edgePermutaion[i]] = new unsigned int[4] {
+                state->cornerPermutaion[leftCornerNeighbourIndex],
+                state->cornerPermutaion[rightCornerNeighbourIndex],
+                (state->cornerRotation[leftCornerNeighbourIndex] + leftCornerRotationOffset) % 3,
+                (state->cornerRotation[rightCornerNeighbourIndex] + rightCornerRotationOffset) % 3
             };
         }
     }

@@ -14,14 +14,43 @@
 #include "CommandLineHandler.h"
 #include "DuplicateState.h"
 #include "utils.h"
+#include "RubicsCubeStateShift.h"
+#include "PermutationIndexer.h"
+#include <vector>
+#include <random>
+#include "PerformanceTest.h"
 
 int main(int argc, char *argv[]) {
-    DuplicateState::GenerateLookupTable();
-    DuplicateState::LoadDuplicateStateIndex();
+        
+    CommandLineHandler::Start(argc, argv);
+    //DuplicateState::GenerateLookupTable();
+    /*
+    std::cout << "Loading lookup tables and duplicate state table." << endl;
+        LookupTable::LoadLookupTables();
+        DuplicateState::LoadDuplicateStateIndex();
+    std::cout << "Finished Loading." << endl;
+
+    std::cout << "Finished Loading." << endl;
+    vector<Turn> s;
+
     
-    //CommandLineHandler::Start(argc, argv);
-    //LookupTable::GenerateBigUpperEdgeLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH);
-    //LookupTable::GenerateBigLowerEdgeLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH);    
+    for (int i = 0; i < 1000; i++) {
+        RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
+        state->scramble(1);
+
+        Stopwatch::StartTimer();
+        vector<Turn> solution = Solver::PR_IterativeDeepeningAStar(state);
+        Stopwatch::StopTimer();
+
+
+        s.insert(s.end(), solution.begin(), solution.end());
+
+        delete state;
+    }
+
+
+    std::cout << Stopwatch::GetFormattedTimeInSeconds() << " " << s.size() << endl;
+    */
 
     return 0;
 }

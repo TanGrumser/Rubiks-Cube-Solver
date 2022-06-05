@@ -37,7 +37,7 @@ namespace LookupTable {
     
     const int BIG_EDGE_ROTATION_COUNT = 2 * 2 * 2 * 2 * 2 * 2 * 2; // 2^7
     const int BIG_EDGE_PERMUTATIONS_COUNT = 12 * 11 * 10 * 9 * 8 * 7 * 6; // 12! / 5!
-    const int BIG_EDGE_STATES_COUNT = BIG_EDGE_ROTATION_COUNT * BIG_EDGE_PERMUTATIONS_COUNT; // (12! / 7!) * 2^7
+    const int BIG_EDGE_STATES_COUNT = BIG_EDGE_ROTATION_COUNT * BIG_EDGE_PERMUTATIONS_COUNT; // (12! / 5!) * 2^7
     
     const uint64 FULL_EDGE_ROTATION_COUNT = 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2; // 2^11
     const uint64 FULL_EDGE_PERMUTATIONS_COUNT = 12 * 11 * 10 * 9 * 8 * 7 * 6 * 5 * 4 * 3; // 12! / 2!
@@ -63,8 +63,8 @@ namespace LookupTable {
     uint64 GetBigLowerEdgeLookupIndex(RubicsCubeState* state);
     uint64 GetFullEdgeLookupIndex(RubicsCubeState* state);
     
-    void TestCornerLookupCaluclation();
-    void SetStateToCornerStateByIndex(int index, RubicsCubeState* state);
+    //void TestCornerLookupCaluclation();
+    //void SetStateToCornerStateByIndex(int index, RubicsCubeState* state);
     
     void GenerateCornerLookupTable();
     void GenerateUpperEdgeLookupTable();
@@ -72,5 +72,8 @@ namespace LookupTable {
     void GenerateBigUpperEdgeLookupTable();
     void GenerateBigLowerEdgeLookupTable();
     void GenerateFullEdgeLookupTable();
+
+    // TODO delete
+    int GetRotationIndex(RubicsCubeState* state);
 }
 

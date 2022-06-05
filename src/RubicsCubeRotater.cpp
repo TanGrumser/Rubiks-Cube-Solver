@@ -126,29 +126,27 @@ void RubicsCubeState::ApplyTurn(Turn turn) {
     }
 
     // Rotate the corner pieces.
-    RubicsCubePiece savedPiece = cornerPieces[CORNER_PIECE_INDICIES[turn.index][3]];
+    unsigned int savedIndex = cornerPermutaion[CORNER_PIECE_INDICIES[turn.index][3]];
+    unsigned int savedRotation = cornerRotation[CORNER_PIECE_INDICIES[turn.index][3]];
 
     for (int i = 3; i > 0; i--) {
-        cornerPieces[CORNER_PIECE_INDICIES[turn.index][i]] = cornerPieces[CORNER_PIECE_INDICIES[turn.index][(i - 1 + 4) % 4]];
-        cornerPieces[CORNER_PIECE_INDICIES[turn.index][i]].rotation = 
-            (cornerPieces[CORNER_PIECE_INDICIES[turn.index][i]].rotation + 3 - CORNER_ROTATION_INDICIES[turn.index][(i - 1 + 4) % 4]) % 3;
+        cornerPermutaion[CORNER_PIECE_INDICIES[turn.index][i]] = cornerPermutaion[CORNER_PIECE_INDICIES[turn.index][(i - 1 + 4) % 4]];
+        cornerRotation[CORNER_PIECE_INDICIES[turn.index][i]] = (cornerRotation[CORNER_PIECE_INDICIES[turn.index][(i - 1 + 4) % 4]] + 3 - CORNER_ROTATION_INDICIES[turn.index][(i - 1 + 4) % 4]) % 3;
     }
 
-    cornerPieces[CORNER_PIECE_INDICIES[turn.index][0]] = savedPiece;
-    cornerPieces[CORNER_PIECE_INDICIES[turn.index][0]].rotation = 
-        (cornerPieces[CORNER_PIECE_INDICIES[turn.index][0]].rotation + 3 - CORNER_ROTATION_INDICIES[turn.index][3]) % 3;
+    cornerPermutaion[CORNER_PIECE_INDICIES[turn.index][0]] = savedIndex;
+    cornerRotation[CORNER_PIECE_INDICIES[turn.index][0]] = (savedRotation + 3 - CORNER_ROTATION_INDICIES[turn.index][3]) % 3;
 
     
     // Rotate the edge pieces.
-    savedPiece = edgePieces[EDGE_PIECE_INDICIES[turn.index][3]];
+    savedIndex = edgePermutaion[EDGE_PIECE_INDICIES[turn.index][3]];
+    savedRotation = edgeRotation[EDGE_PIECE_INDICIES[turn.index][3]];
 
     for (int i = 3; i > 0; i--) {
-        edgePieces[EDGE_PIECE_INDICIES[turn.index][i]] = edgePieces[EDGE_PIECE_INDICIES[turn.index][(i - 1 + 4) % 4]];
-        edgePieces[EDGE_PIECE_INDICIES[turn.index][i]].rotation = 
-            (edgePieces[EDGE_PIECE_INDICIES[turn.index][i]].rotation + EDGE_ROTATION_INDICIES[turn.index][(i - 1 + 4) % 4]) % 2;
+        edgePermutaion[EDGE_PIECE_INDICIES[turn.index][i]] = edgePermutaion[EDGE_PIECE_INDICIES[turn.index][(i - 1 + 4) % 4]];
+        edgeRotation[EDGE_PIECE_INDICIES[turn.index][i]] = (edgeRotation[EDGE_PIECE_INDICIES[turn.index][(i - 1 + 4) % 4]] + EDGE_ROTATION_INDICIES[turn.index][(i - 1 + 4) % 4]) % 2;
     }
 
-    edgePieces[EDGE_PIECE_INDICIES[turn.index][0]] = savedPiece;
-    edgePieces[EDGE_PIECE_INDICIES[turn.index][0]].rotation = 
-        (edgePieces[EDGE_PIECE_INDICIES[turn.index][0]].rotation + EDGE_ROTATION_INDICIES[turn.index][3]) % 2;
+    edgePermutaion[EDGE_PIECE_INDICIES[turn.index][0]] = savedIndex;
+    edgeRotation[EDGE_PIECE_INDICIES[turn.index][0]] = (savedRotation + EDGE_ROTATION_INDICIES[turn.index][3]) % 2;
 }

@@ -4,6 +4,7 @@
 #include "LookupTable.h" 
 #include "RubicsCubeState.h"
 #include "FileManagement.h"
+#include "PermutationIndexer.h"
 
 using std::string;
 using LookupTable::EDGE_ROTATION_COUNT;
@@ -12,17 +13,20 @@ using LookupTable::BIG_EDGE_ROTATION_COUNT;
 using LookupTable::BIG_EDGE_PERMUTATIONS_COUNT;
 using LookupTable::FULL_EDGE_ROTATION_COUNT;
 
-int GetEdgeStateIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies);
-int GetBigEdgeStateIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies);
-int GetPermutationIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies);
-int GetBigPermutationIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies);
+int GetSmallEdgeStateIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies);
+int GetBigUpperEdgeStateIndex(RubicsCubeState* state);
+int GetBigLowerEdgeStateIndex(RubicsCubeState* state);
 int GetFullPermutationIndex(RubicsCubeState* state);
 
-std::vector<int>* UPPER_EDGE_INDICIES = new std::vector<int> {0, 1, 2, 3, 4, 5};
-std::vector<int>* LOWER_EDGE_INDICIES = new std::vector<int> {6, 7, 8, 9, 10, 11};
+std::vector<int>* SMALL_UPPER_EDGE_INDICIES = new std::vector<int> {0, 1, 2, 3, 4, 5};
+std::vector<int>* SMALL_LOWER_EDGE_INDICIES = new std::vector<int> {6, 7, 8, 9, 10, 11};
 std::vector<int>* BIG_UPPER_EDGE_INDICIES = new std::vector<int> {0, 1, 2, 3, 4, 5, 6};
 std::vector<int>* BIG_LOWER_EDGE_INDICIES = new std::vector<int> {5, 6, 7, 8, 9, 10, 11};
 std::vector<int>* FULL_EDGE_INDICIES = new std::vector<int> {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+
+PermutationIndexer<12, 6> smallEgdeIndexer;
+PermutationIndexer<12, 7> bigEgdeIndexer;
+PermutationIndexer<12> fullEgdeIndexer;
 
 const int powersOfTwo[] = {
     1,
@@ -40,166 +44,89 @@ const int powersOfTwo[] = {
 };
 
 uint64 LookupTable::GetUpperEdgeLookupIndex(RubicsCubeState* state) {
-    return GetEdgeStateIndex(state, UPPER_EDGE_INDICIES);
+    return GetSmallEdgeStateIndex(state, SMALL_UPPER_EDGE_INDICIES);
 } 
 
 uint64 LookupTable::GetLowerEdgeLookupIndex(RubicsCubeState* state) {
-    return GetEdgeStateIndex(state, LOWER_EDGE_INDICIES);
+    return GetSmallEdgeStateIndex(state, SMALL_LOWER_EDGE_INDICIES);
 } 
 
 uint64 LookupTable::GetBigUpperEdgeLookupIndex(RubicsCubeState* state) {
-    return GetBigEdgeStateIndex(state, BIG_UPPER_EDGE_INDICIES);
+    return GetBigLowerEdgeStateIndex(state);
 } 
 
 uint64 LookupTable::GetBigLowerEdgeLookupIndex(RubicsCubeState* state) {
-    return GetBigEdgeStateIndex(state, BIG_LOWER_EDGE_INDICIES);
+    return GetBigUpperEdgeStateIndex(state);
 } 
 
 uint64 LookupTable::GetFullEdgeLookupIndex(RubicsCubeState* state) {
     int rotationIndex = 0;
-    int permutaionIndex = GetFullPermutationIndex(state);
+    int permutaionIndex = fullEgdeIndexer.rank(state->edgePermutaion);
     
     // We iterating only to the next-to-last element since, the rotation of the last piece is completely defined by the rotations of all pieces before.
     for (int i = 0; i < 11; i++) {
-        rotationIndex += powersOfTwo[i] * state->edgePieces[i].rotation;
+        rotationIndex += powersOfTwo[i] * state->edgeRotation[i];
     }
 
     return permutaionIndex * FULL_EDGE_ROTATION_COUNT + rotationIndex;
 }
 
-int GetEdgeStateIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies) {
+int GetSmallEdgeStateIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies) {
     int rotationIndex = 0;
-    int permutaionIndex = GetPermutationIndex(state, edgeIndicies);
-    
+    array<unsigned int, 6> edgePerm;
+
+    // This is quit innefficient. Try to improve this.
     for (int i = 0; i < edgeIndicies->size(); i++) {
         for (int j = 0; j < 12; j++) {
-            if ((*edgeIndicies)[i] == state->edgePieces[j].index) {
-                rotationIndex += powersOfTwo[i] * state->edgePieces[j].rotation;
+            if ((*edgeIndicies)[i] == state->edgePermutaion[j]) {
+                edgePerm[i] = (*edgeIndicies)[i];
+                rotationIndex += powersOfTwo[i] * state->edgeRotation[j];
                 break;
             }
         }
     }
 
+    int permutaionIndex = smallEgdeIndexer.rank(edgePerm);
     return permutaionIndex * EDGE_ROTATION_COUNT + rotationIndex;
 
 }
 
-int GetBigEdgeStateIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies) {
+// Only uses the edges with indicies 5 to 11
+int GetBigLowerEdgeStateIndex(RubicsCubeState* state) {
     int rotationIndex = 0;
-    int permutaionIndex = GetBigPermutationIndex(state, edgeIndicies);
+    array<unsigned int , 7> edgePerm;
     
-    for (int i = 0; i < edgeIndicies->size(); i++) {
-        for (int j = 0; j < 12; j++) {
-            if ((*edgeIndicies)[i] == state->edgePieces[j].index) {
-                rotationIndex += powersOfTwo[i] * state->edgePieces[j].rotation;
-                break;
-            }
+    // TODO this can be optimized by couting the entries in edgePerm set and stopping if all edges have been found already.
+    for (int i = 0; i < 12; i++) {
+        unsigned int& edgeIndex = state->edgePermutaion[i];
+
+        if (edgeIndex > 4) {
+            edgePerm[edgeIndex - 5] = i;
+            rotationIndex += powersOfTwo[edgeIndex - 5] * state->edgeRotation[i];
         }
     }
+
+    int permutaionIndex = bigEgdeIndexer.rank(edgePerm);
 
     return permutaionIndex * BIG_EDGE_ROTATION_COUNT + rotationIndex;
 }
 
-int GetPermutationIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies) {
-    int result = 0;
-    //const int factor = 7 * 6 * 5 * 4 * 3 * 2 * 1;
+// Only uses the edges with indicies 0 to 6
+int GetBigUpperEdgeStateIndex(RubicsCubeState* state) {
+    int rotationIndex = 0;
+    array<unsigned int , 7> edgePerm;
+    
+    // TODO this can be optimized by couting the entries in edgePerm set and stopping if all edges have been found already.
+    for (int i = 0; i < 12; i++) {
+        unsigned int& edgeIndex = state->edgePermutaion[i];
 
-    const int coefficients[] = {
-        7 * 8 * 9 * 10 * 11,
-        7 * 8 * 9 * 10,
-        7 * 8 * 9,
-        7 * 8,
-        7,
-        1,
-    };
-
-    for (int i = 0; i < edgeIndicies->size(); i++) {
-        int position = 0;
-
-        // i is the index of the piece we're looking for, j is the position of the piece.
-        for (int j = 0; j < 12; j++) {
-            if (state->edgePieces[j].index == (*edgeIndicies)[i]) {
-                result += position * coefficients[i];
-                break;
-            }
-            
-            // Since the egde indicies may not start at zero we have to check if a number is below the smallest value and count its position (2nd statement)
-            if ((*edgeIndicies)[i] < state->edgePieces[j].index || state->edgePieces[j].index < (*edgeIndicies)[0]) {
-                position++;
-            }
+        if (edgeIndex < 7) {
+            edgePerm[edgeIndex] = i;
+            rotationIndex += powersOfTwo[edgeIndex] * state->edgeRotation[i];
         }
     }
 
-    return result;
-}
+    int permutaionIndex = bigEgdeIndexer.rank(edgePerm);
 
-int GetBigPermutationIndex(RubicsCubeState* state, std::vector<int>* edgeIndicies) {
-    int result = 0;
-    //const int factor = 7 * 6 * 5 * 4 * 3 * 2 * 1;
-
-    const int coefficients[] = {
-        6 * 7 * 8 * 9 * 10 * 11,
-        6 * 7 * 8 * 9 * 10,
-        6 * 7 * 8 * 9,
-        6 * 7 * 8,
-        6 * 7,
-        6,
-        1
-    };
-
-    for (int i = 0; i < edgeIndicies->size(); i++) {
-        int position = 0;
-
-        // i is the index of the piece we're looking for, j is the position of the piece.
-        for (int j = 0; j < 12; j++) {
-            if (state->edgePieces[j].index == (*edgeIndicies)[i]) {
-                result += position * coefficients[i];
-                break;
-            }
-            
-            // Since the egde indicies may not start at zero we have to check if a number is below the smallest value and count its position (2nd statement)
-            if ((*edgeIndicies)[i] < state->edgePieces[j].index || state->edgePieces[j].index < (*edgeIndicies)[0]) {
-                position++;
-            }
-        }
-    }
-
-    return result;
-}
-
-int GetFullPermutationIndex(RubicsCubeState* state) {
-    int result = 0;
-
-    const int coefficients[] = {
-        1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10 * 11,
-        1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10,
-        1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9,
-        1 * 2 * 3 * 4 * 5 * 6 * 7 * 8,
-        1 * 2 * 3 * 4 * 5 * 6 * 7,
-        1 * 2 * 3 * 4 * 5 * 6,
-        1 * 2 * 3 * 4 * 5,
-        1 * 2 * 3 * 4,
-        1 * 2 * 3,
-        1 * 2,
-        1
-    };
-
-    // We iterating only to the third-last element, since the position of the last two pieces are completely defined by the positions of all other pieces.
-    for (int i = 0; i < 12 - 1; i++) {
-        int position = 0;
-
-        // i is the index of the piece we're looking for, j is the position of the piece.
-        for (int j = 0; j < 12; j++) {
-            if (state->edgePieces[j].index == i) {
-                result += position * coefficients[i];
-                break;
-            }
-            
-            if (i < state->edgePieces[j].index) {
-                position++;
-            }
-        }
-    }
-
-    return result;
+    return permutaionIndex * BIG_EDGE_ROTATION_COUNT + rotationIndex;
 }
