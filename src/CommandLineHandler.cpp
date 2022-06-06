@@ -24,6 +24,10 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
             GenerateLookupTable(std::atoi(argv[i + 1]));
         }
 
+        if (((string) argv[i]).compare("--ds") == 0) {
+            DuplicateState::active = true;
+        }
+
         if (((string) argv[i]).compare("--help") == 0) {
             PrintHelp();
         }

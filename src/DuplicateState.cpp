@@ -24,15 +24,19 @@ int foundDuplicates = 0;
 void EvaluateState(RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
 uint64 CalculateStateIndex(RubicsCubeState* state);
 
+namespace DuplicateState {
+    bool active = false;
+}
+
 bool DuplicateState::WasStateReached(StateIndex index) {
-    if (duplicateReachableStates2.find(index) != duplicateReachableStates.end()) {
+    if (duplicateReachableStates2.find(index) != duplicateReachableStates2.end()) {
         // we check if it was already reached in the search with the current max depth and return if so, 
         // since all following states will be processed already.
-        if (duplicateReachableStates[index]) {
+        if (duplicateReachableStates2[index]) {
             return true;
         } else {
             // if it hasn't been reached in the current search we set it's flag, so no other path will process follwing states again and continiue.
-            duplicateReachableStates[index] = true;
+            duplicateReachableStates2[index] = true;
         }
     }
 
@@ -40,9 +44,11 @@ bool DuplicateState::WasStateReached(StateIndex index) {
 }
 
 void DuplicateState::ResetAllStates() {
-    for(auto it = duplicateReachableStates.begin(); it != duplicateReachableStates.end(); ++it) {
+    for(auto it = duplicateReachableStates2.begin(); it != duplicateReachableStates2.end(); ++it) {
         it.value() = false;
     }
+
+    std::cout << duplicateReachableStates2.size() << endl;
 }
 
 bool CheckAndSetDuplicateReachableState(RubicsCubeState* state) {

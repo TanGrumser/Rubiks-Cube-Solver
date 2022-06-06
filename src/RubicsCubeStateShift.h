@@ -55,7 +55,6 @@ struct RubicsCubeStateShift {
         StateIndex stateIndex;
 
         array<unsigned, 8> cornerPermutaion;
-        array<unsigned, 8> cornerRotations;
         array<unsigned, 12> edgePermutaion;
 
         int cornerRotationIndex = 0;

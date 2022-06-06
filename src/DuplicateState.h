@@ -6,6 +6,7 @@
 
 namespace DuplicateState {
     const string DUPLICATE_STATE_PATH = "duplicateStates";
+    extern bool active;
 
     void GenerateLookupTable();
     void SetBaseState(RubicsCubeState* state);

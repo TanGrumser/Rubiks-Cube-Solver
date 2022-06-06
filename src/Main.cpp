@@ -22,8 +22,12 @@
 
 int main(int argc, char *argv[]) {
         
-    CommandLineHandler::Start(argc, argv);
-    //DuplicateState::GenerateLookupTable();
+    //CommandLineHandler::Start(argc, argv);
+    string path = argv[1];
+    char buffer[] = {0,1,0,1};
+    FileManagement::WriteBufferToFile(path, buffer, 4);
+    std::cout << "wrote to " << path << endl;
+    //DuplicateState::GenerateLookupTable(path);
     /*
     std::cout << "Loading lookup tables and duplicate state table." << endl;
         LookupTable::LoadLookupTables();

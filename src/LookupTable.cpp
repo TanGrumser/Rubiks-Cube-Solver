@@ -71,7 +71,7 @@ void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTab
 void LookupTable::GenerateLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::LOWER_EDGE_LOOKUP_TABLE_PATH, GetLowerEdgeLookupIndex, EDGE_STATES_COUNT); }
 void LookupTable::GenerateBigUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, GetBigUpperEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
 void LookupTable::GenerateBigLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, GetBigLowerEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
-void LookupTable::GenerateFullEdgeLookupTable() { GenerateLookupTable(LookupTable::FULL_EDGE_LOOKUP_TABLE_PATH, GetFullEdgeLookupIndex, FULL_EDGE_STATES_COUNT); }
+void LookupTable::GenerateFullEdgeLookupTable(string path) { GenerateLookupTable(path.compare("") == 0 ?  LookupTable::FULL_EDGE_LOOKUP_TABLE_PATH : path, GetFullEdgeLookupIndex, FULL_EDGE_STATES_COUNT); }
 
 
 void LookupTable::LoadLookupTables() {

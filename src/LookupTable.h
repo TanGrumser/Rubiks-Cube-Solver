@@ -71,7 +71,7 @@ namespace LookupTable {
     void GenerateLowerEdgeLookupTable();
     void GenerateBigUpperEdgeLookupTable();
     void GenerateBigLowerEdgeLookupTable();
-    void GenerateFullEdgeLookupTable();
+    void GenerateFullEdgeLookupTable(string path = "");
 
     // TODO delete
     int GetRotationIndex(RubicsCubeState* state);
