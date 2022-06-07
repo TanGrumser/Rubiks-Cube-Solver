@@ -18,7 +18,7 @@ using LookupTable::EDGE_STATES_COUNT;
 
 const char UNINITIALIIZED = -1;
 uint64 reachedDuplicates = 0;
-std::atomic_int a_reachedStates;
+std::atomic_uint64_t a_reachedStates;
 std::mutex consoleMutex;
 
 const long long int statesAtDepth[12] = {
