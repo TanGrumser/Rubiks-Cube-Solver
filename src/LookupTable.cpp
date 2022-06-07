@@ -17,7 +17,7 @@ using LookupTable::CORNER_STATES_COUNT;
 using LookupTable::EDGE_STATES_COUNT;
 
 const char UNINITIALIIZED = -1;
-int reachedDuplicates = 0;
+uint64 reachedDuplicates = 0;
 std::atomic_int a_reachedStates;
 std::mutex consoleMutex;
 
@@ -37,7 +37,7 @@ const long long int statesAtDepth[12] = {
 };
 
 // TODO put this somewhere else
-int currentDepthStates = 0;
+uint64 currentDepthStates = 0;
 char* cornerLookupTable;
 char* upperEdgeLookupTable;
 char* lowerEdgeLookupTable;
@@ -62,9 +62,9 @@ namespace LookupTable {
     int threadCount = 1;
 }
 
-void Logger(int* reachedStates, bool* hasGenerationFinished, char* currentDepth, int maxReachableStates, std::vector<long long int*>* threadProgresses);
-void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses);
-void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress);
+void Logger(uint64* reachedStates, bool* hasGenerationFinished, char* currentDepth, uint64 maxReachableStates, std::vector<long long int*>* threadProgresses);
+void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, uint64 maxReachableStates, char* currentDepth, std::vector<char>* shortestMovesPossible, uint64* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses);
+void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, uint64* reachedStates, std::mutex* mutex, long long int* threadProgress);
 
 void LookupTable::GenerateCornerLookupTable() { GenerateLookupTable(LookupTable::CORNER_LOOKUP_TABLE_PATH, GetCornerLookupIndex, CORNER_STATES_COUNT); }
 void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::UPPER_EDGE_LOOKUP_TABLE_PATH, GetUpperEdgeLookupIndex, EDGE_STATES_COUNT); }
@@ -112,23 +112,23 @@ int LookupTable::GetFullEdgeStateDistance(RubicsCubeState* state) {
 }
 
 void inline ClenaupReachedFlags(std::vector<char>* buffer) {
-    for (int i = 0; i < buffer->capacity(); i++) {
+    for (uint64 i = 0; i < buffer->capacity(); i++) {
         if ((*buffer)[i] != UNINITIALIIZED) {
             (*buffer)[i] &= 0b01111111;
         }
     }
 }
 
-void inline SetReachedFlag(int index, std::vector<char>* buffer) {
+void inline SetReachedFlag(uint64 index, std::vector<char>* buffer) {
     (*buffer)[index] = (*buffer)[index] | 0b10000000;
 }
 
-bool inline GetReachedFlag(int index, std::vector<char>* buffer) {
+bool inline GetReachedFlag(uint64 index, std::vector<char>* buffer) {
     return (*buffer)[index] != UNINITIALIIZED && ((*buffer)[index] & 0b10000000) != 0;
 }
 
 void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalculator, uint64 maxReachableStates) {
-    int* reachedStates = new int(0);
+    uint64* reachedStates = new uint64(0);
     int* finishedThreads = new int(0);
     char* currentDepth = new char(0);
     bool* hasGenerationFinished = new bool(false);
@@ -137,8 +137,6 @@ void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalcula
 
     std::vector<std::thread> threads = {};
     std::mutex* bufferMutex = new std::mutex();
-
-    ConcurrencyData concurrencyData(LookupTable::threadCount, reachedStates, finishedThreads);
 
     std::thread(Logger, reachedStates, hasGenerationFinished, currentDepth, maxReachableStates, threadProgresses).detach();
     EvaluatePositionWithIterativeDeepening(IndexCalculator, maxReachableStates, currentDepth, shortestPossibleMoves, reachedStates, bufferMutex, threadProgresses);
@@ -154,7 +152,7 @@ void LookupTable::GenerateLookupTable(string path, IndexCalculation IndexCalcula
     delete[] shortestPossibleMoves;
 }
 
-void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, int maxReachableStates, char* currentDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses) {
+void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, uint64 maxReachableStates, char* currentDepth, std::vector<char>* shortestMovesPossible, uint64* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses) {
     std::vector<std::thread> threads(LookupTable::threadCount);
     a_reachedStates = 0;
 
@@ -182,7 +180,7 @@ void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexC
     }
 }
 
-void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, int* reachedStates, std::mutex* mutex, long long int* threadProgress) {
+void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, uint64* reachedStates, std::mutex* mutex, long long int* threadProgress) {
     if (a_reachedStates == (*shortestMovesPossible).size()) {
         return;
     }
@@ -241,7 +239,7 @@ void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeS
 }
 
 // TODO remove thread progresses or finally implement fill functionality.
-void Logger(int* reachedStates, bool* hasGenerationFinished, char* currentDepth, int maxReachableStates, std::vector<long long int*>* threadProgresses) {
+void Logger(uint64* reachedStates, bool* hasGenerationFinished, char* currentDepth, uint64 maxReachableStates, std::vector<long long int*>* threadProgresses) {
     auto startTime = std::chrono::system_clock::now();
     
     while (!(*hasGenerationFinished)) {
