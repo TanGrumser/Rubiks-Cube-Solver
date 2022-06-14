@@ -47,8 +47,6 @@ void DuplicateState::ResetAllStates() {
     for(auto it = duplicateReachableStates2.begin(); it != duplicateReachableStates2.end(); ++it) {
         it.value() = false;
     }
-
-    std::cout << duplicateReachableStates2.size() << endl;
 }
 
 bool CheckAndSetDuplicateReachableState(RubicsCubeState* state) {

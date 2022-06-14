@@ -47,14 +47,25 @@ void LookupTable::TestCornerLookupCaluclation() {
 PermutationIndexer<8> cornerIndexer;
 
 uint64 LookupTable::GetCornerLookupIndex(RubicsCubeState* state) {
-    return cornerIndexer.rank(state->cornerPermutaion) * CORNER_ROTATIONS_COUNT + GetRotationIndex(state);
+    array<unsigned int, 8> cornerPermutation = {
+        state->corners[0].index,
+        state->corners[1].index,
+        state->corners[2].index,
+        state->corners[3].index,
+        state->corners[4].index,
+        state->corners[5].index,
+        state->corners[6].index,
+        state->corners[7].index
+    };
+
+    return cornerIndexer.rank(cornerPermutation) * CORNER_ROTATIONS_COUNT + GetRotationIndex(state);
 }
 
 int LookupTable::GetRotationIndex(RubicsCubeState* state) {
     int rotationIndex = 0;
    
     for (int i = 0; i < 7; i++) {
-        rotationIndex += powersOfThree[i] * state->cornerRotation[i];
+        rotationIndex += powersOfThree[i] * state->corners[i].rotation;
     }
 
     return rotationIndex;
@@ -79,12 +90,12 @@ int GetPermutationIndex(RubicsCubeState* state) {
 
         // i is the index of the piece we're looking for, j is the position of the piece.
         for (int j = 0; j < 8; j++) {
-            if (state->cornerPermutaion[j] == i) {
+            if (state->corners[j].index == i) {
                 result += position * coefficients[i];
                 break;
             }
             
-            if (i < state->cornerPermutaion[j]) {
+            if (i < state->corners[j].index) {
                 position++;
             }
         }

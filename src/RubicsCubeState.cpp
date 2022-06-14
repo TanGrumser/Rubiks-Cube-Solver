@@ -5,26 +5,6 @@
 #include "LookupTable.h"
 
 
-/*
-RubicsCubeState::RubicsCubeState(array<unsigned int, 8> cornerPermutation, array<unsigned int, 8> cornerRotation, array<unsigned int, 12> edgePermutation, array<unsigned int, 12> edgeRotation) {
-    this->cornerPermutaion = cornerPermutaion;
-    this->cornerRotation = cornerRotation;
-    this->edgePermutaion = edgePermutaion;
-    this->edgeRotation = edgeRotation;
-
-
-    this->edgeNeighbourIndicieRotations = nullptr;
-}
-*/
-
-
-RubicsCubeState::~RubicsCubeState() {
-    
-    // deleting a null pointer seems to be safe (https://stackoverflow.com/questions/6731331/is-it-still-safe-to-delete-nullptr-in-c0x)
-    delete[] edgeNeighbourIndicieRotations;
-}
-
-
 RubicsCubeState* RubicsCubeState::initialState = nullptr;
 
 RubicsCubeState* RubicsCubeState::InitialState() {
@@ -32,13 +12,13 @@ RubicsCubeState* RubicsCubeState::InitialState() {
         RubicsCubeState::initialState = new RubicsCubeState();
 
         for (int i = 0; i < 8; i++) {
-            RubicsCubeState::initialState->cornerPermutaion[i] = i;
-            RubicsCubeState::initialState->cornerRotation[i] = 0;
+            RubicsCubeState::initialState->corners[i].index = i;
+            RubicsCubeState::initialState->corners[i].rotation = 0;
         }
         
         for (int i = 0; i < 12; i++) {
-            RubicsCubeState::initialState->edgePermutaion[i] = i;
-            RubicsCubeState::initialState->edgeRotation[i] = 0;
+            RubicsCubeState::initialState->edges[i].index = i;
+            RubicsCubeState::initialState->edges[i].rotation = 0;
         }
     }
 
@@ -49,13 +29,13 @@ RubicsCubeState* RubicsCubeState::Copy() {
     RubicsCubeState* copy = new RubicsCubeState();
 
     for (int i = 0; i < 8; i++) {
-        copy->cornerPermutaion[i] = this->cornerPermutaion[i];
-        copy->cornerRotation[i] = this->cornerRotation[i];
+        copy->corners[i].index = this->corners[i].index;
+        copy->corners[i].rotation = this->corners[i].rotation;
     }
 
     for (int i = 0; i < 12; i++) {
-        copy->edgePermutaion[i] = this->edgePermutaion[i];
-        copy->edgeRotation[i] = this->edgeRotation[i];
+        copy->edges[i].index = this->edges[i].index;
+        copy->edges[i].rotation = this->edges[i].rotation;
     }
 
     return copy;
@@ -65,7 +45,7 @@ string RubicsCubeState::GetStateString() {
     string result = "";
 
     for (int i = 0; i < 12; i++) {
-        result += std::to_string(edgePermutaion[i]) + "," + std::to_string(edgeRotation[i]);
+        result += std::to_string(edges[i].index) + "," + std::to_string(edges[i].rotation);
 
         if (i < 12 - 1) {
             result +=  ";";
@@ -75,7 +55,7 @@ string RubicsCubeState::GetStateString() {
     result += "|";
 
     for (int i = 0; i < 8; i++) {
-        result += std::to_string(cornerPermutaion[i]) + "," + std::to_string(cornerRotation[i]);
+        result += std::to_string(corners[i].index) + "," + std::to_string(corners[i].rotation);
 
         if (i < 8 - 1) {
             result += ";";
@@ -95,15 +75,15 @@ RubicsCubeState* RubicsCubeState::ParseStateString(string stateString) {
     for (int i = 0; i < edgeValues.size(); i++) {
         vector<string> values = StringUtils::Split(edgeValues[i], ",");
         
-        state->edgePermutaion[i] = stoi(values[0]);
-        state->edgeRotation[i] = stoi(values[1]);
+        state->edges[i].index = stoi(values[0]);
+        state->edges[i].rotation = stoi(values[1]);
     }
 
     for (int i = 0; i < cornerValues.size(); i++) {
         vector<string> values = StringUtils::Split(cornerValues[i], ",");
         
-        state->cornerPermutaion[i] = stoi(values[0]);
-        state->cornerRotation[i] = stoi(values[1]);
+        state->corners[i].index = stoi(values[0]);
+        state->corners[i].rotation = stoi(values[1]);
     }
     
     return state;
@@ -126,15 +106,15 @@ Turn RubicsCubeState::GetTurnTo(RubicsCubeState* other) {
 
 bool RubicsCubeState::Equals(RubicsCubeState* other) {
     for (int i = 0; i < 12; i++) {
-        if (edgePermutaion[i] != other->edgePermutaion[i]
-         || edgeRotation[i] != other->edgeRotation[i]) {
+        if (edges[i].index != other->edges[i].index
+         || edges[i].rotation != other->edges[i].rotation) {
              return false;
          }
     }
 
     for (int i = 0; i < 8; i++) {
-        if (cornerPermutaion[i] != other->cornerPermutaion[i]
-         || cornerRotation[i] != other->cornerRotation[i]) {
+        if (corners[i].index != other->corners[i].index
+         || corners[i].rotation != other->corners[i].rotation) {
              return false;
          }
     }

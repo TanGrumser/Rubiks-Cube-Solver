@@ -12,17 +12,13 @@ class RubicsCubeState {
     private:
 
     public:
-        array<unsigned int, 8> cornerPermutaion;
-        array<unsigned int, 8> cornerRotation;
-        array<unsigned int, 12> edgePermutaion;
-        array<unsigned int, 12> edgeRotation;
+        array<RubicsCubePiece, 8> corners;
+        array<RubicsCubePiece, 12> edges;
 
         static RubicsCubeState* initialState;
 
-        unsigned int** edgeNeighbourIndicieRotations;
         static RubicsCubeState* InitialState();
-        //RubicsCubeState(array<unsigned int, 8> cornerPermutation, array<unsigned int, 8> cornerRotation, array<unsigned int, 12> edgePermutation, array<unsigned int, 12> edgeRotation);
-        ~RubicsCubeState();
+        
         string GetStateString();
         static RubicsCubeState* ParseStateString(string stateString);
         RubicsCubeState* Copy();

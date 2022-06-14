@@ -41,13 +41,13 @@ struct RubicsCubeStateShift {
 
     RubicsCubeStateShift (RubicsCubeState* state) {
         for (int i = 0; i < 8; i++) {
-            this->cornerIndiciesMapping[state->cornerPermutaion[i]] = i;
-            this->cornerRotationOffset[state->cornerPermutaion[i]]  = (3u - state->cornerRotation[i]) % 3u;
+            this->cornerIndiciesMapping[state->corners[i].index] = i;
+            this->cornerRotationOffset[state->corners[i].index]  = (3u - state->corners[i].rotation) % 3u;
         }
 
         for (int i = 0; i < 12; i++) {
-            this->edgeIndiciesMapping[state->edgePermutaion[i]] = i;
-            this->edgeRotationOffset[state->edgePermutaion[i]]  = state->edgeRotation[i];
+            this->edgeIndiciesMapping[state->edges[i].index] = i;
+            this->edgeRotationOffset[state->edges[i].index]  = state->edges[i].rotation;
         }
     }
 
@@ -61,19 +61,19 @@ struct RubicsCubeStateShift {
         int edgeRotationIndex = 0;
 
         for (int i = 0; i < 8; i++) {
-            cornerPermutaion[i] = this->cornerIndiciesMapping[state->cornerPermutaion[i]];
+            cornerPermutaion[i] = this->cornerIndiciesMapping[state->corners[i].index];
             
             if (i < 7) {
-                cornerRotationIndex += ((state->cornerRotation[i] + this->cornerRotationOffset[state->cornerPermutaion[i]]) % 3u) * powersOfThree[i];
+                cornerRotationIndex += ((state->corners[i].rotation + this->cornerRotationOffset[state->corners[i].index]) % 3u) * powersOfThree[i];
             }
         }
             
         
         for (int i = 0; i < 12; i++) {
-            edgePermutaion[i] = this->edgeIndiciesMapping[state->edgePermutaion[i]];
+            edgePermutaion[i] = this->edgeIndiciesMapping[state->edges[i].index];
             
             if (i < 11) {
-                edgeRotationIndex += ((state->edgeRotation[i] + this->edgeRotationOffset[state->edgePermutaion[i]]) % 2u) * powersOfTwo[i];
+                edgeRotationIndex += ((state->edges[i].rotation + this->edgeRotationOffset[state->edges[i].index]) % 2u) * powersOfTwo[i];
             }
         }
 

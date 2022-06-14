@@ -5,10 +5,15 @@
 using namespace std;
 
 struct RubicsCubePiece {
-    int index;
-    int rotation;
+    unsigned int index;
+    unsigned int rotation;
 
-    RubicsCubePiece(int index, int rotation) {
+    RubicsCubePiece() {
+        this->index = 0;
+        this->rotation = 0;
+    }
+
+    RubicsCubePiece(unsigned int index, unsigned int rotation) {
         this->index = index;
         this->rotation = rotation;
     }
