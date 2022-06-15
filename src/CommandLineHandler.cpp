@@ -63,7 +63,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
     }
     
     
-    std::cout << state->GetStateString() << endl;
+    SolveCube(state);
 }
 
 void SolveCube(RubicsCubeState* state) {
