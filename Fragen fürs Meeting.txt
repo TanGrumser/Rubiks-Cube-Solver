@@ -124,6 +124,9 @@ kcachegrind
 
 Big Edge Lookup Table entries
 
+
+
+
 1
 15
 191
@@ -137,3 +140,32 @@ Big Edge Lookup Table entries
 13042507
 81
 sum: 510935040
+
+
+Corners: 
+
+1
+18
+243
+2874
+28000
+205416
+1168516
+5402628
+20776176
+45391616
+15139616
+64736
+
+htop nachschauen
+nohup prozess läuft ohne console weiter
+output in file
+
+$command > OUT & 
+tail -f OUT 
+
+$command 2>&1 > OUT &
+
+valgrind    
+valgrind --tool=callgrind 
+kcachegrind 

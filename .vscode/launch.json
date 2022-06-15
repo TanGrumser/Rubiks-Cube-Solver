@@ -11,7 +11,7 @@
             "program": "${fileDirname}\\..\\Solver.exe",
             "args": [
                 "-t",
-                "\"U L D R UD L R U D L R\"",
+                "\"L\"",
                 //"-h",
                 //"1"
             ],

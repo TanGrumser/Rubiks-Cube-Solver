@@ -88,9 +88,9 @@ int Search(vector<RubicsCubeState*>* path, int depth, int bound, Turn lastTurn, 
     RubicsCubeState* node = path->back();
     ++traversedStates;
     
-    if (DuplicateState::WasStateReached(shift->GetShiftedState(node))) {
+    if (DuplicateState::active && depth <= 8 && DuplicateState::WasStateReached(shift->GetShiftedState(node))) {
         duplicateStates++;
-        return 200;
+        return MAX_BOUND;
     }
 
     int totalEstimatedCost = depth + Solver::GetDistanceHeuristic(node, RubicsCubeState::InitialState());

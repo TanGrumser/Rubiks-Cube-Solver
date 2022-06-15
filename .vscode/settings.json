@@ -78,6 +78,9 @@
         "string_view": "cpp",
         "numbers": "cpp",
         "semaphore": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "list": "cpp",
+        "xhash": "cpp",
+        "stack": "cpp"
     }
 }

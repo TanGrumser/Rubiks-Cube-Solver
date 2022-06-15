@@ -19,12 +19,12 @@ namespace LookupTable {
         const string BIG_LOWER_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\bigLowerEdgeLookupTable";
         const string FULL_EDGE_LOOKUP_TABLE_PATH = "C:\\Users\\tangr\\Desktop\\Uni\\Bachelorarbeit\\Rubiks-Cube-Solver\\fullEdgeLookupTable";
     #else
-        const string CORNER_LOOKUP_TABLE_PATH         = "cornerLookupTable";
-        const string UPPER_EDGE_LOOKUP_TABLE_PATH     = "upperEdgeLookupTable";
-        const string LOWER_EDGE_LOOKUP_TABLE_PATH     = "lowerEdgeLookupTable";
-        const string BIG_UPPER_EDGE_LOOKUP_TABLE_PATH = "bigUpperEdgeLookupTable";
-        const string BIG_LOWER_EDGE_LOOKUP_TABLE_PATH = "bigLowerEdgeLookupTable";
-        const string FULL_EDGE_LOOKUP_TABLE_PATH = "fullEdgeLookupTable";
+        const string CORNER_LOOKUP_TABLE_PATH         = "LookupTables\\cornerLookupTable";
+        const string UPPER_EDGE_LOOKUP_TABLE_PATH     = "LookupTables\\upperEdgeLookupTable";
+        const string LOWER_EDGE_LOOKUP_TABLE_PATH     = "LookupTables\\lowerEdgeLookupTable";
+        const string BIG_UPPER_EDGE_LOOKUP_TABLE_PATH = "LookupTables\\bigUpperEdgeLookupTable";
+        const string BIG_LOWER_EDGE_LOOKUP_TABLE_PATH = "LookupTables\\bigLowerEdgeLookupTable";
+        const string FULL_EDGE_LOOKUP_TABLE_PATH      = "fullEdgeLookupTable";
     #endif
 
     const int CORNER_ROTATIONS_COUNT = 3 * 3 * 3 * 3 * 3 * 3 * 3; // 3^7

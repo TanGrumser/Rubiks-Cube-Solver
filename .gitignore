@@ -4,6 +4,7 @@
 [Bb]uild/
 [Bb]uilds/
 [Ll]ogs/
+[Ll]ookupTables/
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
@@ -11,6 +12,7 @@
 # Visual Studio cache directory
 .vs/
 src/.vscode/
+.vscode/
 
 # Gradle cache directory
 .gradle/
