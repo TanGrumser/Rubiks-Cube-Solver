@@ -134,7 +134,7 @@ int Search(vector<RubicsCubeState*>* path, int depth, int bound, Turn lastTurn, 
         }
     }
 
-    path->back();
+    delete path->back();
     path->pop_back();
 
     *minBound = min;

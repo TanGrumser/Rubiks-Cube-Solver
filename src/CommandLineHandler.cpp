@@ -62,7 +62,6 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         }
     }
     
-    
     SolveCube(state);
 }
 

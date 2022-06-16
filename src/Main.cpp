@@ -22,34 +22,6 @@
 int main(int argc, char *argv[]) {
         
     CommandLineHandler::Start(argc, argv);
-    
-    /*
-    std::cout << "Loading lookup tables and duplicate state table." << endl;
-        LookupTable::LoadLookupTables();
-        DuplicateState::LoadDuplicateStateIndex();
-    std::cout << "Finished Loading." << endl;
-
-    std::cout << "Finished Loading." << endl;
-    vector<Turn> s;
-
-    
-    for (int i = 0; i < 1000; i++) {
-        RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
-        state->scramble(1);
-
-        Stopwatch::StartTimer();
-        vector<Turn> solution = Solver::PR_IterativeDeepeningAStar(state);
-        Stopwatch::StopTimer();
-
-
-        s.insert(s.end(), solution.begin(), solution.end());
-
-        delete state;
-    }
-
-
-    std::cout << Stopwatch::GetFormattedTimeInSeconds() << " " << s.size() << endl;
-    */
 
     return 0;
 }

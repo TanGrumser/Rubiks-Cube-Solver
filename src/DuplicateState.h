@@ -5,7 +5,7 @@
 #include "StateIndex.h"
 
 namespace DuplicateState {
-    const string DUPLICATE_STATE_PATH = "duplicateStates";
+    const string DUPLICATE_STATE_PATH = "LookupTables\\duplicateStates";
     extern bool active;
 
     void GenerateLookupTable();
