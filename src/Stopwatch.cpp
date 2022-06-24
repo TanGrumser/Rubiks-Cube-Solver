@@ -1,35 +1,25 @@
-#include <chrono>
-#include <string>
-#include <iostream>
-#include <sstream>
+#include "Stopwatch.h"
 
-using std::chrono::high_resolution_clock;
-using std::chrono::duration_cast;
-using std::chrono::duration;
-using std::chrono::milliseconds;
+void StopWatch::StartTimer() {
+    this->t1 = std::chrono::system_clock::now();
+}
 
-namespace Stopwatch {
-    std::chrono::system_clock::time_point t1;
-    std::chrono::system_clock::time_point t2;
+void StopWatch::StopTimer() {
+    this->t2 = std::chrono::system_clock::now();
+}
 
-    void StartTimer() {
-        t1 = std::chrono::system_clock::now();
-    }
+double StopWatch::GetTimeInMilliseconds() {
+    this->t2 = std::chrono::system_clock::now();
+    duration<double, std::milli> ms_double = t2 - t1;
+    return ms_double.count();
+}
 
-    void StopTimer() {
-        t2 = std::chrono::system_clock::now();
-    }
+std::string StopWatch::GetFormattedTimeInSeconds() {
+    this->t2 = std::chrono::system_clock::now();
+    return std::to_string(duration<double>(t2 - t1).count()) + "s";
+}
 
-    double GetTimeInMilliseconds() {
-        duration<double, std::milli> ms_double = t2 - t1;
-        return ms_double.count();
-    }
-
-    std::string GetFormattedTimeInSeconds() {
-        return std::to_string(duration<double>(t2 - t1).count()) + "s";
-    }
-
-    std::string GetFormattedTimeInMilliseconds() {
-        return std::to_string(GetTimeInMilliseconds() / 1000.0);
-    }
+std::string StopWatch::GetFormattedTimeInMilliseconds() {
+    this->t2 = std::chrono::system_clock::now();
+    return std::to_string(GetTimeInMilliseconds() / 1000.0);
 }

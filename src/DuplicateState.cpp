@@ -21,7 +21,7 @@ tsl::robin_map<StateIndex, bool, StateIndexHasher> duplicateReachableStates;
 tsl::robin_map<StateIndex, bool, StateIndexHasher> duplicateReachableStates2;
 int foundDuplicates = 0;
 
-void EvaluateState(RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
+void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
 uint64 CalculateStateIndex(RubicsCubeState* state);
 
 namespace DuplicateState {
@@ -93,7 +93,7 @@ void DuplicateState::LoadDuplicateStateIndex() {
 }
 
 void DuplicateState::GenerateLookupTable() {
-    RubicsCubeState* initialState = RubicsCubeState::InitialState()->Copy();
+    RubicsCubeState& initialState = RubicsCubeState::InitialState().Copy();
     const int MAX_DEPTH = 7;
     vector<Turn> lastTurns;
 
@@ -117,8 +117,8 @@ void DuplicateState::GenerateLookupTable() {
     FileManagement::WriteBufferToFile(DUPLICATE_STATE_PATH, (char*)duplicteStatesBuffer.data(), duplicteStatesBuffer.size() * sizeof(StateIndex));    
 }
 
-void EvaluateState(RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns) {
-    StateIndex stateIndex = state->GetLookupIndex();
+void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns) {
+    StateIndex stateIndex = state.GetLookupIndex();
     
     // we found a state, that is reachable from more than one path.
     if (duplicateReachableStates.find(stateIndex) != duplicateReachableStates.end()) {
@@ -157,15 +157,15 @@ void EvaluateState(RubicsCubeState* state, char depth, Turn lastTurn, std::vecto
                 continue;
             }
             lastTurns.push_back(turn);
-            state->ApplyTurn(turn);
+            state.ApplyTurn(turn);
             EvaluateState(state, depth + 1, turn, Turn::AllTurns, maxDepth, lastTurns);
-            state->ApplyTurn(turn.Inverse());
+            state.ApplyTurn(turn.Inverse());
             lastTurns.pop_back();
         }
     }
 }
 
-uint64 CalculateStateIndex(RubicsCubeState* state) {
+uint64 CalculateStateIndex(RubicsCubeState& state) {
     int cornerIndex = LookupTable::GetCornerLookupIndex(state);
     int edgeIndex = LookupTable::GetFullEdgeLookupIndex(state);
 

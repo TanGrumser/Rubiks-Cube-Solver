@@ -10,13 +10,13 @@
 #include "FileManagement.h"
 #include "DuplicateState.h"
 
-void SolveCube(RubicsCubeState* state);
+void SolveCube(RubicsCubeState& state);
 void ParseFile(std::string path);
 void GenerateLookupTable(int table);
 void PrintHelp();
 
 void CommandLineHandler::Start(int argc, char *argv[]) {
-    RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
+    RubicsCubeState state = RubicsCubeState::InitialState().Copy();
 
     //Parse all command line arguments.
     for (int i = 1; i < argc; i++) {
@@ -57,7 +57,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
             
             for (int i = 0; i < turns.size(); i++) {
                 Turn turn = Turn::Parse(turns[i]);
-                state->ApplyTurn(turn);
+                state.ApplyTurn(turn);
             }
         }
     }
@@ -65,7 +65,9 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
     SolveCube(state);
 }
 
-void SolveCube(RubicsCubeState* state) {
+void SolveCube(RubicsCubeState& state) {
+    StopWatch* timer = new StopWatch();
+
     std::cout << "Loading lookup tables and duplicate state table." << endl;
         LookupTable::LoadLookupTables();
         DuplicateState::LoadDuplicateStateIndex();
@@ -75,18 +77,19 @@ void SolveCube(RubicsCubeState* state) {
     std::cout << "Starting solve." << endl;
     vector<Turn> solution;
 
-    Stopwatch::StartTimer();
+
+    timer->StartTimer();
     
     switch (Solver::solverIndex) {
         case 0: solution = Solver::PR_IterativeDeepeningAStar(state); break;
-        case 1: solution = Solver::SR_IterativeDeepeningAStar(state); break;
+        case 1: solution = Solver::SR_IterativeDeepeningAStar(state); break; // XXX
 
         default: throw std::runtime_error("Specified solver index isn't refferencing a solver: " + Solver::solverIndex);
     }
 
-    Stopwatch::StopTimer();
+    timer->StopTimer();
 
-    std::cout << "Time required: " << Stopwatch::GetFormattedTimeInSeconds() << endl;
+    std::cout << "Time required: " << timer->GetFormattedTimeInSeconds() << endl;
 
     for (int i = 0; i < solution.size(); i++) {
         std::cout << solution[i].ToString();

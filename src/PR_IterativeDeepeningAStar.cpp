@@ -11,7 +11,10 @@
 #include <thread>
 #include "DuplicateState.h"
 #include "RubicsCubeStateShift.h"
-
+#include "Stopwatch.h"
+#include <stack>
+#include <queue>
+#include <stdexcept>
 using std::vector;
 
 
@@ -20,123 +23,144 @@ int Search(vector<RubicsCubeState*>* path, int depth, int bound, Turn lastTurn, 
 vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);
 const int MAX_BOUND = 100000;
 const int SOLUTION_FOUND = -1;
+unsigned long long traversedStatesAtDepth = 0;
 unsigned long long traversedStates = 0;
 unsigned long long duplicateStates = 0;
 
 RubicsCubeStateShift* shift;
 
-vector<Turn> Solver::PR_IterativeDeepeningAStar(RubicsCubeState* startState) {
-    int bound = Solver::GetDistanceHeuristic(startState, RubicsCubeState::InitialState());
-    vector<RubicsCubeState*> path = {};
-    bool* isSolutionFound = new bool(false);
 
-    shift = new RubicsCubeStateShift(startState);
+struct Node {
+    RubicsCubeState cube;
+    Turn move;
+    uint8_t depth;
+};
 
-    path.push_back(startState);
-
-    vector<vector<RubicsCubeState*>*> paths(Solver::threadCount);
-    vector<RubicsCubeState*>* solutionPath;
-    vector<int*> newBounds(Solver::threadCount);
-
-    for (int i = 0; i < Solver::threadCount; i++) {
-        paths[i] = new vector<RubicsCubeState*>(1, startState->Copy());
-        newBounds[i] = new int();
+struct PrioritizedMove {
+    RubicsCubeState cube;
+    Turn move;
+    uint8_t estMoves; // Priority.  Least number of moves to most.
+    bool operator>(const PrioritizedMove& rhs) const {
+        return this->estMoves > rhs.estMoves;
     }
+};
 
-    while (true) {
-        vector<std::thread> threads(Solver::threadCount);
+vector<Turn> Solver::PR_IterativeDeepeningAStar(RubicsCubeState& startState) {
+    bool solved = startState.Equals(RubicsCubeState::InitialState());
+    typedef priority_queue<PrioritizedMove, vector<PrioritizedMove>,
+      greater<PrioritizedMove> > moveQueue_t;
 
-        for (int i = 0; i < Solver::threadCount; i++) {
-            *(newBounds[i]) = MAX_BOUND;
-            std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i ,Solver::threadCount);
-            std::thread thread(Search, paths[i], 0, bound, Turn::Empty(), newBounds[i], exploredTurns, isSolutionFound);
-            threads[i] = std::move(thread);
+    StopWatch             timer;
+    stack<Node>           nodeStack;
+    Node                  curNode;
+    array<Turn, 50>       moves     = {Turn::Empty()};
+    uint8_t               bound     = 0;
+    uint8_t               nextBound = Solver::GetDistanceHeuristic(startState, 100);
+
+      timer.StartTimer();
+
+    while (!solved)
+    {
+      if (nodeStack.empty())
+      {
+        if (bound != 0)
+        {
+
+          cout << "IDA*: Finished bound " << (unsigned)bound
+               << ".  Elapsed time: " << timer.GetFormattedTimeInSeconds() << ". " <<
+               "traversed staes at this bound: " << traversedStatesAtDepth
+               << endl;
         }
 
-        std::cout << "Searching with an heuristic bound of " << bound << endl;
+        traversedStatesAtDepth = 0;
 
-        bound = MAX_BOUND;
-        // Wait for all threads to finish.
-        for (int i = 0; i < Solver::threadCount; i++) { 
-            threads[i].join(); 
+        // Start with the scrambled (root) node.  Depth 0, no move required.
+        nodeStack.push({startState, Turn::Empty(), 0});
 
-            if (*(newBounds[i]) == SOLUTION_FOUND) {
-                bound = SOLUTION_FOUND;
-                solutionPath = paths[i];
+        // If nextBound is initialized to 0 above but the cube is not solved,
+        // the DB is bad.
+        if (nextBound == 0)
+          throw std::runtime_error("DB is bad");
+
+        // If the next bound is not updated then all branches were pruned.
+        // This also indicates a bad DB.
+        if (nextBound == 0xFF)
+          throw std::runtime_error("Move is 0xFF");
+
+        bound     = nextBound;
+        nextBound = 0xFF;
+      }
+
+      curNode = nodeStack.top();
+      nodeStack.pop();
+      ++traversedStatesAtDepth;
+
+      // Keep the list of moves.  The moves end at 0xFF.
+      moves.at(curNode.depth) = Turn::Empty();
+
+      if (curNode.depth != 0)
+        moves[curNode.depth - 1] = curNode.move;
+
+      if (curNode.depth == bound)
+      {
+        if (curNode.cube.Equals(RubicsCubeState::InitialState()))
+          solved = true;
+      }
+      else
+      {
+        // This is used to sort the successors by estimated moves.
+        moveQueue_t successors;
+
+        for (uint8_t i = 0; i < 18; ++i)
+        {
+          Turn move = Turn::AllTurns[i];
+
+          if (!move.IsTurnBacktracking(curNode.move))
+          {
+            RubicsCubeState cubeCopy(curNode.cube);
+
+            cubeCopy.ApplyTurn(move);
+
+            uint8_t estSuccMoves = curNode.depth + 1 + Solver::GetDistanceHeuristic(cubeCopy, bound - curNode.depth - 1);
+
+            if (estSuccMoves <= bound)
+            {
+              // If the twisted cube is estimated to take fewer move than the
+              // current bound, push it, otherwise it's pruned.
+              successors.push({cubeCopy, move, estSuccMoves});
             }
-
-            // This is not a problem to be called after a solution was found, since no boudn will be smaller then SOLUTION_FOUND (= -1)
-            if (*(newBounds[i]) < bound) {
-                bound = *newBounds[i];
+            else if (estSuccMoves < nextBound)
+            {
+              // The next bound is the minimum of all successor node moves that's
+              // greater than the current bound.
+              nextBound = estSuccMoves;
             }
-        } 
-    
-        if (bound == SOLUTION_FOUND) {
-            break;
+          }
         }
 
-        DuplicateState::ResetAllStates();
-    }
+        while (!successors.empty())
+        {
+          // Push the nodes in sorted order.
+          nodeStack.push({
+            successors.top().cube,
+            successors.top().move,
+            (uint8_t)(curNode.depth + 1)
+          });
 
-    std::cout << "Searched States: " << traversedStates << endl;
-    std::cout << "Duplicate States: " << duplicateStates << endl;
-
-    return Solver::GenerateTurnSequenceFromStateSequence(*solutionPath);
-}
-
-int Search(vector<RubicsCubeState*>* path, int depth, int bound, Turn lastTurn, int* minBound, vector<Turn> nextTurns, bool* isSolutionFound) {
-    RubicsCubeState* node = path->back();
-    ++traversedStates;
-    
-    if (DuplicateState::active && depth <= 8 && DuplicateState::WasStateReached(shift->GetShiftedState(node))) {
-        duplicateStates++;
-        return MAX_BOUND;
-    }
-
-    int totalEstimatedCost = depth + Solver::GetDistanceHeuristic(node, RubicsCubeState::InitialState());
-
-    if (totalEstimatedCost > bound || *isSolutionFound) {
-        *minBound = totalEstimatedCost;
-        return totalEstimatedCost;
-    } 
-
-    
-
-    if (node->Equals(RubicsCubeState::InitialState())) {
-        *isSolutionFound = true;
-        *minBound = SOLUTION_FOUND;
-        return SOLUTION_FOUND;
-    } 
-
-    int min = MAX_BOUND;
-
-    // TODO allocating over and over again isn't necessary. Rather a stack with pre allocated states should be used.
-
-    RubicsCubeState* succesor = node->Copy();
-    path->push_back(succesor);
-    
-    for (int i = 0; i < nextTurns.size(); i++) {
-        if (!nextTurns[i].IsTurnBacktracking(lastTurn)) {
-            succesor->ApplyTurn(nextTurns[i]);
-            
-            int newBound = Search(path, depth + 1, bound, nextTurns[i], minBound, Turn::AllTurns, isSolutionFound);
-
-            if (newBound == SOLUTION_FOUND) {
-                *minBound = SOLUTION_FOUND;
-                return SOLUTION_FOUND;
-            }
-
-            if (newBound < min) {
-                min = newBound;
-            } 
-
-            succesor->ApplyTurn(nextTurns[i].Inverse());
+          successors.pop();
         }
+      }
     }
 
-    delete path->back();
-    path->pop_back();
+    cout << "IDA*: Goal reached in " << timer.GetFormattedTimeInSeconds() << "s. "
+         << "traversed staes at this bound: " << traversedStatesAtDepth
+         << endl;
 
-    *minBound = min;
-    return min;
+    // Convert the move to a vector.
+    vector<Turn> moveVec;
+
+    for (unsigned i = 0; i < moves.size() && !moves.at(i).Equals(Turn::Empty()); ++i)
+      moveVec.push_back(moves.at(i));
+
+    return moveVec;
 }

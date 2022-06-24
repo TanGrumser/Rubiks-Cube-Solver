@@ -15,16 +15,15 @@ class RubicsCubeState {
         array<RubicsCubePiece, 8> corners;
         array<RubicsCubePiece, 12> edges;
 
-        static RubicsCubeState* initialState;
-
-        static RubicsCubeState* InitialState();
+        static RubicsCubeState initialState;
+        static RubicsCubeState& InitialState();
         
         string GetStateString();
-        static RubicsCubeState* ParseStateString(string stateString);
-        RubicsCubeState* Copy();
+        static RubicsCubeState& ParseStateString(string stateString);
+        RubicsCubeState& Copy();
         void ApplyTurn(Turn turn);
-        bool Equals(RubicsCubeState* other);
-        Turn GetTurnTo(RubicsCubeState* other);
+        bool Equals(RubicsCubeState& other);
+        Turn GetTurnTo(RubicsCubeState& other);
         StateIndex GetLookupIndex();
         void scramble(int turns);
 };

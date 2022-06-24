@@ -157,6 +157,20 @@ Corners:
 15139616
 64736
 
+Egde permutations
+
+1
+18
+243
+3240
+42535
+542234
+6529891
+66478628
+310957078
+94443600
+4132
+
 htop nachschauen
 nohup prozess läuft ohne console weiter
 output in file

@@ -16,7 +16,7 @@ namespace Solver {
      * @param startState a state of a rubics cube, for which the shortest sequence of moves will be searched for, that solves the cube.
      * @return A vector<Turn> of the moves, that will solve the cube, when applied to the start state.
      */
-    vector<Turn> PR_IterativeDeepeningAStar(RubicsCubeState* startState);
+    vector<Turn> PR_IterativeDeepeningAStar(RubicsCubeState& startState);
     
     /**
      * @brief 
@@ -26,11 +26,10 @@ namespace Solver {
      * @param startState a state of a rubics cube, for which the shortest sequence of moves will be searched for, that solves the cube.
      * @return A vector<Turn> of the moves, that will solve the cube, when applied to the start state.
      */
-    vector<Turn> SR_IterativeDeepeningAStar(RubicsCubeState* startState);
+    vector<Turn> SR_IterativeDeepeningAStar(RubicsCubeState& startState);
 
 
-    int GetDistanceHeuristic(RubicsCubeState* state, RubicsCubeState* destination);
-    unsigned int** GetEdgeNeighbourIndiciesRotations(RubicsCubeState* state);
-    vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);
+    int GetDistanceHeuristic(RubicsCubeState& state, int bound);
+    vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState> stateSequence);
 
 }

@@ -5,14 +5,14 @@
 #include "Turn.h"
 #include <algorithm>
 
-int Search(vector<RubicsCubeState*> *path, int depth, int bound, Turn lastTurn);
+int Search(vector<RubicsCubeState> *path, int depth, int bound, Turn lastTurn);
 vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);
 const int MAX_BOUND = 100000;
 const int SOLUTION_FOUND = -1;
 
-vector<Turn> Solver::SR_IterativeDeepeningAStar(RubicsCubeState* startState) {
-        int bound = Solver::GetDistanceHeuristic(startState, RubicsCubeState::InitialState());
-        vector<RubicsCubeState*> path = {};
+vector<Turn> Solver::SR_IterativeDeepeningAStar(RubicsCubeState& startState) {
+        int bound = Solver::GetDistanceHeuristic(startState, 100);
+        vector<RubicsCubeState> path = {};
         path.push_back(startState);
 
         while (true) {
@@ -33,15 +33,15 @@ vector<Turn> Solver::SR_IterativeDeepeningAStar(RubicsCubeState* startState) {
         return Solver::GenerateTurnSequenceFromStateSequence(path);
     }
 
-int Search(vector<RubicsCubeState*> *path, int depth, int bound, Turn lastTurn) {
-    RubicsCubeState* node = path->back();
-    int totalEstimatedCost = depth + Solver::GetDistanceHeuristic(node, RubicsCubeState::InitialState());
+int Search(vector<RubicsCubeState> *path, int depth, int bound, Turn lastTurn) {
+    RubicsCubeState& node = path->back();
+    int totalEstimatedCost = depth + Solver::GetDistanceHeuristic(node, depth);
     
     if (totalEstimatedCost > bound) {
         return totalEstimatedCost;
     } 
 
-    if (node->Equals(RubicsCubeState::InitialState())) {
+    if (node.Equals(RubicsCubeState::InitialState())) {
         return SOLUTION_FOUND;
     } 
 
@@ -49,12 +49,12 @@ int Search(vector<RubicsCubeState*> *path, int depth, int bound, Turn lastTurn) 
 
     // TODO allocating over and over again isn't necessary. Rather a stack with pre allocated states should be used.
 
-    RubicsCubeState* succesor = node->Copy();
+    RubicsCubeState& succesor = node.Copy();
     path->push_back(succesor);
 
     for (int i = 0; i < Turn::CountAllTurns; i++) {
         if (!Turn::AllTurns[i].IsTurnBacktracking(lastTurn)) {
-            succesor->ApplyTurn(Turn::AllTurns[i]);
+            succesor.ApplyTurn(Turn::AllTurns[i]);
             
             int newBound = Search(path, depth + 1, bound, Turn::AllTurns[i]);
 
@@ -66,7 +66,7 @@ int Search(vector<RubicsCubeState*> *path, int depth, int bound, Turn lastTurn) 
                 min = newBound;
             } 
 
-            succesor->ApplyTurn(Turn::AllTurns[i].Inverse());
+            succesor.ApplyTurn(Turn::AllTurns[i].Inverse());
         }
     }
 

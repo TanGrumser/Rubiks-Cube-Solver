@@ -15,6 +15,7 @@
 using std::string;
 using LookupTable::CORNER_STATES_COUNT;
 using LookupTable::EDGE_STATES_COUNT;
+using LookupTable::FULL_EDGE_PERMUTATIONS_COUNT;
 
 const char UNINITIALIIZED = -1;
 uint64 reachedDuplicates = 0;
@@ -38,11 +39,12 @@ const long long int statesAtDepth[12] = {
 
 // TODO put this somewhere else
 uint64 currentDepthStates = 0;
-char* cornerLookupTable;
+char* cornerLookupTable ;
 char* upperEdgeLookupTable;
 char* lowerEdgeLookupTable;
 char* bigUpperEdgeLookupTable;
 char* bigLowerEdgeLookupTable;
+char* edgePermutationLookupTable;
 char* fullEdgeLookupTable;
 
 // This is just a helper Object to bundle some data, that need to get distributed between various threads.
@@ -64,13 +66,14 @@ namespace LookupTable {
 
 void Logger(uint64* reachedStates, bool* hasGenerationFinished, char* currentDepth, uint64 maxReachableStates, std::vector<long long int*>* threadProgresses);
 void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexCalculator, uint64 maxReachableStates, char* currentDepth, std::vector<char>* shortestMovesPossible, uint64* reachedStates, std::mutex* mutex, std::vector<long long int*>* threadProgresses);
-void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, uint64* reachedStates, std::mutex* mutex, long long int* threadProgress);
+void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, uint64* reachedStates, std::mutex* mutex, long long int* threadProgress);
 
 void LookupTable::GenerateCornerLookupTable() { GenerateLookupTable(LookupTable::CORNER_LOOKUP_TABLE_PATH, GetCornerLookupIndex, CORNER_STATES_COUNT); }
 void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::UPPER_EDGE_LOOKUP_TABLE_PATH, GetUpperEdgeLookupIndex, EDGE_STATES_COUNT); }
 void LookupTable::GenerateLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::LOWER_EDGE_LOOKUP_TABLE_PATH, GetLowerEdgeLookupIndex, EDGE_STATES_COUNT); }
 void LookupTable::GenerateBigUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, GetBigUpperEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
 void LookupTable::GenerateBigLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, GetBigLowerEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
+void LookupTable::GenerateEdgePermutationLookupTable() { GenerateLookupTable(LookupTable::EDGE_PERMUTATION_LOOKUP_TABLE_PATH, GetEdgePermutationLookupIndex, FULL_EDGE_PERMUTATIONS_COUNT); }
 void LookupTable::GenerateFullEdgeLookupTable(string path) { GenerateLookupTable(path.compare("") == 0 ?  LookupTable::FULL_EDGE_LOOKUP_TABLE_PATH : path, GetFullEdgeLookupIndex, FULL_EDGE_STATES_COUNT); }
 
 
@@ -79,34 +82,40 @@ void LookupTable::LoadLookupTables() {
     cornerLookupTable = FileManagement::LoadBufferFromFile(CORNER_LOOKUP_TABLE_PATH, size);
     bigUpperEdgeLookupTable = FileManagement::LoadBufferFromFile(BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, size);
     bigLowerEdgeLookupTable = FileManagement::LoadBufferFromFile(BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, size);
+    edgePermutationLookupTable = FileManagement::LoadBufferFromFile(EDGE_PERMUTATION_LOOKUP_TABLE_PATH, size);
 }
 
-int LookupTable::GetCornerStateDistance(RubicsCubeState* state) {
+int LookupTable::GetCornerStateDistance(RubicsCubeState& state) {
     int index = GetCornerLookupIndex(state);
     return cornerLookupTable[index];
 }
 
-int LookupTable::GetUpperEdgeStateDistance(RubicsCubeState* state) {
+int LookupTable::GetUpperEdgeStateDistance(RubicsCubeState& state) {
     int index = GetUpperEdgeLookupIndex(state);
     return upperEdgeLookupTable[index];
 }
 
-int LookupTable::GetLowerEdgeStateDistance(RubicsCubeState* state) {
+int LookupTable::GetLowerEdgeStateDistance(RubicsCubeState& state) {
     int index = GetLowerEdgeLookupIndex(state);
     return lowerEdgeLookupTable[index];
 }
 
-int LookupTable::GetBigUpperEdgeStateDistance(RubicsCubeState* state) {
+int LookupTable::GetBigUpperEdgeStateDistance(RubicsCubeState& state) {
     int index = GetBigUpperEdgeLookupIndex(state);
     return bigUpperEdgeLookupTable[index];
 }
 
-int LookupTable::GetBigLowerEdgeStateDistance(RubicsCubeState* state) {
+int LookupTable::GetBigLowerEdgeStateDistance(RubicsCubeState& state) {
     int index = GetBigLowerEdgeLookupIndex(state);
     return bigLowerEdgeLookupTable[index];
 }
 
-int LookupTable::GetFullEdgeStateDistance(RubicsCubeState* state) {
+int LookupTable::GetEdgePermutationStateDistance(RubicsCubeState& state) {
+    int index = GetEdgePermutationLookupIndex(state);
+    return edgePermutationLookupTable[index];
+}
+
+int LookupTable::GetFullEdgeStateDistance(RubicsCubeState& state) {
     int index = GetFullEdgeLookupIndex(state);
     return fullEdgeLookupTable[index];
 }
@@ -160,7 +169,7 @@ void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexC
         for (int i = 0; i < LookupTable::threadCount; i++) {
             *(*threadProgresses)[i] = 0ll;
             std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i, LookupTable::threadCount);
-            std::thread thread = std::thread(EvaluatePosition, IndexCalculator, RubicsCubeState::InitialState()->Copy(), 0, Turn::Empty(), exploredTurns, *currentDepth, shortestMovesPossible, reachedStates, mutex, (*threadProgresses)[0]);
+            std::thread thread = std::thread(EvaluatePosition, IndexCalculator, RubicsCubeState::initialState, 0, Turn::Empty(), exploredTurns, *currentDepth, shortestMovesPossible, reachedStates, mutex, (*threadProgresses)[0]);
             threads[i] = std::move(thread);
         }
 
@@ -180,7 +189,7 @@ void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexC
     }
 }
 
-void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState* state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, uint64* reachedStates, std::mutex* mutex, long long int* threadProgress) {
+void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, uint64* reachedStates, std::mutex* mutex, long long int* threadProgress) {
     if (a_reachedStates == (*shortestMovesPossible).size()) {
         return;
     }
@@ -228,10 +237,10 @@ void EvaluatePosition(LookupTable::IndexCalculation IndexCalculator, RubicsCubeS
                 continue;
             }
 
-            state->ApplyTurn(turn);
+            state.ApplyTurn(turn);
             EvaluatePosition(IndexCalculator, state, depth + 1, turn, Turn::AllTurns, maxDepth, shortestMovesPossible, reachedStates, mutex, threadProgress);
             //*threadProgress += statesAtDepth[maxDepth - depth - 1];
-            state->ApplyTurn(turn.Inverse());
+            state.ApplyTurn(turn.Inverse());
         }
     } else {
         *threadProgress += statesAtDepth[depth];
