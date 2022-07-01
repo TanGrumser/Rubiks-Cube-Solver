@@ -62,7 +62,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         }
     }
     
-    SolveCube(state);
+    LookupTable::GenerateBigUpperEdgeLookupTable();
 }
 
 void SolveCube(RubicsCubeState& state) {

@@ -1,0 +1,111 @@
+Contennt
+
+Abstract
+    Unsolved problem, IDA*, Heuristic, Duplicate state detection, other improvments, IDA* heruistic hypthesis by Korf analysis
+
+1. Introduction
+    Trivia
+
+    1.1 Rubik's Cube Basics
+        Number of states total, Problem definition, how hard is the problem
+
+    1.2 Definitions and Properties
+        Singmaster Notation, Number of states at certain depth, Basic Group Theory,
+        Goal definition (Gods algorithm), Properties of the cube (Parity) and subgroups,
+
+    1.3 Historical Achievments / Background [Move to chapter 2.1]
+        God's number is 20 and how it was found, non optimal algorithms and how they work,
+
+
+2. Solving the cube optimally / Preliminaries
+    Solving the RC is a graph problem, reieterating properties of known shortest path algorithms, correctness proof
+    
+    2.1 A naive approach
+        DFS/BFS doesn't work and why, A* doesnt work and why, space complexity and time complexity, IDDFS as introduction.
+
+    2.2 State of the art: IDA*
+        IDA* explanation, heuristic, lookup table introduction, benchmarks (time and traversed states),
+
+        2.2.1 Lexicographic Rank
+            Mathematical definitions, calculation, Reverse function, implementation pseudocode
+
+            2.2.1.1 Naive implementation
+
+            2.2.1.2 Korf linear solution
+
+            2.2.1.3 Benchmarking both approaches
+        
+        2.2.2 Lookup tables
+            Explanation of usage, correctness, types, 
+
+            2.2.1.1 Corner Lookup Table
+            2.2.1.2 Upper Edge Lookup Table
+            2.2.1.3 Lower Edge Lookup Table
+            2.2.1.4 Edge Permutation Lookup Table
+
+        2.2.3 concurrent Recursive implementation
+
+        2.2.4 concurrent Sequential Stack based impementation
+
+
+    2.3 Lookup Tables
+        IDDFS algorithm in basic form, observations and posiible improvments, admissability
+
+        2.3.1 Basic Generation Algorithm
+            Pseudocode algorithm, time/space complexity analysis, benchmarks
+
+        2.3.2 Efficient Implementation
+            Pseudocode of efficient algorithm, explanation, benchmarks, time/space complexity analysis
+
+    2.4 Parralelisation and other improvments (RBFs)
+        naiv implementation: distribute distance one nodes onto different threads, parallel execution of stack
+
+3. Contributions
+    Motiviation (speedup of lookup table generation), Some observations (duplicate states), requirements, expected improvment
+    
+    3.1 How to detect a duplicate state
+        Two approaches (Shifted lexicoraphic rank of states / turn index)
+
+        3.1.1 Shifted lexicographic rank
+            Group Theory definition, outline implementation pseudocode
+    
+        3.1.2 turn index calculation
+            Method explanation, pseuso code
+        
+        3.1.2 Benchmarking both methods
+            Benchmarks, time space complexity analysis
+
+    3.2 Full egde pattern database
+
+4. Implementation
+
+    3.2 Method in action
+        Usage in IDA*, final pseudo code
+
+4. Evaluation
+    Benachmarks, Comparison to state of the art, bottlenecks of code (Hash table, cache misses lookup table, lex. rank calculation), Hash table alternatives?
+
+
+5. Conclusion
+    Traversed state improvment, Korf IDA* hypothesis analysis, further work, inverse lookup table usage
+
+
+Appendix
+    A.1 Ideas for 4x4 Cube heuristics and observations, informell time and space complexity analysis
+    A.2 Improved heuristic combination research
+
+
+Generic top level chapter names
+Put all contributions in chapter 4, lookup table generation only explained as implemented in state of the art implementation
+
+Questions
+    Where should the github refference be listed -> Implementation
+        All of our code and experimetnal data ist avaliable at: [Github Link]
+
+    Literature for everything? (Time space complexitiy for BFS, DFS)
+        Richtig sauber eigneltich mit algorithmen buch. [Sequential and parallel algorithms and data structures]
+
+Anmeldung 15. Main Ende 14. September
+
+Todo: Dominik benchmarks schicken
+

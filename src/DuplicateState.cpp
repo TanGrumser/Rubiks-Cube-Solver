@@ -13,13 +13,15 @@
 #include <tuple>
 #include "utils.h"
 #include "FileManagement.h"
+#include <mutex>
 
 #define uint64 unsigned long long
 
 tsl::robin_map<StateIndex, char, StateIndexHasher> reachedStates;
 tsl::robin_map<StateIndex, bool, StateIndexHasher> duplicateReachableStates;
-tsl::robin_map<StateIndex, bool, StateIndexHasher> duplicateReachableStates2;
+tsl::robin_map<StateIndex, int, StateIndexHasher> duplicateReachableStates2;
 int foundDuplicates = 0;
+std::mutex duplicateStateLookup;
 
 void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
 uint64 CalculateStateIndex(RubicsCubeState* state);
@@ -28,16 +30,25 @@ namespace DuplicateState {
     bool active = false;
 }
 
-bool DuplicateState::WasStateReached(StateIndex index) {
+bool DuplicateState::IsStateContained(StateIndex index) {
+    return duplicateReachableStates2.find(index) != duplicateReachableStates2.end();
+}
+
+bool DuplicateState::WasStateReached(StateIndex index, int depth) {
     if (duplicateReachableStates2.find(index) != duplicateReachableStates2.end()) {
+        duplicateStateLookup.lock();
+
         // we check if it was already reached in the search with the current max depth and return if so, 
         // since all following states will be processed already.
-        if (duplicateReachableStates2[index]) {
+        if (duplicateReachableStates2[index] <= depth) {
+            duplicateStateLookup.unlock();
             return true;
         } else {
             // if it hasn't been reached in the current search we set it's flag, so no other path will process follwing states again and continiue.
-            duplicateReachableStates2[index] = true;
+            duplicateReachableStates2[index] = depth;
         }
+
+        duplicateStateLookup.unlock();
     }
 
     return false;
@@ -45,7 +56,7 @@ bool DuplicateState::WasStateReached(StateIndex index) {
 
 void DuplicateState::ResetAllStates() {
     for(auto it = duplicateReachableStates2.begin(); it != duplicateReachableStates2.end(); ++it) {
-        it.value() = false;
+        it.value() = 100;
     }
 }
 
@@ -86,7 +97,7 @@ void DuplicateState::LoadDuplicateStateIndex() {
             stateIndex.edgeIndex   |= ((uint64)buffer[entry + i + 8]) << (8 * i);
         }
 
-        duplicateReachableStates2[stateIndex] = false;
+        duplicateReachableStates2[stateIndex] = 100;
     }
 
     std::cout << "Loaded duplicate states:" << endl;
@@ -156,6 +167,7 @@ void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vecto
             if (turn.IsTurnBacktracking(lastTurn)) {
                 continue;
             }
+            
             lastTurns.push_back(turn);
             state.ApplyTurn(turn);
             EvaluateState(state, depth + 1, turn, Turn::AllTurns, maxDepth, lastTurns);

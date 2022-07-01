@@ -104,6 +104,10 @@ TODOs
 
     Change representation of cube by changing corner, edge permutations to array<char, 8 / 12>, so the premutation indexer can be called without copying.
 
+
+Notes
+    Performance of table generation can probably be improved by using a non recursive version, since it performed better at IDA*
+    
 [1] https://medium.com/@benjamin.botto/implementing-an-optimal-rubiks-cube-solver-using-korf-s-algorithm-bf750b332cf9
 [2] https://medium.com/@benjamin.botto/sequentially-indexing-permutations-a-linear-algorithm-for-computing-lexicographic-rank-a22220ffd6e3
 
@@ -183,3 +187,16 @@ $command 2>&1 > OUT &
 valgrind    
 valgrind --tool=callgrind 
 kcachegrind 
+
+
+
+Reached states at depth 3 are 3240
+Reached states at depth 4 are 42807
+Reached states at depth 5 are 555866
+Reached states at depth 6 are 7070103
+Reached states at depth 7 are 87801812
+Reached states at depth 8 are 1050559626
+Reached states at depth 9 are 11588911021
+Reached states at depth 10 are 110409721989
+Reached states at depth 11 are 552734197682
+Elapsed Time: 1484920s, reachedStates: 916190359032, progress: 93.3940%, depth: 12, states at depth: 240311474767, duplicates: 1341379001693

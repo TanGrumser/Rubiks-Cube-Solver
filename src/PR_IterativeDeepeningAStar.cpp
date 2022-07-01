@@ -55,8 +55,10 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubicsCubeState& startState) {
     array<Turn, 50> solutionMoves;
     StopWatch timer;
 
+    shift = new RubicsCubeStateShift(startState);
+
     timer.StartTimer();
-  
+
     while (!*solved) {
         std::vector<std::thread> threads(Solver::threadCount);
         traversedStatesAtDepth = 0;
@@ -147,6 +149,11 @@ void idaSearch(RubicsCubeState& startState, int bound, array<Turn, 50>* moves, i
             RubicsCubeState cubeCopy(curNode.cube);
 
             cubeCopy.ApplyTurn(move);
+
+            // if this state was reached via another path, we don't need to traverse it any further
+            if (DuplicateState::active && curNode.depth <= 6 && DuplicateState::WasStateReached(shift->GetShiftedState(cubeCopy), curNode.depth + 1)) {
+              continue;
+            }
 
             uint8_t estSuccMoves = curNode.depth + 1 + Solver::GetDistanceHeuristic(cubeCopy, bound - curNode.depth - 1);
 

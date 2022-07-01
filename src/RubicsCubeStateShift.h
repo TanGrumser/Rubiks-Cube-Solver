@@ -39,19 +39,19 @@ struct RubicsCubeStateShift {
         2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
     };
 
-    RubicsCubeStateShift (RubicsCubeState* state) {
+    RubicsCubeStateShift (RubicsCubeState& state) {
         for (int i = 0; i < 8; i++) {
-            this->cornerIndiciesMapping[state->corners[i].index] = i;
-            this->cornerRotationOffset[state->corners[i].index]  = (3u - state->corners[i].rotation) % 3u;
+            this->cornerIndiciesMapping[state.corners[i].index] = i;
+            this->cornerRotationOffset[state.corners[i].index]  = (3u - state.corners[i].rotation) % 3u;
         }
 
         for (int i = 0; i < 12; i++) {
-            this->edgeIndiciesMapping[state->edges[i].index] = i;
-            this->edgeRotationOffset[state->edges[i].index]  = state->edges[i].rotation;
+            this->edgeIndiciesMapping[state.edges[i].index] = i;
+            this->edgeRotationOffset[state.edges[i].index]  = state.edges[i].rotation;
         }
     }
 
-    StateIndex GetShiftedState(RubicsCubeState* state) {
+    StateIndex GetShiftedState(RubicsCubeState& state) {
         StateIndex stateIndex;
 
         array<unsigned, 8> cornerPermutaion;
@@ -61,19 +61,19 @@ struct RubicsCubeStateShift {
         int edgeRotationIndex = 0;
 
         for (int i = 0; i < 8; i++) {
-            cornerPermutaion[i] = this->cornerIndiciesMapping[state->corners[i].index];
+            cornerPermutaion[i] = this->cornerIndiciesMapping[state.corners[i].index];
             
             if (i < 7) {
-                cornerRotationIndex += ((state->corners[i].rotation + this->cornerRotationOffset[state->corners[i].index]) % 3u) * powersOfThree[i];
+                cornerRotationIndex += ((state.corners[i].rotation + this->cornerRotationOffset[state.corners[i].index]) % 3u) * powersOfThree[i];
             }
         }
             
         
         for (int i = 0; i < 12; i++) {
-            edgePermutaion[i] = this->edgeIndiciesMapping[state->edges[i].index];
+            edgePermutaion[i] = this->edgeIndiciesMapping[state.edges[i].index];
             
             if (i < 11) {
-                edgeRotationIndex += ((state->edges[i].rotation + this->edgeRotationOffset[state->edges[i].index]) % 2u) * powersOfTwo[i];
+                edgeRotationIndex += ((state.edges[i].rotation + this->edgeRotationOffset[state.edges[i].index]) % 2u) * powersOfTwo[i];
             }
         }
 
