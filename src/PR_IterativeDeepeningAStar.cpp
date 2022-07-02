@@ -151,7 +151,7 @@ void idaSearch(RubicsCubeState& startState, int bound, array<Turn, 50>* moves, i
             cubeCopy.ApplyTurn(move);
 
             // if this state was reached via another path, we don't need to traverse it any further
-            if (DuplicateState::active && curNode.depth <= 6 && DuplicateState::WasStateReached(shift->GetShiftedState(cubeCopy), curNode.depth + 1)) {
+            if (DuplicateState::active && DuplicateState::PruneByTurnIndex(*moves, curNode.depth + 1)) {
               continue;
             }
 

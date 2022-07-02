@@ -62,7 +62,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         }
     }
     
-    LookupTable::GenerateBigUpperEdgeLookupTable();
+    SolveCube(state);
 }
 
 void SolveCube(RubicsCubeState& state) {
@@ -70,7 +70,8 @@ void SolveCube(RubicsCubeState& state) {
 
     std::cout << "Loading lookup tables and duplicate state table." << endl;
         LookupTable::LoadLookupTables();
-        DuplicateState::LoadDuplicateStateIndex();
+        //DuplicateState::LoadDuplicateStateIndex();
+        DuplicateState::LoadDuplicateStateTurnIndex();
     std::cout << "Finished Loading." << endl;
 
     

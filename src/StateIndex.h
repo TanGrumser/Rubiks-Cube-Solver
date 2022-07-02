@@ -1,8 +1,7 @@
 #pragma once
 
 #include <string>
-
-#define uint64 unsigned long long
+#include "Definitions.h"
 
 struct StateIndex {
     uint64 cornerIndex;

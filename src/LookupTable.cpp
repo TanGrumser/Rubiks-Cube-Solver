@@ -82,7 +82,7 @@ void LookupTable::LoadLookupTables() {
     cornerLookupTable = FileManagement::LoadBufferFromFile(CORNER_LOOKUP_TABLE_PATH, size);
     bigUpperEdgeLookupTable = FileManagement::LoadBufferFromFile(BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, size);
     bigLowerEdgeLookupTable = FileManagement::LoadBufferFromFile(BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, size);
-    edgePermutationLookupTable = FileManagement::LoadBufferFromFile(EDGE_PERMUTATION_LOOKUP_TABLE_PATH, size);
+    //edgePermutationLookupTable = FileManagement::LoadBufferFromFile(EDGE_PERMUTATION_LOOKUP_TABLE_PATH, size);
 }
 
 int LookupTable::GetCornerStateDistance(RubicsCubeState& state) {

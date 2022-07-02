@@ -2,10 +2,9 @@
 
 #include <string>
 #include "RubicsCubeState.h"
+#include "Definitions.h"
 
 using std::string;
-
-#define uint64 unsigned long long
 
 namespace LookupTable {
     extern int threadCount;

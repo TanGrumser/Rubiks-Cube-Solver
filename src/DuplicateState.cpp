@@ -15,12 +15,10 @@
 #include "FileManagement.h"
 #include <mutex>
 
-#define uint64 unsigned long long
 
 tsl::robin_map<StateIndex, char, StateIndexHasher> reachedStates;
 tsl::robin_map<StateIndex, bool, StateIndexHasher> duplicateReachableStates;
 tsl::robin_map<StateIndex, int, StateIndexHasher> duplicateReachableStates2;
-int foundDuplicates = 0;
 std::mutex duplicateStateLookup;
 
 void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
@@ -28,6 +26,7 @@ uint64 CalculateStateIndex(RubicsCubeState* state);
 
 namespace DuplicateState {
     bool active = false;
+    int foundDuplicates = 0;
 }
 
 bool DuplicateState::IsStateContained(StateIndex index) {
@@ -77,13 +76,6 @@ bool CheckAndSetDuplicateReachableState(RubicsCubeState* state) {
 
 void DuplicateState::LoadDuplicateStateIndex() {
     int* bufferSize = new int();
-
-
-    /*
-    for (int entry = 0; entry < 16; entry++) {
-        std::cout << (int)buffer[entry] << endl;
-    }
-    */    
 
     unsigned char* buffer = (unsigned char*)FileManagement::LoadBufferFromFile(DUPLICATE_STATE_PATH, bufferSize);
 
@@ -151,7 +143,7 @@ void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vecto
             if (Utils::IsMostSignificantBitSet(entry)) {
                 duplicateReachableStates[stateIndex] = false;
 
-                foundDuplicates++;
+                DuplicateState::foundDuplicates++;
 
             } else {
                 reachedStates[stateIndex] = depth | 0b10000000;

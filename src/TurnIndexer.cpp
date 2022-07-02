@@ -31,3 +31,15 @@ uint64 TurnIndexer::getIndexFromVector(vector<Turn> turns) {
 
     return getIndex(turnIndicies, turns.size());
 }
+
+uint64 TurnIndexer::getIndexFromArray(array<Turn, 50> turns, int length) {
+    uint64 result = 0;
+    int i = 0;
+    
+    while (!turns[i].Equals(Turn::Empty())) {
+        result += (turns[i].index + 1) * powerOfEighteen[length - i - 1];
+        i++;
+    }
+
+    return result;
+}
