@@ -19,11 +19,12 @@
 #include <vector>
 #include <random>
 #include "TurnIndexer.h"
+#include "StateIndexReverser.h"
 
 int main(int argc, char *argv[]) {
-
+    
+    StateIndexReverser::Test();
     //CommandLineHandler::Start(argc, argv);
-    DuplicateState::GenerateTurnBasedLookupTable();
 
     return 0;
 }
