@@ -15,31 +15,6 @@ struct RubicsCubeStateShift {
     PermutationIndexer<8> cornerIndexer;
     PermutationIndexer<12> edgeIndexer;
 
-    const unsigned int powersOfThree[8] = {
-        1,
-        3,
-        3 * 3,
-        3 * 3 * 3,
-        3 * 3 * 3 * 3,
-        3 * 3 * 3 * 3 * 3,
-        3 * 3 * 3 * 3 * 3 * 3,
-        3 * 3 * 3 * 3 * 3 * 3 * 3,
-    };
-
-    const unsigned int powersOfTwo[11] = {
-        1,
-        2, 
-        2 * 2,
-        2 * 2 * 2,
-        2 * 2 * 2 * 2,
-        2 * 2 * 2 * 2 * 2,
-        2 * 2 * 2 * 2 * 2 * 2,
-        2 * 2 * 2 * 2 * 2 * 2 * 2,
-        2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
-        2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
-        2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
-    };
-
     RubicsCubeStateShift (RubicsCubeState& state) {
         for (int i = 0; i < 8; i++) {
             this->cornerIndiciesMapping[state.corners[i].index] = i;

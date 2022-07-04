@@ -21,3 +21,39 @@ const uint64_t FULL_EDGE_PERMUTATIONS_COUNT = 12 * 11 * 10 * 9 * 8 * 7 * 6 * 5 *
 const uint64_t FULL_EDGE_STATES_COUNT = FULL_EDGE_ROTATION_COUNT * FULL_EDGE_PERMUTATIONS_COUNT; // (12!) * 2^11
 
 const unsigned long long ALL_STATES_COUNT = FULL_EDGE_STATES_COUNT * CORNER_STATES_COUNT;
+
+const int powersOfThree[8] = {
+    1, //3^0
+    3, 
+    3 * 3,
+    3 * 3 * 3,
+    3 * 3 * 3 * 3,
+    3 * 3 * 3 * 3 * 3,
+    3 * 3 * 3 * 3 * 3 * 3,
+    3 * 3 * 3 * 3 * 3 * 3 * 3, // 3^7
+};
+
+const unsigned int powersOfTwo[12] = {
+    1,
+    2, 
+    2 * 2,
+    2 * 2 * 2,
+    2 * 2 * 2 * 2,
+    2 * 2 * 2 * 2 * 2,
+    2 * 2 * 2 * 2 * 2 * 2,
+    2 * 2 * 2 * 2 * 2 * 2 * 2,
+    2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
+    2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
+    2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
+    2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
+};
+
+const int cornerPermutationCoefficients[7] = {
+    1 * 2 * 3 * 4 * 5 * 6 * 7, // 7!
+    1 * 2 * 3 * 4 * 5 * 6,
+    1 * 2 * 3 * 4 * 5,
+    1 * 2 * 3 * 4,
+    1 * 2 * 3,
+    1 * 2,
+    1
+};

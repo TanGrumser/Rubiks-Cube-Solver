@@ -24,21 +24,6 @@ PermutationIndexer<12, 6> smallEgdeIndexer;
 PermutationIndexer<12, 7> bigEgdeIndexer;
 PermutationIndexer<12> fullEgdeIndexer;
 
-const int powersOfTwo[] = {
-    1,
-    2, 
-    2 * 2,
-    2 * 2 * 2,
-    2 * 2 * 2 * 2,
-    2 * 2 * 2 * 2 * 2,
-    2 * 2 * 2 * 2 * 2 * 2,
-    2 * 2 * 2 * 2 * 2 * 2 * 2,
-    2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
-    2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
-    2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2,
-    2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2, 
-};
-
 uint64 LookupTable::GetUpperEdgeLookupIndex(RubicsCubeState& state) {
     return GetSmallEdgeStateIndex(state, SMALL_UPPER_EDGE_INDICIES);
 } 

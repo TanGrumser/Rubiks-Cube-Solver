@@ -29,6 +29,8 @@ class PermutationIndexer {
   // reverse order.
   static array<unsigned, K> factorials;
 
+  static array<array<unsigned, 12>, (1 << N) - 1> nthZero;
+
 public:
   /**
    * Popluate static factorials and ones-count tables.
@@ -39,10 +41,27 @@ public:
     {
       bitset<N> bits(i);
       this->onesCountLookup[i] = bits.count();
+      
+      for (unsigned zeroToFind = 0; zeroToFind < N; ++zeroToFind) {
+        unsigned foundZeros = 0;
+
+        //Count until j-th zero is found.
+        for (unsigned position = 0; position < N; ++position) {
+          if (bits[position] == 0) {
+            
+            if (foundZeros == zeroToFind) {
+              nthZero[i][zeroToFind] = position;
+              break;
+            }
+            
+            foundZeros++;
+          }
+        } 
+      }
     }
 
     for (unsigned i = 0; i < K; ++i)
-      this->factorials[i] = pick(N - 1 - i, K - 1 - i); 
+      this->factorials[i] = pick(N - 1 - i, K - 1 - i);
   }
 
   /**
@@ -83,6 +102,26 @@ public:
 
     return index;
   }
+
+  array<unsigned, K> getPermutation(uint64_t rank) const {
+    // This will hold the Lehmer code (in a factorial number system).
+    array<unsigned, K> lehmer;
+
+    // Set of "seen" digits in the permutation.
+    bitset<N> seen;
+
+    lehmer[0] = rank / this->factorials[0];
+    seen[lehmer[0]] = 1;
+
+    for (unsigned i = 1; i < K; ++i) {
+      unsigned perm = (rank % this->factorials[i - 1]) / this->factorials[i];
+      
+      lehmer[i] = nthZero[seen.to_ulong()][perm];
+      seen[lehmer[i]] = 1;
+    }
+
+    return lehmer;
+  }
 };
 
 // Static member definitions.
@@ -90,51 +129,7 @@ template <size_t N, size_t K>
 array<unsigned, (1 << N) - 1> PermutationIndexer<N, K>::onesCountLookup;
 
 template <size_t N, size_t K>
+array<array<unsigned, 12>, (1 << N) - 1> PermutationIndexer<N, K>::nthZero;
+
+template <size_t N, size_t K>
 array<unsigned, K> PermutationIndexer<N, K>::factorials;
-
-/*
-int main(int argc, char* argv[])
-{
-  // All permutations of 4 numbers, in order.
-  array<array<unsigned, 4>, 24> permsOf4 =
-  {{
-    {0, 1, 2, 3}, {0, 1, 3, 2}, {0, 2, 1, 3}, {0, 2, 3, 1},
-    {0, 3, 1, 2}, {0, 3, 2, 1}, {1, 0, 2, 3}, {1, 0, 3, 2},
-    {1, 2, 0, 3}, {1, 2, 3, 0}, {1, 3, 0, 2}, {1, 3, 2, 0},
-    {2, 0, 1, 3}, {2, 0, 3, 1}, {2, 1, 0, 3}, {2, 1, 3, 0},
-    {2, 3, 0, 1}, {2, 3, 1, 0}, {3, 0, 1, 2}, {3, 0, 2, 1},
-    {3, 1, 0, 2}, {3, 1, 2, 0}, {3, 2, 0, 1}, {3, 2, 1, 0}
-  }};
-
-  PermutationIndexer<4> indexer1;
-
-  for (const array<unsigned, 4>& perm: permsOf4)
-  {
-    cout << "Permutation: ";
-    for (unsigned i : perm)
-      cout << i << ' ';
-    cout << "Index: " << indexer1.rank(perm) << '\n';
-  }
-
-  cout << endl;
-
-  // All partial permutations of 4 items picked 2 ways, in order.
-  array<array<unsigned, 2>, 12> permsOf4Pick2 =
-  {{
-    {0, 1}, {0, 2}, {0, 3}, {1, 0}, {1, 2}, {1, 3},
-    {2, 0}, {2, 1}, {2, 3}, {3, 0}, {3, 1}, {3, 2}
-  }};
-
-  PermutationIndexer<4, 2> indexer2;
-
-  for (const array<unsigned, 2>& perm: permsOf4Pick2)
-  {
-    cout << "Permutation: ";
-    for (unsigned i : perm)
-      cout << i << ' ';
-    cout << "Index: " << indexer2.rank(perm) << endl;
-  }
-
-  return 0;
-}
-*/

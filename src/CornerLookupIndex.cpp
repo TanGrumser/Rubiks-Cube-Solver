@@ -11,17 +11,6 @@ using LookupTable::CORNER_LOOKUP_TABLE_PATH;
 
 int GetPermutationIndex(RubicsCubeState* state);
 
-const int powersOfThree[] = {
-    1, //3^0
-    3, 
-    3 * 3,
-    3 * 3 * 3,
-    3 * 3 * 3 * 3,
-    3 * 3 * 3 * 3 * 3,
-    3 * 3 * 3 * 3 * 3 * 3,
-    3 * 3 * 3 * 3 * 3 * 3 * 3, // 3^7
-};
-
 /*
 void LookupTable::TestCornerLookupCaluclation() {
     RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
@@ -73,23 +62,13 @@ int inline LookupTable::GetRotationIndex(RubicsCubeState& state) {
 int GetPermutationIndex(RubicsCubeState* state) {
     int result = 0;
 
-    const int coefficients[] = {
-        1 * 2 * 3 * 4 * 5 * 6 * 7, 
-        1 * 2 * 3 * 4 * 5 * 6,
-        1 * 2 * 3 * 4 * 5,
-        1 * 2 * 3 * 4,
-        1 * 2 * 3,
-        1 * 2,
-        1
-    };
-
     for (int i = 0; i < 8 - 1; i++) {
         int position = 0;
 
         // i is the index of the piece we're looking for, j is the position of the piece.
         for (int j = 0; j < 8; j++) {
             if (state->corners[j].index == i) {
-                result += position * coefficients[i];
+                result += position * cornerPermutationCoefficients[i];
                 break;
             }
             
