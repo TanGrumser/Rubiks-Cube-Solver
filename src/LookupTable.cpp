@@ -78,7 +78,7 @@ void LookupTable::GenerateFullEdgeLookupTable(string path) { GenerateLookupTable
 
 
 void LookupTable::LoadLookupTables() {
-    int* size = new int(0);
+    uint64_t* size = new uint64_t(0);
     cornerLookupTable = FileManagement::LoadBufferFromFile(CORNER_LOOKUP_TABLE_PATH, size);
     bigUpperEdgeLookupTable = FileManagement::LoadBufferFromFile(BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, size);
     bigLowerEdgeLookupTable = FileManagement::LoadBufferFromFile(BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, size);

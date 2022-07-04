@@ -2,34 +2,34 @@
 #include "FileManagement.h"
 #include <fstream>
 #include <iostream>
-
+#include <stdexcept>
+#include "Definitions.h"
 
 inline bool exists_test0 (const std::string& name) {
     std::ifstream f(name.c_str());
     return f.good();
 }
     
-//template<typename T>
-    int FileManagement::WriteBufferToFile(std::string path, const char* buffer, int bufferSize) {
-        std::ofstream ofs;
-        ofs.open(path, std::ios::binary);
+int FileManagement::WriteBufferToFile(std::string path, const char* buffer, uint64_t bufferSize) {
+    std::ofstream ofs;
+    ofs.open(path, std::ios::binary);
 
-        if (!ofs) {
-            return 1;
-        }
-
-        ofs.write(buffer, bufferSize);    
-
-        if (!ofs) {
-            return 2;
-        }
-
-        ofs.close();
-
-        return 0;
+    if (!ofs) {
+        throw std::runtime_error("Couldn't open file handle to " + path);
     }
 
-char* FileManagement::LoadBufferFromFile(std::string path, int* bufferSize) {
+    ofs.write(buffer, bufferSize); 
+
+    if (!ofs) {
+        throw std::runtime_error("Writing to file " + path + " failed.");
+    }
+
+    ofs.close();
+
+    return 0;
+}
+
+char* FileManagement::LoadBufferFromFile(std::string path, uint64_t* bufferSize) {
     std::streampos size;
     char* memblock;
 
@@ -56,9 +56,10 @@ char* FileManagement::LoadBufferFromFile(std::string path, int* bufferSize) {
 
     return 0;
 }
+
 void FileManagement::CompareFiles(std::string firstPath, std::string secondPath) {
-    int* localSize = new int(0);
-    int* downloadSize = new int(0);
+    uint64_t* localSize = new uint64_t(0);
+    uint64_t* downloadSize = new uint64_t(0);
     char* local = FileManagement::LoadBufferFromFile(firstPath, localSize);
     char* download = FileManagement::LoadBufferFromFile(secondPath, downloadSize);
 

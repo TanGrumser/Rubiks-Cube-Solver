@@ -115,7 +115,7 @@ void GenerateLookupTable(int lookupTableIndex) {
 
 void ParseFile(std::string path) {
     std::cout << "Parsing file" << std::endl;
-    int* size = new int();
+    uint64_t* size = new uint64_t();
     char* lookupTable = FileManagement::LoadBufferFromFile(path, size);
 
     std::vector<int> occurences(12, 0);

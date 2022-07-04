@@ -13,7 +13,7 @@ void EvaluateStateTurnIndex(RubicsCubeState& state, char depth, Turn lastTurn, s
 
 
 bool DuplicateState::PruneByTurnIndex(array<Turn, 50> moves, int size) {
-    if (size > 5) {
+    if (size > 7) {
         return false;
     }
 
@@ -21,7 +21,7 @@ bool DuplicateState::PruneByTurnIndex(array<Turn, 50> moves, int size) {
 }
 
 void DuplicateState::LoadDuplicateStateTurnIndex() {
-    int* bufferSize = new int();
+    uint64_t* bufferSize = new uint64_t();
 
     duplicateTurnIndexStates = (char*)FileManagement::LoadBufferFromFile(TURN_INDEX_DUPLICATE_STATE_PATH, bufferSize);
 

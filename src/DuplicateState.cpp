@@ -75,7 +75,7 @@ bool CheckAndSetDuplicateReachableState(RubicsCubeState* state) {
 }
 
 void DuplicateState::LoadDuplicateStateIndex() {
-    int* bufferSize = new int();
+    uint64_t* bufferSize = new uint64_t();
 
     unsigned char* buffer = (unsigned char*)FileManagement::LoadBufferFromFile(DUPLICATE_STATE_PATH, bufferSize);
 
