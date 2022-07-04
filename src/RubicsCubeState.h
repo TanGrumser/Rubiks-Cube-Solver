@@ -5,6 +5,7 @@
 #include "Turn.h"
 #include "StateIndex.h"
 #include <array>
+#include "Constants.h"
 
 using namespace std;
 

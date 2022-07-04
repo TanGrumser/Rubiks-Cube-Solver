@@ -173,5 +173,5 @@ uint64 CalculateStateIndex(RubicsCubeState& state) {
     int cornerIndex = LookupTable::GetCornerLookupIndex(state);
     int edgeIndex = LookupTable::GetFullEdgeLookupIndex(state);
 
-    return cornerIndex * LookupTable::FULL_EDGE_STATES_COUNT + edgeIndex;
+    return cornerIndex * FULL_EDGE_STATES_COUNT + edgeIndex;
 }

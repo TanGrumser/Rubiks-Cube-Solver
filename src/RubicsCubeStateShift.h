@@ -4,6 +4,7 @@
 #include "StateIndex.h"
 #include "PermutationIndexer.h"
 #include "LookupTable.h"
+#include "Constants.h"
 
 struct RubicsCubeStateShift {    
     array<unsigned int, 8> cornerIndiciesMapping;
@@ -77,8 +78,8 @@ struct RubicsCubeStateShift {
             }
         }
 
-        stateIndex.cornerIndex = cornerIndexer.rank(cornerPermutaion) * LookupTable::CORNER_ROTATIONS_COUNT + cornerRotationIndex;
-        stateIndex.edgeIndex = edgeIndexer.rank(edgePermutaion) * LookupTable::FULL_EDGE_ROTATION_COUNT + edgeRotationIndex;
+        stateIndex.cornerIndex = cornerIndexer.rank(cornerPermutaion) * CORNER_ROTATIONS_COUNT + cornerRotationIndex;
+        stateIndex.edgeIndex = edgeIndexer.rank(edgePermutaion) * FULL_EDGE_ROTATION_COUNT + edgeRotationIndex;
         
         return stateIndex;
     }

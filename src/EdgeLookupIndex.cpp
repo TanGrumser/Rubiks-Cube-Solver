@@ -7,11 +7,7 @@
 #include "PermutationIndexer.h"
 
 using std::string;
-using LookupTable::EDGE_ROTATION_COUNT;
-using LookupTable::EDGE_PERMUTATIONS_COUNT;
-using LookupTable::BIG_EDGE_ROTATION_COUNT;
-using LookupTable::BIG_EDGE_PERMUTATIONS_COUNT;
-using LookupTable::FULL_EDGE_ROTATION_COUNT;
+
 
 int GetSmallEdgeStateIndex(RubicsCubeState& state, std::vector<int>* edgeIndicies);
 int GetBigUpperEdgeStateIndex(RubicsCubeState& state);

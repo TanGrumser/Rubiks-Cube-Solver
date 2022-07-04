@@ -7,8 +7,6 @@
 #include "PermutationIndexer.h"
 
 using std::string;
-using LookupTable::CORNER_ROTATIONS_COUNT;
-using LookupTable::CORNER_STATES_COUNT;
 using LookupTable::CORNER_LOOKUP_TABLE_PATH;
 
 int GetPermutationIndex(RubicsCubeState* state);

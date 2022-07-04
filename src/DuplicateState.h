@@ -5,6 +5,7 @@
 #include "RubicsCubeState.h"
 #include "StateIndex.h"
 #include "Definitions.h"
+#include "Constants.h"
 #include "TurnIndexer.h"
 
 namespace DuplicateState {

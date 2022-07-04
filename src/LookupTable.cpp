@@ -13,9 +13,6 @@
 #include <atomic>
 
 using std::string;
-using LookupTable::CORNER_STATES_COUNT;
-using LookupTable::EDGE_STATES_COUNT;
-using LookupTable::FULL_EDGE_PERMUTATIONS_COUNT;
 
 const char UNINITIALIIZED = -1;
 uint64 reachedDuplicates = 0;

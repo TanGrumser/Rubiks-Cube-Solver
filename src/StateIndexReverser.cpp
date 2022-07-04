@@ -28,8 +28,12 @@ void StateIndexReverser::Test() {
 RubicsCubeState StateIndexReverser::GetStateFromIndex(StateIndex index) {
     RubicsCubeState result;
 
-    // Extract
-    uint64 edgePermutation = index.edgeIndex % // Extract constants form Lookup Table to own header file to use it here.
+    // Extract 
+    uint64 edgePermutationIndex   = index.edgeIndex / FULL_EDGE_ROTATION_COUNT;
+    uint64 edgeRotationIndex      = index.edgeIndex % FULL_EDGE_ROTATION_COUNT;
+    uint64 cornerPermutationIndex = index.cornerIndex / CORNER_ROTATIONS_COUNT;
+    uint64 cornerRotationIndex    = index.cornerIndex % CORNER_ROTATIONS_COUNT;
+
 
     return result;
 }
