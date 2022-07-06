@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "RubicsCubeState.h"
+#include "../Model/RubicsCubeState.h"
 
 namespace Solver {
     extern int heuristicMode;
@@ -30,6 +30,8 @@ namespace Solver {
 
 
     int GetDistanceHeuristic(RubicsCubeState& state, int bound);
+
+    // TODO check if this is still required.
     vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState> stateSequence);
 
 }

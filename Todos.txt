@@ -1,12 +1,12 @@
 Todos
 
-[ ] Reverse lexicographic rank function
+[x] Reverse lexicographic rank function
     [x] Write test, that applies 100 random moves calculate state index, reverse state from index and compares them
-    [ ] Write function
+    [x] Write function
     
 [ ] Table Generation Meta Data to saved to file
 [ ] Test File Manager writing 1TB to file
 [ ] Table generation uses inverse lexicographic rank function at depth > 10
 [ ] Start New Table generation
 [ ] Write solving results to file to collect better structured benchmark data
-[ ] After lookup table generation is finished run performance test on 100 random scrambles 
+[ ] After lookup table generation is finished run performance test on 100 random scrambles

@@ -2,9 +2,9 @@
 
 #include "RubicsCubeState.h"
 #include "StateIndex.h"
-#include "PermutationIndexer.h"
-#include "LookupTable.h"
-#include "Constants.h"
+#include "../Utils/PermutationIndexer.h"
+#include "../LookupTable/LookupTable.h"
+#include "../Utils/Constants.h"
 
 struct RubicsCubeStateShift {    
     array<unsigned int, 8> cornerIndiciesMapping;

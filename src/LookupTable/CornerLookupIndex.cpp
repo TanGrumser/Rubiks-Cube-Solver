@@ -2,9 +2,9 @@
 #include <iostream>
 #include <iomanip> 
 #include "LookupTable.h" 
-#include "RubicsCubeState.h"
-#include "FileManagement.h"
-#include "PermutationIndexer.h"
+#include "../Model/RubicsCubeState.h"
+#include "../Utils/FileManagement.h"
+#include "../Utils/PermutationIndexer.h"
 
 using std::string;
 using LookupTable::CORNER_LOOKUP_TABLE_PATH;
@@ -33,7 +33,7 @@ void LookupTable::TestCornerLookupCaluclation() {
 
 PermutationIndexer<8> cornerIndexer;
 
-uint64 LookupTable::GetCornerLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetCornerLookupIndex(RubicsCubeState& state) {
     array<unsigned int, 8> cornerPermutation = {
         state.corners[0].index,
         state.corners[1].index,

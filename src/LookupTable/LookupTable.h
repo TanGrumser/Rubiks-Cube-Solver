@@ -1,14 +1,15 @@
 #pragma once
 
 #include <string>
-#include "RubicsCubeState.h"
-#include "Definitions.h"
+#include "../Model/RubicsCubeState.h"
+#include <iostream>
 
 using std::string;
 
 namespace LookupTable {
     extern int threadCount;
-    typedef uint64(*IndexCalculation)(RubicsCubeState&);
+    typedef uint64_t(*IndexCalculation)(RubicsCubeState&);
+    typedef RubicsCubeState&(*StateCalculator)(uint64_t);
     
     const string CORNER_LOOKUP_TABLE_PATH         = "LookupTables\\cornerLookupTable";
     const string UPPER_EDGE_LOOKUP_TABLE_PATH     = "LookupTables\\upperEdgeLookupTable";
@@ -18,7 +19,7 @@ namespace LookupTable {
     const string EDGE_PERMUTATION_LOOKUP_TABLE_PATH = "LookupTables\\edgePermutationLookupTable";
     const string FULL_EDGE_LOOKUP_TABLE_PATH      = "fullEdgeLookupTable";
 
-    void GenerateLookupTable(string path, IndexCalculation indexCalculator, uint64 maxReachableStates);
+    void GenerateLookupTable(string path, IndexCalculation indexCalculator, uint64_t maxReachableStates);
     void LoadLookupTables();
     
     int GetCornerStateDistance(RubicsCubeState& state);
@@ -30,13 +31,13 @@ namespace LookupTable {
     int GetFullEdgeStateDistance(RubicsCubeState& state);
     
     // TODO comment what these do
-    uint64 GetCornerLookupIndex(RubicsCubeState& state);
-    uint64 GetUpperEdgeLookupIndex(RubicsCubeState& state);
-    uint64 GetLowerEdgeLookupIndex(RubicsCubeState& state);
-    uint64 GetBigUpperEdgeLookupIndex(RubicsCubeState& state);
-    uint64 GetBigLowerEdgeLookupIndex(RubicsCubeState& state);
-    uint64 GetEdgePermutationLookupIndex(RubicsCubeState& state);
-    uint64 GetFullEdgeLookupIndex(RubicsCubeState& state);
+    uint64_t GetCornerLookupIndex(RubicsCubeState& state);
+    uint64_t GetUpperEdgeLookupIndex(RubicsCubeState& state);
+    uint64_t GetLowerEdgeLookupIndex(RubicsCubeState& state);
+    uint64_t GetBigUpperEdgeLookupIndex(RubicsCubeState& state);
+    uint64_t GetBigLowerEdgeLookupIndex(RubicsCubeState& state);
+    uint64_t GetEdgePermutationLookupIndex(RubicsCubeState& state);
+    uint64_t GetFullEdgeLookupIndex(RubicsCubeState& state);
     
     //void TestCornerLookupCaluclation();
     //void SetStateToCornerStateByIndex(int index, RubicsCubeState& state);

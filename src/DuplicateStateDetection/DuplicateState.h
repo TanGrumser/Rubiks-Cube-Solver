@@ -2,18 +2,17 @@
 
 #include <unordered_map>
 #include <array>
-#include "RubicsCubeState.h"
-#include "StateIndex.h"
-#include "Definitions.h"
-#include "Constants.h"
 #include "TurnIndexer.h"
+#include "../Model/RubicsCubeState.h"
+#include "../Model/StateIndex.h"
+#include "../Utils/Constants.h"
 
 namespace DuplicateState {
     
     const string DUPLICATE_STATE_PATH = "LookupTables\\duplicateStates";
     const string TURN_INDEX_DUPLICATE_STATE_PATH = "LookupTables\\duplicateStatesTurnIndex";
 
-    const uint64 NUMBER_OF_PATHS_AT_DEPTH[10] = {
+    const uint64_t NUMBER_OF_PATHS_AT_DEPTH[10] = {
         1ull,
         1ull + 18ull,
         1ull + 18ull + 18ull * 18ull,

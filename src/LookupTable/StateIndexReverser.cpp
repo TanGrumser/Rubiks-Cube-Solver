@@ -1,11 +1,11 @@
 #include "StateIndexReverser.h"
 
 void StateIndexReverser::Test() {
-    const int TEST_COUNT = 10000;
+    const int TEST_COUNT = 1000000;
     const int APPLIED_MOVES = 100;
     StopWatch timer;
 
-    std::cout << "Starting reversed lexicographic rank function tests. (10 000 Iterations)" << std::endl;
+    std::cout << "Starting reversed lexicographic rank function tests. (1 000 000 Iterations)" << std::endl;
     
     timer.StartTimer();
 
@@ -13,7 +13,7 @@ void StateIndexReverser::Test() {
         RubicsCubeState state = RubicsCubeState::InitialState().Copy();
 
         for (int j = 0; j < APPLIED_MOVES; j++) {
-            state.ApplyTurn(Turn::Random());
+            state.ApplyTurn(Turn((i * 1000 + j * 100) % 18));
         }
 
         StateIndex index = state.GetLookupIndex();
@@ -32,10 +32,10 @@ RubicsCubeState StateIndexReverser::GetStateFromIndex(StateIndex index) {
     RubicsCubeState result;
 
     // Extract 
-    uint64 edgePermutationIndex   = index.edgeIndex / FULL_EDGE_ROTATION_COUNT;
-    uint64 edgeRotationIndex      = index.edgeIndex % FULL_EDGE_ROTATION_COUNT;
-    uint64 cornerPermutationIndex = index.cornerIndex / CORNER_ROTATIONS_COUNT;
-    uint64 cornerRotationIndex    = index.cornerIndex % CORNER_ROTATIONS_COUNT;
+    uint64_t edgePermutationIndex   = index.edgeIndex / FULL_EDGE_ROTATION_COUNT;
+    uint64_t edgeRotationIndex      = index.edgeIndex % FULL_EDGE_ROTATION_COUNT;
+    uint64_t cornerPermutationIndex = index.cornerIndex / CORNER_ROTATIONS_COUNT;
+    uint64_t cornerRotationIndex    = index.cornerIndex % CORNER_ROTATIONS_COUNT;
 
     array<unsigned, 8> cornerIndicies = cornerIndexer.getPermutation(cornerPermutationIndex);
     array<unsigned, 12> edgeIndicies = egdeIndexer.getPermutation(edgePermutationIndex);
@@ -46,25 +46,21 @@ RubicsCubeState StateIndexReverser::GetStateFromIndex(StateIndex index) {
         result.corners[i].index = cornerIndicies[i];
         result.corners[i].rotation = (cornerRotationIndex / powersOfThree[i]) % 3u;
 
-        if (i == 8 - 1) {
-            result.corners[8 - 1].rotation = (21u - rotationSum) % 3u;
-        } else {
-            rotationSum += result.corners[i].rotation;
-        }
+        rotationSum += result.corners[i].rotation;
     }
+
+    result.corners[8 - 1].rotation = (21u - rotationSum) % 3u;
 
     rotationSum = 0;
 
     for (int i = 0; i < 12; i++) {
         result.edges[i].index = edgeIndicies[i];
-        result.edges[i].rotation = (edgeRotationIndex / powersOfTwo[i]) % 2u;
+        result.edges[i].rotation = edgeRotationIndex >> i & 1u; // simulates dividing by 2^i but is faster
 
-        if (i == 12 - 1) {
-            result.edges[12 - 1].rotation = (rotationSum) % 2u;
-        } else {
-            rotationSum += result.edges[i].rotation;
-        }
+        rotationSum += result.edges[i].rotation;
     }
+
+    result.edges[12 - 1].rotation = rotationSum & 1u; // this simulates mod2 but is faster
 
     return result;
 }

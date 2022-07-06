@@ -1,6 +1,6 @@
 #include "TurnIndexer.h"
 
-const uint64 powerOfEighteen[9] = {
+const uint64_t powerOfEighteen[9] = {
     1,
     18ull, 
     18ull * 18ull,
@@ -12,8 +12,8 @@ const uint64 powerOfEighteen[9] = {
     18ull * 18ull * 18ull * 18ull * 18ull * 18ull * 18ull * 18ull,
 };
 
-uint64 TurnIndexer::getIndex(int* turnIndicies, int length) {
-    uint64 result = 0;
+uint64_t TurnIndexer::getIndex(int* turnIndicies, int length) {
+    uint64_t result = 0;
 
     for (int i = 0; i < length; i++) {
         result += (turnIndicies[i] + 1) * powerOfEighteen[length - i - 1];
@@ -22,8 +22,8 @@ uint64 TurnIndexer::getIndex(int* turnIndicies, int length) {
     return result;
 }
 
-uint64 TurnIndexer::getIndexFromVector(vector<Turn> turns) {
-    int turnIndicies[turns.size()];
+uint64_t TurnIndexer::getIndexFromVector(vector<Turn> turns) {
+    int* turnIndicies = (int*) malloc(sizeof(int) * turns.size());
 
     for (int i = 0; i < turns.size(); i++) {
         turnIndicies[i] = turns[i].index;
@@ -32,8 +32,8 @@ uint64 TurnIndexer::getIndexFromVector(vector<Turn> turns) {
     return getIndex(turnIndicies, turns.size());
 }
 
-uint64 TurnIndexer::getIndexFromArray(array<Turn, 50> turns, int length) {
-    uint64 result = 0;
+uint64_t TurnIndexer::getIndexFromArray(array<Turn, 50> turns, int length) {
+    uint64_t result = 0;
     int i = 0;
     
     while (!turns[i].Equals(Turn::Empty())) {

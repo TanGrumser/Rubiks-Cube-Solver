@@ -1,11 +1,10 @@
 #pragma once
 
 #include <string>
-#include "Definitions.h"
 
 struct StateIndex {
-    uint64 cornerIndex;
-    uint64 edgeIndex;
+    uint64_t cornerIndex;
+    uint64_t edgeIndex;
 
     bool operator==(const StateIndex &other) const { 
         return cornerIndex == other.cornerIndex && edgeIndex == other.edgeIndex;

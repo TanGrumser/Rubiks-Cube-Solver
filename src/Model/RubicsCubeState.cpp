@@ -1,8 +1,8 @@
 #include "RubicsCubeState.h"
-#include "StringUtils.h"
 #include "Turn.h"
+#include "../Utils/StringUtils.h"
+#include "../LookupTable/LookupTable.h"
 #include <iostream>
-#include "LookupTable.h"
 
 
 bool initialized = false;
@@ -27,7 +27,7 @@ RubicsCubeState& RubicsCubeState::InitialState() {
     return RubicsCubeState::initialState;
 }
 
-RubicsCubeState& RubicsCubeState::Copy() {
+RubicsCubeState& RubicsCubeState::Copy() const {
     RubicsCubeState* copy = new RubicsCubeState();
 
     for (int i = 0; i < 8; i++) {
@@ -43,7 +43,7 @@ RubicsCubeState& RubicsCubeState::Copy() {
     return *copy;
 }
 
-string RubicsCubeState::GetStateString() {
+string RubicsCubeState::GetStateString() const {
     string result = "";
 
     for (int i = 0; i < 12; i++) {

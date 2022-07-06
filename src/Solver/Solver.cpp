@@ -2,8 +2,8 @@
 #include <algorithm>
 
 #include "Solver.h"
-#include "RubicsCubeState.h"
-#include "LookupTable.h"
+#include "../Model/RubicsCubeState.h"
+#include "../LookupTable/LookupTable.h"
 
 namespace Solver {
     int heuristicMode = 0;

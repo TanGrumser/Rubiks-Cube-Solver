@@ -1,18 +1,18 @@
 #include "DuplicateState.h"
-#include "RubicsCubeState.h"
-#include "StateIndexHasher.h"
+#include "../Model/StateIndexHasher.h"
+#include "../Model/RubicsCubeState.h"
 // TODO remove this. This is only used for index calculation.
-#include "LookupTable.h"
-#include "StateIndex.h"
-#include "robin-map/robin_map.h"
+#include "../LookupTable/LookupTable.h"
+#include "../Model/StateIndex.h"
+#include "../Utils/robin-map/robin_map.h"
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Turn.h"
+#include "../Model/Turn.h"
 #include <exception>
 #include <tuple>
-#include "utils.h"
-#include "FileManagement.h"
+#include "../Utils/utils.h"
+#include "../Utils/FileManagement.h"
 #include <mutex>
 
 
@@ -22,7 +22,6 @@ tsl::robin_map<StateIndex, int, StateIndexHasher> duplicateReachableStates2;
 std::mutex duplicateStateLookup;
 
 void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
-uint64 CalculateStateIndex(RubicsCubeState* state);
 
 namespace DuplicateState {
     bool active = false;
@@ -85,8 +84,8 @@ void DuplicateState::LoadDuplicateStateIndex() {
         stateIndex.edgeIndex   = 0;
 
         for (int i = 0; i < 8; i++) {
-            stateIndex.cornerIndex |= ((uint64)buffer[entry + i]) << (8 * i);
-            stateIndex.edgeIndex   |= ((uint64)buffer[entry + i + 8]) << (8 * i);
+            stateIndex.cornerIndex |= ((uint64_t)buffer[entry + i]) << (8 * i);
+            stateIndex.edgeIndex   |= ((uint64_t)buffer[entry + i + 8]) << (8 * i);
         }
 
         duplicateReachableStates2[stateIndex] = 100;
@@ -167,11 +166,4 @@ void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vecto
             lastTurns.pop_back();
         }
     }
-}
-
-uint64 CalculateStateIndex(RubicsCubeState& state) {
-    int cornerIndex = LookupTable::GetCornerLookupIndex(state);
-    int edgeIndex = LookupTable::GetFullEdgeLookupIndex(state);
-
-    return cornerIndex * FULL_EDGE_STATES_COUNT + edgeIndex;
 }

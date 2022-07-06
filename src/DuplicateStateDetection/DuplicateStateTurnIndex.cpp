@@ -1,10 +1,10 @@
 #include <iostream>
 
 #include "DuplicateState.h"
-#include "FileManagement.h"
-#include "robin-map/robin_map.h"
-#include "StateIndexHasher.h"
 #include "TurnIndexer.h"
+#include "../Utils/FileManagement.h"
+#include "../Utils/robin-map/robin_map.h"
+#include "../Model/StateIndexHasher.h"
 
 char* duplicateTurnIndexStates;
 tsl::robin_map<StateIndex, bool, StateIndexHasher> reachedStatesTurnIndex;
@@ -53,7 +53,7 @@ void EvaluateStateTurnIndex(RubicsCubeState& state, char depth, Turn lastTurn, s
     
     if (depth == maxDepth) {
         if (reachedStatesTurnIndex.find(stateIndex) != reachedStatesTurnIndex.end()) {
-            uint64 turnIndex =  TurnIndexer::getIndexFromVector(lastTurns);
+            uint64_t turnIndex =  TurnIndexer::getIndexFromVector(lastTurns);
             duplicateTurnIndexStates[turnIndex] = 1;
             DuplicateState::foundDuplicates++;
         } else {

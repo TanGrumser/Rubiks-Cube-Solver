@@ -1,14 +1,15 @@
 #include <iostream>
 #include <vector>
-#include "RubicsCubeState.h"
-#include "Turn.h"
+
 #include "CommandLineHandler.h"
-#include "StringUtils.h"
-#include "Solver.h"
-#include "Stopwatch.h"
-#include "LookupTable.h"
-#include "FileManagement.h"
-#include "DuplicateState.h"
+#include "Model/RubicsCubeState.h"
+#include "Model/Turn.h"
+#include "Utils/StringUtils.h"
+#include "Solver/Solver.h"
+#include "Utils/Stopwatch.h"
+#include "LookupTable/LookupTable.h"
+#include "Utils/FileManagement.h"
+#include "DuplicateStateDetection/DuplicateState.h"
 
 void SolveCube(RubicsCubeState& state);
 void ParseFile(std::string path);
@@ -62,7 +63,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         }
     }
     
-    SolveCube(state);
+    LookupTable::GenerateCornerLookupTable();
 }
 
 void SolveCube(RubicsCubeState& state) {

@@ -5,7 +5,7 @@
 #include "Turn.h"
 #include "StateIndex.h"
 #include <array>
-#include "Constants.h"
+#include "../Utils/Constants.h"
 
 using namespace std;
 
@@ -19,9 +19,9 @@ class RubicsCubeState {
         static RubicsCubeState initialState;
         static RubicsCubeState& InitialState();
         
-        string GetStateString();
+        string GetStateString() const;
         static RubicsCubeState& ParseStateString(string stateString);
-        RubicsCubeState& Copy();
+        RubicsCubeState& Copy() const;
         void ApplyTurn(Turn turn);
         bool Equals(RubicsCubeState& other);
         Turn GetTurnTo(RubicsCubeState& other);

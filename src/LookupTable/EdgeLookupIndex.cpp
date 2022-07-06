@@ -2,9 +2,9 @@
 #include <iostream>
 #include <iomanip> 
 #include "LookupTable.h" 
-#include "RubicsCubeState.h"
-#include "FileManagement.h"
-#include "PermutationIndexer.h"
+#include "../Model/RubicsCubeState.h"
+#include "../Utils/FileManagement.h"
+#include "../Utils/PermutationIndexer.h"
 
 using std::string;
 
@@ -24,23 +24,23 @@ PermutationIndexer<12, 6> smallEgdeIndexer;
 PermutationIndexer<12, 7> bigEgdeIndexer;
 PermutationIndexer<12> fullEgdeIndexer;
 
-uint64 LookupTable::GetUpperEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetUpperEdgeLookupIndex(RubicsCubeState& state) {
     return GetSmallEdgeStateIndex(state, SMALL_UPPER_EDGE_INDICIES);
 } 
 
-uint64 LookupTable::GetLowerEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetLowerEdgeLookupIndex(RubicsCubeState& state) {
     return GetSmallEdgeStateIndex(state, SMALL_LOWER_EDGE_INDICIES);
 } 
 
-uint64 LookupTable::GetBigUpperEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetBigUpperEdgeLookupIndex(RubicsCubeState& state) {
     return GetBigLowerEdgeStateIndex(state);
 } 
 
-uint64 LookupTable::GetBigLowerEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetBigLowerEdgeLookupIndex(RubicsCubeState& state) {
     return GetBigUpperEdgeStateIndex(state);
 } 
 
-uint64 LookupTable::GetEdgePermutationLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetEdgePermutationLookupIndex(RubicsCubeState& state) {
     array<unsigned int, 12> edgePermutation = {
         state.edges[0].index,
         state.edges[1].index,
@@ -59,7 +59,7 @@ uint64 LookupTable::GetEdgePermutationLookupIndex(RubicsCubeState& state) {
     return fullEgdeIndexer.rank(edgePermutation);
 }
 
-uint64 LookupTable::GetFullEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetFullEdgeLookupIndex(RubicsCubeState& state) {
     int rotationIndex = 0;
     
     // We iterating only to the next-to-last element since, the rotation of the last piece is completely defined by the rotations of all pieces before.

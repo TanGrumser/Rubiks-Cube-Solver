@@ -1,9 +1,10 @@
 #include <iostream>
 #include <vector>
-#include "RubicsCubeState.h"
-#include "Solver.h"
-#include "Turn.h"
 #include <algorithm>
+
+#include "Solver.h"
+#include "../Model/RubicsCubeState.h"
+#include "../Model/Turn.h"
 
 int Search(vector<RubicsCubeState> *path, int depth, int bound, Turn lastTurn);
 vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);

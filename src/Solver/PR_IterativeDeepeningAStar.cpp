@@ -4,18 +4,19 @@
 
 #include <iostream>
 #include <vector>
-#include "RubicsCubeState.h"
-#include "Solver.h"
-#include "Turn.h"
-#include <algorithm>
-#include <thread>
-#include "DuplicateState.h"
-#include "RubicsCubeStateShift.h"
-#include "Stopwatch.h"
 #include <stack>
 #include <queue>
 #include <stdexcept>
 #include <atomic>
+#include <algorithm>
+#include <thread>
+
+#include "Solver.h"
+#include "../Model/RubicsCubeState.h"
+#include "../Model/Turn.h"
+#include "../DuplicateStateDetection/DuplicateState.h"
+#include "../Model/RubicsCubeStateShift.h"
+#include "../Utils/Stopwatch.h"
 
 using std::vector;
 

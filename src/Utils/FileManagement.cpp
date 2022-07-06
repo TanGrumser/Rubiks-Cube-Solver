@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
-#include "Definitions.h"
 
 inline bool exists_test0 (const std::string& name) {
     std::ifstream f(name.c_str());
