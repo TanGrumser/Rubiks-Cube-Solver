@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 1.0)
 project(RubiksCubeSolver)
 
+set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
+
+message("Generated with config types: ${CMAKE_CONFIGURATION_TYPES}")
+
 # All source files.
 set(SRC
   "src/Main.cpp"
