@@ -2,17 +2,17 @@
 #include <iostream>
 #include <iomanip> 
 #include "LookupTable.h" 
-#include "../Model/RubicsCubeState.h"
+#include "../Model/RubiksCubeState.h"
 #include "../Utils/FileManagement.h"
 #include "../Utils/PermutationIndexer.h"
 
 using std::string;
 
 
-int GetSmallEdgeStateIndex(RubicsCubeState& state, std::vector<int>* edgeIndicies);
-int GetBigUpperEdgeStateIndex(RubicsCubeState& state);
-int GetBigLowerEdgeStateIndex(RubicsCubeState& state);
-int GetFullPermutationIndex(RubicsCubeState& state);
+int GetSmallEdgeStateIndex(RubiksCubeState& state, std::vector<int>* edgeIndicies);
+int GetBigUpperEdgeStateIndex(RubiksCubeState& state);
+int GetBigLowerEdgeStateIndex(RubiksCubeState& state);
+int GetFullPermutationIndex(RubiksCubeState& state);
 
 std::vector<int>* SMALL_UPPER_EDGE_INDICIES = new std::vector<int> {0, 1, 2, 3, 4, 5};
 std::vector<int>* SMALL_LOWER_EDGE_INDICIES = new std::vector<int> {6, 7, 8, 9, 10, 11};
@@ -24,23 +24,23 @@ PermutationIndexer<12, 6> smallEgdeIndexer;
 PermutationIndexer<12, 7> bigEgdeIndexer;
 PermutationIndexer<12> fullEgdeIndexer;
 
-uint64_t LookupTable::GetUpperEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetUpperEdgeLookupIndex(RubiksCubeState& state) {
     return GetSmallEdgeStateIndex(state, SMALL_UPPER_EDGE_INDICIES);
 } 
 
-uint64_t LookupTable::GetLowerEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetLowerEdgeLookupIndex(RubiksCubeState& state) {
     return GetSmallEdgeStateIndex(state, SMALL_LOWER_EDGE_INDICIES);
 } 
 
-uint64_t LookupTable::GetBigUpperEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetBigUpperEdgeLookupIndex(RubiksCubeState& state) {
     return GetBigLowerEdgeStateIndex(state);
 } 
 
-uint64_t LookupTable::GetBigLowerEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetBigLowerEdgeLookupIndex(RubiksCubeState& state) {
     return GetBigUpperEdgeStateIndex(state);
 } 
 
-uint64_t LookupTable::GetEdgePermutationLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetEdgePermutationLookupIndex(RubiksCubeState& state) {
     array<unsigned int, 12> edgePermutation = {
         state.edges[0].index,
         state.edges[1].index,
@@ -59,7 +59,7 @@ uint64_t LookupTable::GetEdgePermutationLookupIndex(RubicsCubeState& state) {
     return fullEgdeIndexer.rank(edgePermutation);
 }
 
-uint64_t LookupTable::GetFullEdgeLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetFullEdgeLookupIndex(RubiksCubeState& state) {
     int rotationIndex = 0;
     
     // We iterating only to the next-to-last element since, the rotation of the last piece is completely defined by the rotations of all pieces before.
@@ -70,7 +70,7 @@ uint64_t LookupTable::GetFullEdgeLookupIndex(RubicsCubeState& state) {
     return GetEdgePermutationLookupIndex(state) * FULL_EDGE_ROTATION_COUNT + rotationIndex;
 }
 
-int GetSmallEdgeStateIndex(RubicsCubeState& state, std::vector<int>* edgeIndicies) {
+int GetSmallEdgeStateIndex(RubiksCubeState& state, std::vector<int>* edgeIndicies) {
     int rotationIndex = 0;
     array<unsigned int, 6> edgePerm;
 
@@ -91,7 +91,7 @@ int GetSmallEdgeStateIndex(RubicsCubeState& state, std::vector<int>* edgeIndicie
 }
 
 // Only uses the edges with indicies 5 to 11
-int GetBigLowerEdgeStateIndex(RubicsCubeState& state) {
+int GetBigLowerEdgeStateIndex(RubiksCubeState& state) {
     int rotationIndex = 0;
     array<unsigned int , 7> edgePerm;
     
@@ -111,7 +111,7 @@ int GetBigLowerEdgeStateIndex(RubicsCubeState& state) {
 }
 
 // Only uses the edges with indicies 0 to 6
-int GetBigUpperEdgeStateIndex(RubicsCubeState& state) {
+int GetBigUpperEdgeStateIndex(RubiksCubeState& state) {
     int rotationIndex = 0;
     array<unsigned int , 7> edgePerm;
     

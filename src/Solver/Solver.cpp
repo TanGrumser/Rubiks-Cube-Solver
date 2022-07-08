@@ -2,7 +2,7 @@
 #include <algorithm>
 
 #include "Solver.h"
-#include "../Model/RubicsCubeState.h"
+#include "../Model/RubiksCubeState.h"
 #include "../LookupTable/LookupTable.h"
 
 namespace Solver {
@@ -12,7 +12,7 @@ namespace Solver {
     int searchedStates = 0;
 }
 
-int Solver::GetDistanceHeuristic(RubicsCubeState& from, int bound) {
+int Solver::GetDistanceHeuristic(RubiksCubeState& from, int bound) {
     int max, estMoves;
 
     // Check the estimated moves from each database, and return it as soon
@@ -52,13 +52,13 @@ int Solver::GetDistanceHeuristic(RubicsCubeState& from, int bound) {
     return max;
 }
 
-vector<Turn> Solver::GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState> stateSequence) {
+vector<Turn> Solver::GenerateTurnSequenceFromStateSequence(vector<RubiksCubeState> stateSequence) {
     vector<Turn> turnSequence = {};
-    RubicsCubeState lastState = stateSequence.back();
+    RubiksCubeState lastState = stateSequence.back();
     stateSequence.pop_back();
 
     while (stateSequence.size() != 0) {
-        RubicsCubeState currentState = stateSequence.back();
+        RubiksCubeState currentState = stateSequence.back();
         turnSequence.push_back(currentState.GetTurnTo(lastState));
         stateSequence.pop_back();
         lastState = currentState;

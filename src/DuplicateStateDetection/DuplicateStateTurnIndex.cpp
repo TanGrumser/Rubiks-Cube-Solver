@@ -9,7 +9,7 @@
 char* duplicateTurnIndexStates;
 tsl::robin_map<StateIndex, bool, StateIndexHasher> reachedStatesTurnIndex;
 
-void EvaluateStateTurnIndex(RubicsCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
+void EvaluateStateTurnIndex(RubiksCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
 
 
 bool DuplicateState::PruneByTurnIndex(array<Turn, 50> moves, int size) {
@@ -29,7 +29,7 @@ void DuplicateState::LoadDuplicateStateTurnIndex() {
 }
 
 void DuplicateState::GenerateTurnBasedLookupTable() {
-    RubicsCubeState& initialState = RubicsCubeState::InitialState().Copy();
+    RubiksCubeState& initialState = RubiksCubeState::InitialState().Copy();
     const int MAX_DEPTH = 7;
     vector<Turn> lastTurns;
     duplicateTurnIndexStates = (char*)malloc(sizeof(char) * DuplicateState::NUMBER_OF_PATHS_AT_DEPTH[MAX_DEPTH]);
@@ -48,7 +48,7 @@ void DuplicateState::GenerateTurnBasedLookupTable() {
     FileManagement::WriteBufferToFile(TURN_INDEX_DUPLICATE_STATE_PATH, duplicateTurnIndexStates, DuplicateState::NUMBER_OF_PATHS_AT_DEPTH[MAX_DEPTH]);    
 }
 
-void EvaluateStateTurnIndex(RubicsCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns) {
+void EvaluateStateTurnIndex(RubiksCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns) {
     StateIndex stateIndex = state.GetLookupIndex();
     
     if (depth == maxDepth) {

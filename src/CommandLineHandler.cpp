@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "CommandLineHandler.h"
-#include "Model/RubicsCubeState.h"
+#include "Model/RubiksCubeState.h"
 #include "Model/Turn.h"
 #include "Utils/StringUtils.h"
 #include "Solver/Solver.h"
@@ -11,13 +11,13 @@
 #include "Utils/FileManagement.h"
 #include "DuplicateStateDetection/DuplicateState.h"
 
-void SolveCube(RubicsCubeState& state);
+void SolveCube(RubiksCubeState& state);
 void ParseFile(std::string path);
 void GenerateLookupTable(int table);
 void PrintHelp();
 
 void CommandLineHandler::Start(int argc, char *argv[]) {
-    RubicsCubeState state = RubicsCubeState::InitialState().Copy();
+    RubiksCubeState state = RubiksCubeState::InitialState().Copy();
 
     //Parse all command line arguments.
     for (int i = 1; i < argc; i++) {
@@ -35,7 +35,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
 
         if (((string) argv[i]).compare("-s") == 0) {
             string stateString = (string) argv[i + 1];
-            state = RubicsCubeState::ParseStateString(stateString);
+            state = RubiksCubeState::ParseStateString(stateString);
         }
 
         if (((string) argv[i]).compare("-h") == 0) {
@@ -66,7 +66,7 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
     LookupTable::GenerateCornerLookupTable();
 }
 
-void SolveCube(RubicsCubeState& state) {
+void SolveCube(RubiksCubeState& state) {
     StopWatch* timer = new StopWatch();
 
     std::cout << "Loading lookup tables and duplicate state table." << endl;

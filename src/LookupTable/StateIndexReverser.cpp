@@ -10,14 +10,14 @@ void StateIndexReverser::Test() {
     timer.StartTimer();
 
     for (int i = 0; i < TEST_COUNT; i++) {
-        RubicsCubeState state = RubicsCubeState::InitialState().Copy();
+        RubiksCubeState state = RubiksCubeState::InitialState().Copy();
 
         for (int j = 0; j < APPLIED_MOVES; j++) {
             state.ApplyTurn(Turn((i * 1000 + j * 100) % 18));
         }
 
         StateIndex index = state.GetLookupIndex();
-        RubicsCubeState reconstruction = GetStateFromIndex(index);
+        RubiksCubeState reconstruction = GetStateFromIndex(index);
 
         if (!state.Equals(reconstruction)) {
             std::cout << "Test failed. The two states are\n" << state.GetStateString() << "\n" << reconstruction.GetStateString() << std::endl;
@@ -28,8 +28,8 @@ void StateIndexReverser::Test() {
     std::cout << "Test finished succesfully. Time required: " << timer.GetFormattedTimeInSeconds() << std::endl;
 }
 
-RubicsCubeState StateIndexReverser::GetStateFromIndex(StateIndex index) {
-    RubicsCubeState result;
+RubiksCubeState StateIndexReverser::GetStateFromIndex(StateIndex index) {
+    RubiksCubeState result;
 
     // Extract 
     uint64_t edgePermutationIndex   = index.edgeIndex / FULL_EDGE_ROTATION_COUNT;

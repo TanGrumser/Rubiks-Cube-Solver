@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <array>
 #include "TurnIndexer.h"
-#include "../Model/RubicsCubeState.h"
+#include "../Model/RubiksCubeState.h"
 #include "../Model/StateIndex.h"
 #include "../Utils/Constants.h"
 
@@ -30,7 +30,7 @@ namespace DuplicateState {
 
     void GenerateLookupTable();
     void GenerateTurnBasedLookupTable();
-    void SetBaseState(RubicsCubeState* state);
+    void SetBaseState(RubiksCubeState* state);
     void LoadDuplicateStateIndex();
     void LoadDuplicateStateTurnIndex();
     bool WasStateReached(StateIndex index, int depth);

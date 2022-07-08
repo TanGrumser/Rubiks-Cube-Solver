@@ -11,7 +11,7 @@
 
 #include "LookupTable.h"
 #include "../Utils/FileManagement.h"
-#include "../Model/RubicsCubeState.h"
+#include "../Model/RubiksCubeState.h"
 #include "../Utils/Stopwatch.h"
 
 using std::string;
@@ -84,7 +84,7 @@ void EvaluatePositionWithIterativeDeepening(
 // The work horse. Evealuates a position and traverses the graph deeper up to @maxDepth and populates the lookup table.
 void EvaluatePositionRecursive(
     LookupTable::IndexCalculation IndexCalculator, 
-    RubicsCubeState state, 
+    RubiksCubeState state, 
     char depth, 
     Turn lastTurn, 
     std::vector<Turn> exploredTurns, 
@@ -121,37 +121,37 @@ void LookupTable::LoadLookupTables() {
     //edgePermutationLookupTable = FileManagement::LoadBufferFromFile(EDGE_PERMUTATION_LOOKUP_TABLE_PATH, size);
 }
 
-int LookupTable::GetCornerStateDistance(RubicsCubeState& state) {
+int LookupTable::GetCornerStateDistance(RubiksCubeState& state) {
     int index = GetCornerLookupIndex(state);
     return cornerLookupTable[index];
 }
 
-int LookupTable::GetUpperEdgeStateDistance(RubicsCubeState& state) {
+int LookupTable::GetUpperEdgeStateDistance(RubiksCubeState& state) {
     int index = GetUpperEdgeLookupIndex(state);
     return upperEdgeLookupTable[index];
 }
 
-int LookupTable::GetLowerEdgeStateDistance(RubicsCubeState& state) {
+int LookupTable::GetLowerEdgeStateDistance(RubiksCubeState& state) {
     int index = GetLowerEdgeLookupIndex(state);
     return lowerEdgeLookupTable[index];
 }
 
-int LookupTable::GetBigUpperEdgeStateDistance(RubicsCubeState& state) {
+int LookupTable::GetBigUpperEdgeStateDistance(RubiksCubeState& state) {
     int index = GetBigUpperEdgeLookupIndex(state);
     return bigUpperEdgeLookupTable[index];
 }
 
-int LookupTable::GetBigLowerEdgeStateDistance(RubicsCubeState& state) {
+int LookupTable::GetBigLowerEdgeStateDistance(RubiksCubeState& state) {
     int index = GetBigLowerEdgeLookupIndex(state);
     return bigLowerEdgeLookupTable[index];
 }
 
-int LookupTable::GetEdgePermutationStateDistance(RubicsCubeState& state) {
+int LookupTable::GetEdgePermutationStateDistance(RubiksCubeState& state) {
     int index = GetEdgePermutationLookupIndex(state);
     return edgePermutationLookupTable[index];
 }
 
-int LookupTable::GetFullEdgeStateDistance(RubicsCubeState& state) {
+int LookupTable::GetFullEdgeStateDistance(RubiksCubeState& state) {
     int index = GetFullEdgeLookupIndex(state);
     return fullEdgeLookupTable[index];
 }
@@ -203,7 +203,7 @@ void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexC
     while (a_reachedStates < maxReachableStates) {
         for (int i = 0; i < LookupTable::threadCount; i++) {
             std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i, LookupTable::threadCount);
-            std::thread thread = std::thread(EvaluatePositionRecursive, IndexCalculator, RubicsCubeState::InitialState().Copy(), 0, Turn::Empty(), exploredTurns, *currentDepth, shortestMovesPossible, reachedStates, mutex);
+            std::thread thread = std::thread(EvaluatePositionRecursive, IndexCalculator, RubiksCubeState::InitialState().Copy(), 0, Turn::Empty(), exploredTurns, *currentDepth, shortestMovesPossible, reachedStates, mutex);
             threads[i] = std::move(thread);
         }
 
@@ -223,7 +223,7 @@ void EvaluatePositionWithIterativeDeepening(LookupTable::IndexCalculation IndexC
     }
 }
 
-void EvaluatePositionRecursive(LookupTable::IndexCalculation IndexCalculator, RubicsCubeState state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, uint64_t* reachedStates, std::mutex* mutex) {
+void EvaluatePositionRecursive(LookupTable::IndexCalculation IndexCalculator, RubiksCubeState state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, std::vector<char>* shortestMovesPossible, uint64_t* reachedStates, std::mutex* mutex) {
     if (a_reachedStates == (*shortestMovesPossible).size()) { // TODO change statement to variable refference and not size function
         return;
     }
@@ -286,7 +286,7 @@ void EvaluatePositionWithInverseStateIndex(
         // When a value has not been initialized yet.
         if ((*shortestMovesPossible)[index] == UNINITIALIIZED) {
             // get the corrosponding state
-            RubicsCubeState state = StateCalculator(index);
+            RubiksCubeState state = StateCalculator(index);
 
             // and look at all neighbour states
             for (Turn turn : Turn::AllTurns) {

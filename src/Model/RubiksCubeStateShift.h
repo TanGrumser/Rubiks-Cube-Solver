@@ -1,12 +1,12 @@
 #pragma once
 
-#include "RubicsCubeState.h"
+#include "RubiksCubeState.h"
 #include "StateIndex.h"
 #include "../Utils/PermutationIndexer.h"
 #include "../LookupTable/LookupTable.h"
 #include "../Utils/Constants.h"
 
-struct RubicsCubeStateShift {    
+struct RubiksCubeStateShift {    
     array<unsigned int, 8> cornerIndiciesMapping;
     array<unsigned int, 8> cornerRotationOffset;
     array<unsigned int, 12> edgeIndiciesMapping;
@@ -15,7 +15,7 @@ struct RubicsCubeStateShift {
     PermutationIndexer<8> cornerIndexer;
     PermutationIndexer<12> edgeIndexer;
 
-    RubicsCubeStateShift (RubicsCubeState& state) {
+    RubiksCubeStateShift (RubiksCubeState& state) {
         for (int i = 0; i < 8; i++) {
             this->cornerIndiciesMapping[state.corners[i].index] = i;
             this->cornerRotationOffset[state.corners[i].index]  = (3u - state.corners[i].rotation) % 3u;
@@ -27,7 +27,7 @@ struct RubicsCubeStateShift {
         }
     }
 
-    StateIndex GetShiftedState(RubicsCubeState& state) {
+    StateIndex GetShiftedState(RubiksCubeState& state) {
         StateIndex stateIndex;
 
         array<unsigned, 8> cornerPermutaion;

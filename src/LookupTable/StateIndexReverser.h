@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "../Model/RubicsCubeState.h"
+#include "../Model/RubiksCubeState.h"
 #include "../Model/StateIndex.h"
 #include "../Utils/Constants.h"
 #include "../Utils/PermutationIndexer.h"
@@ -11,6 +11,6 @@ namespace StateIndexReverser {
     static PermutationIndexer<8> cornerIndexer;
     static PermutationIndexer<12> egdeIndexer;
 
-    RubicsCubeState GetStateFromIndex(StateIndex index);
+    RubiksCubeState GetStateFromIndex(StateIndex index);
     void Test();
 }

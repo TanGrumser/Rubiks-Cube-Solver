@@ -2,18 +2,18 @@
 #include <iostream>
 #include <iomanip> 
 #include "LookupTable.h" 
-#include "../Model/RubicsCubeState.h"
+#include "../Model/RubiksCubeState.h"
 #include "../Utils/FileManagement.h"
 #include "../Utils/PermutationIndexer.h"
 
 using std::string;
 using LookupTable::CORNER_LOOKUP_TABLE_PATH;
 
-int GetPermutationIndex(RubicsCubeState* state);
+int GetPermutationIndex(RubiksCubeState* state);
 
 /*
 void LookupTable::TestCornerLookupCaluclation() {
-    RubicsCubeState* state = RubicsCubeState::InitialState()->Copy();
+    RubiksCubeState* state = RubiksCubeState::InitialState()->Copy();
 
     for (int i = 0; i < CORNER_STATES_COUNT; i++) {
         SetStateToCornerStateByIndex(i, state);
@@ -33,7 +33,7 @@ void LookupTable::TestCornerLookupCaluclation() {
 
 PermutationIndexer<8> cornerIndexer;
 
-uint64_t LookupTable::GetCornerLookupIndex(RubicsCubeState& state) {
+uint64_t LookupTable::GetCornerLookupIndex(RubiksCubeState& state) {
     array<unsigned int, 8> cornerPermutation = {
         state.corners[0].index,
         state.corners[1].index,
@@ -48,7 +48,7 @@ uint64_t LookupTable::GetCornerLookupIndex(RubicsCubeState& state) {
     return cornerIndexer.rank(cornerPermutation) * CORNER_ROTATIONS_COUNT + GetRotationIndex(state);
 }
 
-int inline LookupTable::GetRotationIndex(RubicsCubeState& state) {
+int inline LookupTable::GetRotationIndex(RubiksCubeState& state) {
     int rotationIndex = 0;
    
     for (int i = 0; i < 7; i++) {
@@ -59,7 +59,7 @@ int inline LookupTable::GetRotationIndex(RubicsCubeState& state) {
 }
 
 
-int GetPermutationIndex(RubicsCubeState* state) {
+int GetPermutationIndex(RubiksCubeState* state) {
     int result = 0;
 
     for (int i = 0; i < 8 - 1; i++) {

@@ -12,36 +12,36 @@
 #include <thread>
 
 #include "Solver.h"
-#include "../Model/RubicsCubeState.h"
+#include "../Model/RubiksCubeState.h"
 #include "../Model/Turn.h"
 #include "../DuplicateStateDetection/DuplicateState.h"
-#include "../Model/RubicsCubeStateShift.h"
+#include "../Model/RubiksCubeStateShift.h"
 #include "../Utils/Stopwatch.h"
 
 using std::vector;
 
 
 
-int Search(vector<RubicsCubeState*>* path, int depth, int bound, Turn lastTurn, int* minBound, vector<Turn> nextTurns, bool* isSolutionFound);
-vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);
+int Search(vector<RubiksCubeState*>* path, int depth, int bound, Turn lastTurn, int* minBound, vector<Turn> nextTurns, bool* isSolutionFound);
+vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubiksCubeState*> stateSequence);
 const int MAX_BOUND = 100000;
 const int SOLUTION_FOUND = -1;
 unsigned long long traversedStates = 0;
 unsigned long long duplicateStates = 0;
 std::atomic_int32_t traversedStatesAtDepth;
 
-RubicsCubeStateShift* shift;
+RubiksCubeStateShift* shift;
 
-void idaSearch(RubicsCubeState& startState, int bound, array<Turn, 50>* solution, int* nextBound, std::vector<Turn> turnsToExplore, atomic_bool* solved);
+void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* solution, int* nextBound, std::vector<Turn> turnsToExplore, atomic_bool* solved);
 
 struct Node {
-    RubicsCubeState cube;
+    RubiksCubeState cube;
     Turn move;
     uint8_t depth;
 };
 
 struct PrioritizedMove {
-    RubicsCubeState cube;
+    RubiksCubeState cube;
     Turn move;
     uint8_t estMoves; // Priority.  Least number of moves to most.
     bool operator>(const PrioritizedMove& rhs) const {
@@ -49,14 +49,14 @@ struct PrioritizedMove {
     }
 };
 
-vector<Turn> Solver::PR_IterativeDeepeningAStar(RubicsCubeState& startState) {
-    atomic_bool* solved = new atomic_bool(startState.Equals(RubicsCubeState::InitialState()));
+vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState) {
+    atomic_bool* solved = new atomic_bool(startState.Equals(RubiksCubeState::InitialState()));
     uint8_t bound = Solver::GetDistanceHeuristic(startState, 100);
     vector<array<Turn, 50>*> moves(Solver::threadCount, new array<Turn, 50>);
     array<Turn, 50> solutionMoves;
     StopWatch timer;
 
-    shift = new RubicsCubeStateShift(startState);
+    shift = new RubiksCubeStateShift(startState);
 
     timer.StartTimer();
 
@@ -69,7 +69,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubicsCubeState& startState) {
         for (int i = 0; i < Solver::threadCount; i++) {
           moves[i] = new array<Turn, 50>();
           newBounds[i] = 0xff;
-          RubicsCubeState state(startState);
+          RubiksCubeState state(startState);
           std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i, LookupTable::threadCount);
           array<Turn, 50>* movesStack = moves[i];
 
@@ -107,7 +107,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubicsCubeState& startState) {
     return moveVec;
 }
 
-void idaSearch(RubicsCubeState& startState, int bound, array<Turn, 50>* moves, int* nextBound, std::vector<Turn> turnsToExplore, atomic_bool* solved) {
+void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* moves, int* nextBound, std::vector<Turn> turnsToExplore, atomic_bool* solved) {
     typedef priority_queue<PrioritizedMove, vector<PrioritizedMove>,
       greater<PrioritizedMove> > moveQueue_t;
 
@@ -119,7 +119,7 @@ void idaSearch(RubicsCubeState& startState, int bound, array<Turn, 50>* moves, i
 
     // Fill the node stack with only the states, that are reachable through the turns that this thread is supposed to explore
     for (int i = 0; i < turnsToExplore.size(); i++) {
-      RubicsCubeState cubeCopy(startState);
+      RubiksCubeState cubeCopy(startState);
       cubeCopy.ApplyTurn(turnsToExplore[i]);
       nodeStack.push({cubeCopy, turnsToExplore[i], 1});
     }
@@ -135,7 +135,7 @@ void idaSearch(RubicsCubeState& startState, int bound, array<Turn, 50>* moves, i
       if (curNode.depth != 0)
         (*moves)[curNode.depth - 1] = curNode.move;
 
-      if (curNode.depth == bound && curNode.cube.Equals(RubicsCubeState::InitialState())) {
+      if (curNode.depth == bound && curNode.cube.Equals(RubiksCubeState::InitialState())) {
           *nextBound = 0xFF;
           *solved = true;
           break;
@@ -147,7 +147,7 @@ void idaSearch(RubicsCubeState& startState, int bound, array<Turn, 50>* moves, i
           Turn move = Turn::AllTurns[i];
 
           if (!move.IsTurnBacktracking(curNode.move)) {
-            RubicsCubeState cubeCopy(curNode.cube);
+            RubiksCubeState cubeCopy(curNode.cube);
 
             cubeCopy.ApplyTurn(move);
 

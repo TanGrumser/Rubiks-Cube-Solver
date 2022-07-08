@@ -4,22 +4,22 @@
 
 using namespace std;
 
-struct RubicsCubePiece {
+struct RubiksCubePiece {
     unsigned int index;
     unsigned int rotation;
 
-    RubicsCubePiece() {
+    RubiksCubePiece() {
         this->index = 0;
         this->rotation = 0;
     }
 
-    RubicsCubePiece(unsigned int index, unsigned int rotation) {
+    RubiksCubePiece(unsigned int index, unsigned int rotation) {
         this->index = index;
         this->rotation = rotation;
     }
 
-    RubicsCubePiece Copy() {
-        return RubicsCubePiece(index, rotation);
+    RubiksCubePiece Copy() {
+        return RubiksCubePiece(index, rotation);
     }
 
     string ToString() {

@@ -3,17 +3,17 @@
 #include <algorithm>
 
 #include "Solver.h"
-#include "../Model/RubicsCubeState.h"
+#include "../Model/RubiksCubeState.h"
 #include "../Model/Turn.h"
 
-int Search(vector<RubicsCubeState> *path, int depth, int bound, Turn lastTurn);
-vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubicsCubeState*> stateSequence);
+int Search(vector<RubiksCubeState> *path, int depth, int bound, Turn lastTurn);
+vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubiksCubeState*> stateSequence);
 const int MAX_BOUND = 100000;
 const int SOLUTION_FOUND = -1;
 
-vector<Turn> Solver::SR_IterativeDeepeningAStar(RubicsCubeState& startState) {
+vector<Turn> Solver::SR_IterativeDeepeningAStar(RubiksCubeState& startState) {
         int bound = Solver::GetDistanceHeuristic(startState, 100);
-        vector<RubicsCubeState> path = {};
+        vector<RubiksCubeState> path = {};
         path.push_back(startState);
 
         while (true) {
@@ -34,15 +34,15 @@ vector<Turn> Solver::SR_IterativeDeepeningAStar(RubicsCubeState& startState) {
         return Solver::GenerateTurnSequenceFromStateSequence(path);
     }
 
-int Search(vector<RubicsCubeState> *path, int depth, int bound, Turn lastTurn) {
-    RubicsCubeState& node = path->back();
+int Search(vector<RubiksCubeState> *path, int depth, int bound, Turn lastTurn) {
+    RubiksCubeState& node = path->back();
     int totalEstimatedCost = depth + Solver::GetDistanceHeuristic(node, depth);
     
     if (totalEstimatedCost > bound) {
         return totalEstimatedCost;
     } 
 
-    if (node.Equals(RubicsCubeState::InitialState())) {
+    if (node.Equals(RubiksCubeState::InitialState())) {
         return SOLUTION_FOUND;
     } 
 
@@ -50,7 +50,7 @@ int Search(vector<RubicsCubeState> *path, int depth, int bound, Turn lastTurn) {
 
     // TODO allocating over and over again isn't necessary. Rather a stack with pre allocated states should be used.
 
-    RubicsCubeState& succesor = node.Copy();
+    RubiksCubeState& succesor = node.Copy();
     path->push_back(succesor);
 
     for (int i = 0; i < Turn::CountAllTurns; i++) {

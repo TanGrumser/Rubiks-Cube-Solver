@@ -1,4 +1,4 @@
-#include "RubicsCubeState.h"
+#include "RubiksCubeState.h"
 #include "Turn.h"
 #include "../Utils/StringUtils.h"
 #include "../LookupTable/LookupTable.h"
@@ -7,28 +7,28 @@
 
 bool initialized = false;
 
-RubicsCubeState RubicsCubeState::initialState = RubicsCubeState();
+RubiksCubeState RubiksCubeState::initialState = RubiksCubeState();
 
-RubicsCubeState& RubicsCubeState::InitialState() {
+RubiksCubeState& RubiksCubeState::InitialState() {
     if (!initialized) {
         for (int i = 0; i < 8; i++) {
-            RubicsCubeState::initialState.corners[i].index = i;
-            RubicsCubeState::initialState.corners[i].rotation = 0;
+            RubiksCubeState::initialState.corners[i].index = i;
+            RubiksCubeState::initialState.corners[i].rotation = 0;
         }
         
         for (int i = 0; i < 12; i++) {
-            RubicsCubeState::initialState.edges[i].index = i;
-            RubicsCubeState::initialState.edges[i].rotation = 0;
+            RubiksCubeState::initialState.edges[i].index = i;
+            RubiksCubeState::initialState.edges[i].rotation = 0;
         }
 
         initialized = true;
     }
 
-    return RubicsCubeState::initialState;
+    return RubiksCubeState::initialState;
 }
 
-RubicsCubeState& RubicsCubeState::Copy() const {
-    RubicsCubeState* copy = new RubicsCubeState();
+RubiksCubeState& RubiksCubeState::Copy() const {
+    RubiksCubeState* copy = new RubiksCubeState();
 
     for (int i = 0; i < 8; i++) {
         copy->corners[i].index = this->corners[i].index;
@@ -43,7 +43,7 @@ RubicsCubeState& RubicsCubeState::Copy() const {
     return *copy;
 }
 
-string RubicsCubeState::GetStateString() const {
+string RubiksCubeState::GetStateString() const {
     string result = "";
 
     for (int i = 0; i < 12; i++) {
@@ -67,8 +67,8 @@ string RubicsCubeState::GetStateString() const {
     return result;
 }
 
-RubicsCubeState& RubicsCubeState::ParseStateString(string stateString) {
-    RubicsCubeState* state = new RubicsCubeState();
+RubiksCubeState& RubiksCubeState::ParseStateString(string stateString) {
+    RubiksCubeState* state = new RubiksCubeState();
 
     vector<string> lines = StringUtils::Split(stateString, "|");
     vector<string> edgeValues = StringUtils::Split(lines[0], ";");
@@ -91,10 +91,10 @@ RubicsCubeState& RubicsCubeState::ParseStateString(string stateString) {
     return *state;
 }
 
-Turn RubicsCubeState::GetTurnTo(RubicsCubeState& other) {
+Turn RubiksCubeState::GetTurnTo(RubiksCubeState& other) {
 
     for (int i = 0; i < Turn::CountAllTurns; i++) {
-        RubicsCubeState& state = Copy();
+        RubiksCubeState& state = Copy();
         state.ApplyTurn(Turn::AllTurns[i]);
 
         if (state.Equals(other)) {
@@ -105,7 +105,7 @@ Turn RubicsCubeState::GetTurnTo(RubicsCubeState& other) {
     throw std::runtime_error("Couldn't find turn");
 }
 
-bool RubicsCubeState::Equals(RubicsCubeState& other) {
+bool RubiksCubeState::Equals(RubiksCubeState& other) {
     for (int i = 0; i < 12; i++) {
         if (edges[i].index != other.edges[i].index
          || edges[i].rotation != other.edges[i].rotation) {
@@ -123,7 +123,7 @@ bool RubicsCubeState::Equals(RubicsCubeState& other) {
     return true;
 }
 
-StateIndex RubicsCubeState::GetLookupIndex() {
+StateIndex RubiksCubeState::GetLookupIndex() {
     StateIndex index;
 
     index.cornerIndex = LookupTable::GetCornerLookupIndex(*this);
@@ -132,7 +132,7 @@ StateIndex RubicsCubeState::GetLookupIndex() {
     return index;
 }
 
-void RubicsCubeState::scramble(int turns) {
+void RubiksCubeState::scramble(int turns) {
     Turn turn, lastTurn = Turn::Empty();
         
     for (int j = 0; j < turns; j++) {

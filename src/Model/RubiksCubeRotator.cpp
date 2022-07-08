@@ -1,6 +1,6 @@
-#include "RubicsCubeState.h"
+#include "RubiksCubeState.h"
 
-inline void rotateCorner(RubicsCubePiece& corner, unsigned int amount) {
+inline void rotateCorner(RubiksCubePiece& corner, unsigned int amount) {
     corner.rotation += amount;
 
     // % 3, but a bit faster.
@@ -10,13 +10,13 @@ inline void rotateCorner(RubicsCubePiece& corner, unsigned int amount) {
       corner.rotation = 1;
 }
 
-inline void rotateEdge(RubicsCubePiece& edge)   {
+inline void rotateEdge(RubiksCubePiece& edge)   {
     edge.rotation ^= 1;
 }
 
-void up(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[3];
-    RubicsCubePiece savedEdge = state->edges[3];
+void up(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[3];
+    RubiksCubePiece savedEdge = state->edges[3];
     
     state->corners[3] = state->corners[2];
     state->corners[2] = state->corners[1];
@@ -29,9 +29,9 @@ void up(RubicsCubeState* state) {
     state->edges[0] = savedEdge;
 }
 
-void upPrime(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[3];
-    RubicsCubePiece savedEdge = state->edges[3];
+void upPrime(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[3];
+    RubiksCubePiece savedEdge = state->edges[3];
     
     state->corners[3] = state->corners[0];
     state->corners[0] = state->corners[1];
@@ -44,7 +44,7 @@ void upPrime(RubicsCubeState* state) {
     state->edges[2] = savedEdge;
 }
 
-void up2(RubicsCubeState* state) {
+void up2(RubiksCubeState* state) {
     std::swap(state->corners[0], state->corners[2]);
     std::swap(state->corners[1], state->corners[3]);
 
@@ -52,9 +52,9 @@ void up2(RubicsCubeState* state) {
     std::swap(state->edges[1], state->edges[3]);
 }
 
-void front(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[1];
-    RubicsCubePiece savedEdge = state->edges[1];
+void front(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[1];
+    RubiksCubePiece savedEdge = state->edges[1];
     
     state->corners[1] = state->corners[2];
     state->corners[2] = state->corners[6];
@@ -72,9 +72,9 @@ void front(RubicsCubeState* state) {
     state->edges[5] = savedEdge;
 }
 
-void frontPrime(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[1];
-    RubicsCubePiece savedEdge = state->edges[1];
+void frontPrime(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[1];
+    RubiksCubePiece savedEdge = state->edges[1];
     
     state->corners[1] = state->corners[5];
     state->corners[5] = state->corners[6];
@@ -92,7 +92,7 @@ void frontPrime(RubicsCubeState* state) {
     state->edges[6] = savedEdge;
 }
 
-void front2(RubicsCubeState* state) {
+void front2(RubiksCubeState* state) {
     std::swap(state->corners[1], state->corners[6]);
     std::swap(state->corners[2], state->corners[5]);
 
@@ -100,9 +100,9 @@ void front2(RubicsCubeState* state) {
     std::swap(state->edges[6], state->edges[5]);
 }
 
-void right(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[0];
-    RubicsCubePiece savedEdge = state->edges[0];
+void right(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[0];
+    RubiksCubePiece savedEdge = state->edges[0];
     
     state->corners[0] = state->corners[1];
     state->corners[1] = state->corners[5];
@@ -125,9 +125,9 @@ void right(RubicsCubeState* state) {
     rotateEdge(state->edges[8]);
 }
 
-void rightPrime(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[0];
-    RubicsCubePiece savedEdge = state->edges[0];
+void rightPrime(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[0];
+    RubiksCubePiece savedEdge = state->edges[0];
     
     state->corners[0] = state->corners[4];
     state->corners[4] = state->corners[5];
@@ -150,7 +150,7 @@ void rightPrime(RubicsCubeState* state) {
     rotateEdge(state->edges[8]);
 }
 
-void right2(RubicsCubeState* state) {
+void right2(RubiksCubeState* state) {
     std::swap(state->corners[1], state->corners[4]);
     std::swap(state->corners[0], state->corners[5]);
 
@@ -158,9 +158,9 @@ void right2(RubicsCubeState* state) {
     std::swap(state->edges[4], state->edges[5]);
 }
 
-void back(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[0];
-    RubicsCubePiece savedEdge = state->edges[3];
+void back(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[0];
+    RubiksCubePiece savedEdge = state->edges[3];
     
     state->corners[0] = state->corners[4];
     state->corners[4] = state->corners[7];
@@ -178,9 +178,9 @@ void back(RubicsCubeState* state) {
     state->edges[7] = savedEdge;
 }
 
-void backPrime(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[0];
-    RubicsCubePiece savedEdge = state->edges[3];
+void backPrime(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[0];
+    RubiksCubePiece savedEdge = state->edges[3];
     
     state->corners[0] = state->corners[3];
     state->corners[3] = state->corners[7];
@@ -198,7 +198,7 @@ void backPrime(RubicsCubeState* state) {
     state->edges[4] = savedEdge;
 }
 
-void back2(RubicsCubeState* state) {
+void back2(RubiksCubeState* state) {
     std::swap(state->corners[0], state->corners[7]);
     std::swap(state->corners[3], state->corners[4]);
 
@@ -206,9 +206,9 @@ void back2(RubicsCubeState* state) {
     std::swap(state->edges[4], state->edges[7]);
 }
 
-void left(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[2];
-    RubicsCubePiece savedEdge = state->edges[2];
+void left(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[2];
+    RubiksCubePiece savedEdge = state->edges[2];
     
     state->corners[2] = state->corners[3];
     state->corners[3] = state->corners[7];
@@ -231,9 +231,9 @@ void left(RubicsCubeState* state) {
     rotateEdge(state->edges[10]);
 }
 
-void leftPrime(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[2];
-    RubicsCubePiece savedEdge = state->edges[2];
+void leftPrime(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[2];
+    RubiksCubePiece savedEdge = state->edges[2];
     
     state->corners[2] = state->corners[6];
     state->corners[6] = state->corners[7];
@@ -256,7 +256,7 @@ void leftPrime(RubicsCubeState* state) {
     rotateEdge(state->edges[10]);
 }
 
-void left2(RubicsCubeState* state) {
+void left2(RubiksCubeState* state) {
     std::swap(state->corners[2], state->corners[7]);
     std::swap(state->corners[3], state->corners[6]);
 
@@ -264,9 +264,9 @@ void left2(RubicsCubeState* state) {
     std::swap(state->edges[6], state->edges[7]);
 }
 
-void down(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[4];
-    RubicsCubePiece savedEdge = state->edges[8];
+void down(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[4];
+    RubiksCubePiece savedEdge = state->edges[8];
     
     state->corners[4] = state->corners[5];
     state->corners[5] = state->corners[6];
@@ -279,9 +279,9 @@ void down(RubicsCubeState* state) {
     state->edges[11] = savedEdge;
 }
 
-void downPrime(RubicsCubeState* state) {
-    RubicsCubePiece savedCorner = state->corners[4];
-    RubicsCubePiece savedEdge = state->edges[8];
+void downPrime(RubiksCubeState* state) {
+    RubiksCubePiece savedCorner = state->corners[4];
+    RubiksCubePiece savedEdge = state->edges[8];
     
     state->corners[4] = state->corners[7];
     state->corners[7] = state->corners[6];
@@ -294,7 +294,7 @@ void downPrime(RubicsCubeState* state) {
     state->edges[9] = savedEdge;
 }
 
-void down2(RubicsCubeState* state) {
+void down2(RubiksCubeState* state) {
     std::swap(state->corners[4], state->corners[6]);
     std::swap(state->corners[5], state->corners[7]);
 
@@ -307,7 +307,7 @@ void down2(RubicsCubeState* state) {
  * 
  * @param turn the turn, that shall be applied
  */
-void RubicsCubeState::ApplyTurn(Turn turn) {
+void RubiksCubeState::ApplyTurn(Turn turn) {
     switch (turn.index) {
         case 0:  up(this);         break;
         case 1:  up2(this);        break;

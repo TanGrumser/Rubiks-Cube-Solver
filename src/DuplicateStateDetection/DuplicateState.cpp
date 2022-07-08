@@ -1,6 +1,6 @@
 #include "DuplicateState.h"
 #include "../Model/StateIndexHasher.h"
-#include "../Model/RubicsCubeState.h"
+#include "../Model/RubiksCubeState.h"
 // TODO remove this. This is only used for index calculation.
 #include "../LookupTable/LookupTable.h"
 #include "../Model/StateIndex.h"
@@ -21,7 +21,7 @@ tsl::robin_map<StateIndex, bool, StateIndexHasher> duplicateReachableStates;
 tsl::robin_map<StateIndex, int, StateIndexHasher> duplicateReachableStates2;
 std::mutex duplicateStateLookup;
 
-void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
+void EvaluateState(RubiksCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
 
 namespace DuplicateState {
     bool active = false;
@@ -58,7 +58,7 @@ void DuplicateState::ResetAllStates() {
     }
 }
 
-bool CheckAndSetDuplicateReachableState(RubicsCubeState* state) {
+bool CheckAndSetDuplicateReachableState(RubiksCubeState* state) {
     StateIndex shiftedStateIndex;
 
     if (duplicateReachableStates.find(shiftedStateIndex) != duplicateReachableStates.end()) {
@@ -95,7 +95,7 @@ void DuplicateState::LoadDuplicateStateIndex() {
 }
 
 void DuplicateState::GenerateLookupTable() {
-    RubicsCubeState& initialState = RubicsCubeState::InitialState().Copy();
+    RubiksCubeState& initialState = RubiksCubeState::InitialState().Copy();
     const int MAX_DEPTH = 7;
     vector<Turn> lastTurns;
 
@@ -119,7 +119,7 @@ void DuplicateState::GenerateLookupTable() {
     FileManagement::WriteBufferToFile(DUPLICATE_STATE_PATH, (char*)duplicteStatesBuffer.data(), duplicteStatesBuffer.size() * sizeof(StateIndex));    
 }
 
-void EvaluateState(RubicsCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns) {
+void EvaluateState(RubiksCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns) {
     StateIndex stateIndex = state.GetLookupIndex();
     
     // we found a state, that is reachable from more than one path.
