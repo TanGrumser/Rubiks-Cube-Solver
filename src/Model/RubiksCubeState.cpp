@@ -127,7 +127,7 @@ StateIndex RubiksCubeState::GetLookupIndex() {
     StateIndex index;
 
     index.cornerIndex = LookupTable::GetCornerLookupIndex(*this);
-    index.edgeIndex = LookupTable::GetFullEdgeLookupIndex(*this);
+    index.edgeIndex = LookupTable::GetEdgeLookupIndex(*this);
 
     return index;
 }

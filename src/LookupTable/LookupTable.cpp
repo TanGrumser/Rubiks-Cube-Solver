@@ -21,21 +21,6 @@ uint64_t reachedDuplicates = 0;
 std::atomic_uint64_t a_reachedStates;
 std::mutex consoleMutex;
 
-const long long int statesAtDepth[12] = {
-    1ll, //18^0
-    18ll, //18^1
-    18ll * 18ll, //18^2
-    18ll * 18ll * 18ll, //18^3
-    18ll * 18ll * 18ll * 18ll, //18^4
-    18ll * 18ll * 18ll * 18ll * 18ll, //18^5
-    18ll * 18ll * 18ll * 18ll * 18ll * 18ll, //18^6
-    18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll, //18^7
-    18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll, //18^8
-    18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll, //18^9
-    18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll, //18^10
-    18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll * 18ll , //18^11
-};
-
 // TODO put this somewhere else
 uint64_t currentDepthStates = 0;
 char* cornerLookupTable ;
@@ -105,19 +90,19 @@ void EvaluatePositionWithInverseStateIndex(
 );
 
 void LookupTable::GenerateCornerLookupTable() { GenerateLookupTable(LookupTable::CORNER_LOOKUP_TABLE_PATH, GetCornerLookupIndex, CORNER_STATES_COUNT); }
-void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::UPPER_EDGE_LOOKUP_TABLE_PATH, GetUpperEdgeLookupIndex, EDGE_STATES_COUNT); }
-void LookupTable::GenerateLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::LOWER_EDGE_LOOKUP_TABLE_PATH, GetLowerEdgeLookupIndex, EDGE_STATES_COUNT); }
-void LookupTable::GenerateBigUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, GetBigUpperEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
-void LookupTable::GenerateBigLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, GetBigLowerEdgeLookupIndex, BIG_EDGE_STATES_COUNT); }
+void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::E2_LOOKUP_TABLE_PATH, GetE2LookupIndex, EDGE_STATES_COUNT); }
+void LookupTable::GenerateLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::E1_LOOKUP_TABLE_PATH, GetE1LookupIndex, EDGE_STATES_COUNT); }
+void LookupTable::GenerateBigUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::E2_LOOKUP_TABLE_PATH, GetE2LookupIndex, BIG_EDGE_STATES_COUNT); }
+void LookupTable::GenerateBigLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::E1_LOOKUP_TABLE_PATH, GetE1LookupIndex, BIG_EDGE_STATES_COUNT); }
 void LookupTable::GenerateEdgePermutationLookupTable() { GenerateLookupTable(LookupTable::EDGE_PERMUTATION_LOOKUP_TABLE_PATH, GetEdgePermutationLookupIndex, FULL_EDGE_PERMUTATIONS_COUNT); }
-void LookupTable::GenerateFullEdgeLookupTable(string path) { GenerateLookupTable(path.compare("") == 0 ?  LookupTable::FULL_EDGE_LOOKUP_TABLE_PATH : path, GetFullEdgeLookupIndex, FULL_EDGE_STATES_COUNT); }
+void LookupTable::GenerateFullEdgeLookupTable(string path) { GenerateLookupTable(path.compare("") == 0 ?  LookupTable::FULL_EDGE_LOOKUP_TABLE_PATH : path, GetEdgeLookupIndex, FULL_EDGE_STATES_COUNT); }
 
 
 void LookupTable::LoadLookupTables() {
     uint64_t* size = new uint64_t(0);
     cornerLookupTable = FileManagement::LoadBufferFromFile(CORNER_LOOKUP_TABLE_PATH, size);
-    bigUpperEdgeLookupTable = FileManagement::LoadBufferFromFile(BIG_UPPER_EDGE_LOOKUP_TABLE_PATH, size);
-    bigLowerEdgeLookupTable = FileManagement::LoadBufferFromFile(BIG_LOWER_EDGE_LOOKUP_TABLE_PATH, size);
+    bigUpperEdgeLookupTable = FileManagement::LoadBufferFromFile(E2_LOOKUP_TABLE_PATH, size);
+    bigLowerEdgeLookupTable = FileManagement::LoadBufferFromFile(E1_LOOKUP_TABLE_PATH, size);
     //edgePermutationLookupTable = FileManagement::LoadBufferFromFile(EDGE_PERMUTATION_LOOKUP_TABLE_PATH, size);
 }
 
@@ -126,24 +111,14 @@ int LookupTable::GetCornerStateDistance(RubiksCubeState& state) {
     return cornerLookupTable[index];
 }
 
-int LookupTable::GetUpperEdgeStateDistance(RubiksCubeState& state) {
-    int index = GetUpperEdgeLookupIndex(state);
-    return upperEdgeLookupTable[index];
-}
-
-int LookupTable::GetLowerEdgeStateDistance(RubiksCubeState& state) {
-    int index = GetLowerEdgeLookupIndex(state);
+int LookupTable::GetE1StateDistance(RubiksCubeState& state) {
+    int index = GetE1LookupIndex(state);
     return lowerEdgeLookupTable[index];
 }
 
-int LookupTable::GetBigUpperEdgeStateDistance(RubiksCubeState& state) {
-    int index = GetBigUpperEdgeLookupIndex(state);
-    return bigUpperEdgeLookupTable[index];
-}
-
-int LookupTable::GetBigLowerEdgeStateDistance(RubiksCubeState& state) {
-    int index = GetBigLowerEdgeLookupIndex(state);
-    return bigLowerEdgeLookupTable[index];
+int LookupTable::GetE2StateDistance(RubiksCubeState& state) {
+    int index = GetE2LookupIndex(state);
+    return upperEdgeLookupTable[index];
 }
 
 int LookupTable::GetEdgePermutationStateDistance(RubiksCubeState& state) {
@@ -152,7 +127,7 @@ int LookupTable::GetEdgePermutationStateDistance(RubiksCubeState& state) {
 }
 
 int LookupTable::GetFullEdgeStateDistance(RubiksCubeState& state) {
-    int index = GetFullEdgeLookupIndex(state);
+    int index = GetEdgeLookupIndex(state);
     return fullEdgeLookupTable[index];
 }
 

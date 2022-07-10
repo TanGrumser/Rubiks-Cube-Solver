@@ -1,5 +1,5 @@
 -O3
--o "Solvi.exe"
+-o "Solver.exe"
 -g "src/Main.cpp"
 -g "src/CommandLineHandler.cpp"
 -g "src/Model/RubiksCubeRotator.cpp"
@@ -20,4 +20,6 @@
 -g "src/Utils/PermutationIndexer.cpp"
 -g "src/Utils/Stopwatch.cpp"
 -g "src/Utils/StringUtils.cpp"
+-g "src/Utils/Logging/FileLogger.cpp"
+-g "src/Utils/Logging/ConsoleLogger.cpp"
 -pthread
