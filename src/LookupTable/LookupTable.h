@@ -21,7 +21,7 @@ namespace LookupTable {
     const string E1_LOOKUP_TABLE_PATH               = "LookupTables\\bigLowerEdgeLookupTable";
     const string E2_LOOKUP_TABLE_PATH               = "LookupTables\\bigUpperEdgeLookupTable";
     const string EDGE_PERMUTATION_LOOKUP_TABLE_PATH = "LookupTables\\edgePermutationLookupTable";
-    const string EDGE_LOOKUP_TABLE_PATH             = "LookupTables\\fullEdgeLookupTable";
+    const string EDGE_LOOKUP_TABLE_PATH             = "../../../../global_data/grumser/edgeLookupTable";
 
     void PopulateLookupTableWithIDDFS(string path, IndexCalculator indexCalculator, uint64_t maxReachableStates);
  
@@ -55,5 +55,5 @@ namespace LookupTable {
     void GenerateE1LookupTable();
     void GenerateE2LookupTable();
     void GenerateEdgePermutationLookupTable();
-    void GenerateEdgeLookupTable(string path = "");
+    void GenerateEdgeLookupTable();
 }

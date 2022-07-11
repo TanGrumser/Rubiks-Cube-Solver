@@ -6,12 +6,12 @@
 
 char* edgeLookupTable;
 
-void LookupTable::GenerateEdgeLookupTable(string path) {
+void LookupTable::GenerateEdgeLookupTable() {
     FileLogger logger("log.txt" ,"Edge Lookup Table Generation");
 
     LookupTableGenerator generator(
-        EDGE_STATES_COUNT, 
-        GetCornerLookupIndex, 
+        FULL_EDGE_STATES_COUNT, 
+        GetEdgeLookupIndex, 
         LookupTable::GetEdgeStateFromIndex, 
         &logger
     );
