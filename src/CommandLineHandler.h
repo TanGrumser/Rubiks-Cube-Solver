@@ -1,3 +1,3 @@
 namespace CommandLineHandler {
-    void Start(int argc, char *argv[]);
+    void start(int argc, char *argv[]);
 }

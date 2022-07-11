@@ -8,28 +8,35 @@
 using std::string;
 
 namespace LookupTable {
+    typedef uint64_t(*IndexCalculation)(RubiksCubeState&);
+    typedef RubiksCubeState&(*StateCalculator)(uint64_t);
+    
     extern PermutationIndexer<8> cornerIndexer;
     extern PermutationIndexer<12, 7> eGroupIndexer;
     extern PermutationIndexer<12> edgeIndexer;
 
     extern int threadCount;
-    typedef uint64_t(*IndexCalculation)(RubiksCubeState&);
-    typedef RubiksCubeState&(*StateCalculator)(uint64_t);
     
     const string CORNER_LOOKUP_TABLE_PATH           = "LookupTables\\cornerLookupTable";
     const string E1_LOOKUP_TABLE_PATH               = "LookupTables\\bigLowerEdgeLookupTable";
     const string E2_LOOKUP_TABLE_PATH               = "LookupTables\\bigUpperEdgeLookupTable";
     const string EDGE_PERMUTATION_LOOKUP_TABLE_PATH = "LookupTables\\edgePermutationLookupTable";
-    const string FULL_EDGE_LOOKUP_TABLE_PATH        = "fullEdgeLookupTable";
+    const string EDGE_LOOKUP_TABLE_PATH             = "LookupTables\\fullEdgeLookupTable";
 
     void GenerateLookupTable(string path, IndexCalculation indexCalculator, uint64_t maxReachableStates);
     void LoadLookupTables();
+
+    void LoadCornerLookupTable();
+    void LoadE1LookupTable();
+    void LoadE2LookupTable();
+    void LoadEdgeLookupTable();
+    void LoadEdgePermutationLookupTable();
     
-    int GetCornerStateDistance(RubiksCubeState& state);
-    int GetE2StateDistance(RubiksCubeState& state);
-    int GetE1StateDistance(RubiksCubeState& state);
-    int GetEdgePermutationStateDistance(RubiksCubeState& state);
-    int GetFullEdgeStateDistance(RubiksCubeState& state);
+    char GetCornerStateDistance(RubiksCubeState& state);
+    char GetE1StateDistance(RubiksCubeState& state);
+    char GetE2StateDistance(RubiksCubeState& state);
+    char GetEdgePermutationStateDistance(RubiksCubeState& state);
+    char GetEdgeStateDistance(RubiksCubeState& state);
     
     // TODO comment what these do
     uint64_t GetCornerLookupIndex(RubiksCubeState& state);
@@ -42,11 +49,9 @@ namespace LookupTable {
     //void SetStateToCornerStateByIndex(int index, RubiksCubeState& state);
     
     void GenerateCornerLookupTable();
-    void GenerateUpperEdgeLookupTable();
-    void GenerateLowerEdgeLookupTable();
-    void GenerateBigUpperEdgeLookupTable();
-    void GenerateBigLowerEdgeLookupTable();
+    void GenerateE1LookupTable();
+    void GenerateE2LookupTable();
     void GenerateEdgePermutationLookupTable();
-    void GenerateFullEdgeLookupTable(string path = "");
+    void GenerateEdgeLookupTable(string path = "");
 }
 

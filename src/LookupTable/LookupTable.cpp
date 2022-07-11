@@ -20,29 +20,7 @@ const char UNINITIALIIZED = -1;
 uint64_t reachedDuplicates = 0;
 std::atomic_uint64_t a_reachedStates;
 std::mutex consoleMutex;
-
-// TODO put this somewhere else
 uint64_t currentDepthStates = 0;
-char* cornerLookupTable ;
-char* upperEdgeLookupTable;
-char* lowerEdgeLookupTable;
-char* bigUpperEdgeLookupTable;
-char* bigLowerEdgeLookupTable;
-char* edgePermutationLookupTable;
-char* fullEdgeLookupTable;
-
-// This is just a helper Object to bundle some data, that need to get distributed between various threads.
-struct ConcurrencyData {
-    int threadCount;
-    int* reachedStates;
-    int* finishedThreads;
-
-    ConcurrencyData(const int threadCount, int* reachedStates, int* finishedThreads) {
-        this->threadCount = threadCount;
-        this->reachedStates = reachedStates;
-        this->finishedThreads = finishedThreads;
-    }
-};
 
 namespace LookupTable {
     int threadCount = 1;
@@ -89,46 +67,12 @@ void EvaluatePositionWithInverseStateIndex(
     uint64_t endIndex
 );
 
-void LookupTable::GenerateCornerLookupTable() { GenerateLookupTable(LookupTable::CORNER_LOOKUP_TABLE_PATH, GetCornerLookupIndex, CORNER_STATES_COUNT); }
-void LookupTable::GenerateUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::E2_LOOKUP_TABLE_PATH, GetE2LookupIndex, EDGE_STATES_COUNT); }
-void LookupTable::GenerateLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::E1_LOOKUP_TABLE_PATH, GetE1LookupIndex, EDGE_STATES_COUNT); }
-void LookupTable::GenerateBigUpperEdgeLookupTable() { GenerateLookupTable(LookupTable::E2_LOOKUP_TABLE_PATH, GetE2LookupIndex, BIG_EDGE_STATES_COUNT); }
-void LookupTable::GenerateBigLowerEdgeLookupTable() { GenerateLookupTable(LookupTable::E1_LOOKUP_TABLE_PATH, GetE1LookupIndex, BIG_EDGE_STATES_COUNT); }
-void LookupTable::GenerateEdgePermutationLookupTable() { GenerateLookupTable(LookupTable::EDGE_PERMUTATION_LOOKUP_TABLE_PATH, GetEdgePermutationLookupIndex, FULL_EDGE_PERMUTATIONS_COUNT); }
-void LookupTable::GenerateFullEdgeLookupTable(string path) { GenerateLookupTable(path.compare("") == 0 ?  LookupTable::FULL_EDGE_LOOKUP_TABLE_PATH : path, GetEdgeLookupIndex, FULL_EDGE_STATES_COUNT); }
-
-
 void LookupTable::LoadLookupTables() {
-    uint64_t* size = new uint64_t(0);
-    cornerLookupTable = FileManagement::LoadBufferFromFile(CORNER_LOOKUP_TABLE_PATH, size);
-    bigUpperEdgeLookupTable = FileManagement::LoadBufferFromFile(E2_LOOKUP_TABLE_PATH, size);
-    bigLowerEdgeLookupTable = FileManagement::LoadBufferFromFile(E1_LOOKUP_TABLE_PATH, size);
-    //edgePermutationLookupTable = FileManagement::LoadBufferFromFile(EDGE_PERMUTATION_LOOKUP_TABLE_PATH, size);
-}
-
-int LookupTable::GetCornerStateDistance(RubiksCubeState& state) {
-    int index = GetCornerLookupIndex(state);
-    return cornerLookupTable[index];
-}
-
-int LookupTable::GetE1StateDistance(RubiksCubeState& state) {
-    int index = GetE1LookupIndex(state);
-    return lowerEdgeLookupTable[index];
-}
-
-int LookupTable::GetE2StateDistance(RubiksCubeState& state) {
-    int index = GetE2LookupIndex(state);
-    return upperEdgeLookupTable[index];
-}
-
-int LookupTable::GetEdgePermutationStateDistance(RubiksCubeState& state) {
-    int index = GetEdgePermutationLookupIndex(state);
-    return edgePermutationLookupTable[index];
-}
-
-int LookupTable::GetFullEdgeStateDistance(RubiksCubeState& state) {
-    int index = GetEdgeLookupIndex(state);
-    return fullEdgeLookupTable[index];
+    LoadCornerLookupTable();
+    LoadE1LookupTable();
+    LoadE2LookupTable();
+    //LoadEdgePermutationLookupTable();
+    //LoadEdgeLookupTable();
 }
 
 void inline ClenaupReachedFlags(std::vector<char>* buffer) {

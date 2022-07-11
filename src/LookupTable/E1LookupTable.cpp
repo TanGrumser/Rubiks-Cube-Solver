@@ -1,18 +1,24 @@
-#include <string>
-#include <iostream>
-#include <iomanip> 
-#include "LookupTable.h" 
-#include "../Model/RubiksCubeState.h"
+#include "LookupTable.h"
 #include "../Utils/FileManagement.h"
-#include "../Utils/PermutationIndexer.h"
 
-using std::string;
+char* e1LookupTable;
 
-PermutationIndexer<12, 7> bigEgdeIndexer;
+void LookupTable::GenerateE1LookupTable() { 
+    GenerateLookupTable(LookupTable::E1_LOOKUP_TABLE_PATH, GetE1LookupIndex, EDGE_STATES_COUNT); 
+}
 
-uint64_t GetE1StateIndex(RubiksCubeState& state);
+void LookupTable::LoadE1LookupTable() {
+    uint64_t* size = new uint64_t(0);
+    e1LookupTable = FileManagement::LoadBufferFromFile(E1_LOOKUP_TABLE_PATH, size);
+    delete size;
+}
 
-uint64_t GetE1StateIndex(RubiksCubeState& state) {
+char LookupTable::GetE1StateDistance(RubiksCubeState& state) {
+    uint64_t index = GetE1LookupIndex(state);
+    return e1LookupTable[index];
+}
+
+uint64_t LookupTable::GetE1LookupIndex(RubiksCubeState& state) {
     int rotationIndex = 0;
     array<unsigned int , 7> edgePerm;
     
@@ -20,13 +26,13 @@ uint64_t GetE1StateIndex(RubiksCubeState& state) {
     for (int i = 0; i < 12; i++) {
         unsigned int& edgeIndex = state.edges[i].index;
 
-        if (edgeIndex > 4) {
-            edgePerm[edgeIndex - 5] = i;
-            rotationIndex += powersOfTwo[edgeIndex - 5] * state.edges[i].rotation;
+        if (edgeIndex < 7) {
+            edgePerm[edgeIndex] = i;
+            rotationIndex += powersOfTwo[edgeIndex] * state.edges[i].rotation;
         }
     }
 
-    int permutaionIndex = bigEgdeIndexer.rank(edgePerm);
+    int permutaionIndex = LookupTable::eGroupIndexer.rank(edgePerm);
 
     return permutaionIndex * BIG_EDGE_ROTATION_COUNT + rotationIndex;
-}
+} 

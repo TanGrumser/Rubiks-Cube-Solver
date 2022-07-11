@@ -16,7 +16,7 @@ void ParseFile(std::string path);
 void GenerateLookupTable(int table);
 void PrintHelp();
 
-void CommandLineHandler::Start(int argc, char *argv[]) {
+void CommandLineHandler::start(int argc, char *argv[]) {
     RubiksCubeState state = RubiksCubeState::InitialState().Copy();
 
     //Parse all command line arguments.
@@ -63,7 +63,14 @@ void CommandLineHandler::Start(int argc, char *argv[]) {
         }
     }
     
-    LookupTable::GenerateCornerLookupTable();
+    LookupTable::LoadLookupTables();
+
+    std::cout << "corner: " << (int)LookupTable::GetCornerStateDistance(state) << endl;
+    std::cout << "e1: "     << (int)LookupTable::GetE1StateDistance(state) << endl;
+    std::cout << "e2: "     << (int)LookupTable::GetE2StateDistance(state) << endl;
+
+    //SolveCube(state);
+    //LookupTable::GenerateCornerLookupTable();
 }
 
 void SolveCube(RubiksCubeState& state) {
@@ -73,8 +80,9 @@ void SolveCube(RubiksCubeState& state) {
         LookupTable::LoadLookupTables();
         //DuplicateState::LoadDuplicateStateIndex();
         DuplicateState::LoadDuplicateStateTurnIndex();
-    std::cout << "Finished Loading." << endl;
+    std::cout << "Finished loading in " << timer->GetFormattedTimeInSeconds() << endl;
 
+    timer->StartTimer();
     
     std::cout << "Starting solve." << endl;
     vector<Turn> solution;
@@ -105,10 +113,10 @@ void GenerateLookupTable(int lookupTableIndex) {
     switch (lookupTableIndex)
     {
         case 0: LookupTable::GenerateCornerLookupTable(); break;
-        case 1: LookupTable::GenerateBigUpperEdgeLookupTable(); break;
-        case 2: LookupTable::GenerateBigLowerEdgeLookupTable(); break;
-        case 4: LookupTable::GenerateUpperEdgeLookupTable(); break;
-        case 5: LookupTable::GenerateLowerEdgeLookupTable(); break;
+        case 1: LookupTable::GenerateE1LookupTable(); break;
+        case 2: LookupTable::GenerateE2LookupTable(); break;
+        case 4: LookupTable::GenerateEdgePermutationLookupTable(); break;
+        case 5: LookupTable::GenerateEdgeLookupTable(); break;
             
         default: throw std::runtime_error("Provided lookup table index is invalid: " + lookupTableIndex);
     }
