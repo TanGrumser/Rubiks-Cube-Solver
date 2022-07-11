@@ -59,19 +59,33 @@ void LookupTableGenerator::GenerationLogger(long long loggingInterval) {
     
     timer.StartTimer();
 
-    
+
     while (!hasGenerationFinished()) {
-        double progress = (double)reachedStates / (double)lookupTableSize * 100.0;
+        double totalProgress = (double)reachedStates / (double)lookupTableSize * 100.0;
+        double depthProgress = (double)processedStates / (double)lookupTableSize * 100.0;
         
         consoleMutex.lock();
-        
-        logger->updateLastLine(
-            "Elapsed Time: " + timer.GetFormattedTimeInSeconds() +
-            ", reachedStates: " + to_string(reachedStates) +
-            ", progress: " + Utils::convert(progress, 4) + "%" +
-            ", depth: " + to_string(currentDepth) +
-            ", states at depth: " + to_string(currentDepthStates)
-        );
+        switch (generationMode) {
+            case GenerationMode::IterativeDeepeningDepthFirstSearchMode:
+                logger->updateLastLine(
+                    "Elapsed Time: " + timer.GetFormattedTimeInSeconds() +
+                    ", reachedStates: " + to_string(reachedStates) +
+                    ", progress: " + Utils::convert(totalProgress, 4) + "%" +
+                    ", depth: " + to_string(currentDepth) +
+                    ", states at depth: " + to_string(currentDepthStates)
+                );
+            break;
+
+            case GenerationMode::InverseStateIndexSearchMode:
+                logger->updateLastLine(
+                    "Elapsed Time: " + timer.GetFormattedTimeInSeconds() +
+                    ", reachedStates: " + to_string(reachedStates) +
+                    ", depth progress: " + Utils::convert(depthProgress, 4) + "%" +
+                    ", total progress: " + Utils::convert(totalProgress, 4) + "%" +
+                    ", depth: " + to_string(currentDepth)
+                );
+            break;
+        }        
             
         consoleMutex.unlock();
 
@@ -81,16 +95,18 @@ void LookupTableGenerator::GenerationLogger(long long loggingInterval) {
     std::cout << "Finished Logger" << endl;
 }
 
+// ----------- kickoff methods ---------------------------
 
-void LookupTableGenerator::PopulateWithIterativeDeepeningDFS(char maxDepth, int threadCount) {
+void LookupTableGenerator::PopulateWithIterativeDeepeningDepthFirstSearch(char maxDepth, int threadCount) {
     std::vector<std::thread> threads(threadCount);
+    generationMode = GenerationMode::IterativeDeepeningDepthFirstSearchMode;
 
     while (!hasGenerationFinished() && currentDepth <= maxDepth) {
         for (int i = 0; i < threadCount; i++) {
             std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i, threadCount);
             
             std::thread thread([this, exploredTurns] {
-                IterativeDeepeningDFS(RubiksCubeState::InitialState().Copy(), 0, this->currentDepth, Turn::Empty(), exploredTurns);
+                IterativeDeepeningDepthFirstSearch(RubiksCubeState::InitialState().Copy(), 0, this->currentDepth, Turn::Empty(), exploredTurns);
             });
             
             threads[i] = std::move(thread);
@@ -112,13 +128,20 @@ void LookupTableGenerator::PopulateWithIterativeDeepeningDFS(char maxDepth, int 
     }
 }
 
-void LookupTableGenerator::PopulateWithInverseIndexSearch(int threadCount) {
+void LookupTableGenerator::PopulateWithInverseStateIndexSearch(int threadCount) {
     std::vector<std::thread> threads(threadCount);
+    generationMode = GenerationMode::InverseStateIndexSearchMode;
 
     while (!hasGenerationFinished()) {
+        processedStates = 0;
+        currentDepthStates = 0;
+
         for (int i = 0; i < threadCount; i++) {
             uint64_t startIndex = lookupTableSize / threadCount * i;
-            uint64_t endIndex = i == threadCount - 1 ? lookupTableSize : lookupTableSize / threadCount * (i + 1);
+            uint64_t endIndex = 
+                i == threadCount - 1 ? 
+                lookupTableSize : 
+                lookupTableSize / threadCount * (i + 1);
             
             std::thread thread([this, startIndex, endIndex] {
                 InverseStateIndexSearch(currentDepth, startIndex, endIndex);
@@ -132,16 +155,16 @@ void LookupTableGenerator::PopulateWithInverseIndexSearch(int threadCount) {
         }
         
         consoleMutex.lock();
-        logger->logNewLine("Reached states at depth " + to_string(currentDepth) + " are " + to_string(currentDepthStates));
+        logger->logNewLine("Reached states at depth " + to_string(currentDepth) + " are " + to_string(currentDepthStates) + "                                                                                               ");
         consoleMutex.unlock();
 
-        currentDepthStates = 0;
         currentDepth++;
     }
-
 }
 
-void LookupTableGenerator::IterativeDeepeningDFS(RubiksCubeState& state, char depth, char maxDepth, Turn lastTurn, vector<Turn> turnsToExplore) {
+// ---------------------- Main work horse methods ----------------------------
+
+void LookupTableGenerator::IterativeDeepeningDepthFirstSearch(RubiksCubeState& state, char depth, char maxDepth, Turn lastTurn, vector<Turn> turnsToExplore) {
     if (hasGenerationFinished()) {
         return;
     }
@@ -181,7 +204,7 @@ void LookupTableGenerator::IterativeDeepeningDFS(RubiksCubeState& state, char de
             }
 
             state.ApplyTurn(turn);
-            IterativeDeepeningDFS(state, depth + 1, maxDepth, turn, Turn::AllTurns);
+            IterativeDeepeningDepthFirstSearch(state, depth + 1, maxDepth, turn, Turn::AllTurns);
             state.ApplyTurn(turn.Inverse());
         }
     }
@@ -190,7 +213,8 @@ void LookupTableGenerator::IterativeDeepeningDFS(RubiksCubeState& state, char de
 void LookupTableGenerator::InverseStateIndexSearch(char depth, uint64_t startIndex, uint64_t endIndex) {
     // We go through all entries in the lookup table
     for (uint64_t index = startIndex; index < endIndex; index++) {
-        
+        processedStates++;
+
         // When a value has not been initialized yet.
         if (lookupTable[index] == UNINITIALIZED) {
             // get the corrosponding state
@@ -206,6 +230,7 @@ void LookupTableGenerator::InverseStateIndexSearch(char depth, uint64_t startInd
                 if (lookupTable[neighbourIndex] == depth - 1) {
                     lookupTable[index] = depth;
                     reachedStates++;
+                    currentDepthStates++;
                     break;
                 }
 

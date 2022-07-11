@@ -1,10 +1,25 @@
 #include "LookupTable.h" 
+#include "LookupTableGenerator.h" 
+#include "StateIndexReverser.h"
 #include "../Utils/FileManagement.h"
+#include "../Utils/Logging/FileLogger.h"
 
 char* edgeLookupTable;
 
 void LookupTable::GenerateEdgeLookupTable(string path) {
-    //PopulateLookupTableWithIDDFS(path.compare("") == 0 ?  LookupTable::EDGE_LOOKUP_TABLE_PATH : path, GetEdgeLookupIndex, FULL_EDGE_STATES_COUNT); 
+    FileLogger logger("log.txt" ,"Edge Lookup Table Generation");
+
+    LookupTableGenerator generator(
+        EDGE_STATES_COUNT, 
+        GetCornerLookupIndex, 
+        LookupTable::GetEdgeStateFromIndex, 
+        &logger
+    );
+
+    generator.StartLogger(100);
+    generator.PopulateWithIterativeDeepeningDepthFirstSearch(8, 18);
+    generator.PopulateWithInverseStateIndexSearch(128);
+    generator.WriteLookupTableToFile(EDGE_LOOKUP_TABLE_PATH);
 }
 
 void LookupTable::LoadEdgeLookupTable() {
@@ -42,4 +57,12 @@ uint64_t LookupTable::GetEdgeLookupIndex(RubiksCubeState& state) {
     }
 
     return LookupTable::edgeIndexer.rank(edgePermutation) * FULL_EDGE_ROTATION_COUNT + rotationIndex;
+}
+
+RubiksCubeState LookupTable::GetEdgeStateFromIndex(uint64_t index) {
+    StateIndex stateIndex;
+    stateIndex.cornerIndex = 0;
+    stateIndex.edgeIndex = index;
+
+    return StateIndexReverser::GetStateFromIndex(stateIndex);
 }

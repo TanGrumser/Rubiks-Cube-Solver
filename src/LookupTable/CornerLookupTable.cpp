@@ -2,11 +2,13 @@
 #include <iostream>
 #include <iomanip> 
 #include "LookupTable.h" 
+#include "StateIndexReverser.h" 
 #include "LookupTableGenerator.h" 
 #include "../Model/RubiksCubeState.h"
 #include "../Utils/FileManagement.h"
 #include "../Utils/PermutationIndexer.h"
 #include "../Utils/Logging/ConsoleLogger.h"
+#include "../Utils/Logging/FileLogger.h"
 
 char* cornerLookupTable;
 
@@ -16,13 +18,13 @@ void LookupTable::GenerateCornerLookupTable() {
     LookupTableGenerator generator(
         CORNER_STATES_COUNT, 
         GetCornerLookupIndex, 
-        0, 
+        LookupTable::GetCornerStateFromIndex, 
         &logger
     );
 
-    generator.StartLogger(1000);
-    generator.PopulateWithIterativeDeepeningDFS(9, 6); 
-    generator.PopulateWithInverseIndexSearch(6); 
+    generator.StartLogger(100);
+    generator.PopulateWithIterativeDeepeningDepthFirstSearch(7, 6);
+    generator.PopulateWithInverseStateIndexSearch(8);
     generator.WriteLookupTableToFile(CORNER_LOOKUP_TABLE_PATH);
 }
 
@@ -55,4 +57,12 @@ uint64_t LookupTable::GetCornerLookupIndex(RubiksCubeState& state) {
     }
 
     return LookupTable::cornerIndexer.rank(cornerPermutation) * CORNER_ROTATIONS_COUNT + rotationIndex;
+}
+
+RubiksCubeState LookupTable::GetCornerStateFromIndex(uint64_t index) {
+    StateIndex stateIndex;
+    stateIndex.cornerIndex = index;
+    stateIndex.edgeIndex = 0;
+
+    return StateIndexReverser::GetStateFromIndex(stateIndex);
 }

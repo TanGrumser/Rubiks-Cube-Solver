@@ -16,10 +16,7 @@ FileLogger::FileLogger(std::string path, std::string jobDescriton) {
 }
 
 void FileLogger::logNewLine(std::string message) {
-    std::ofstream log(this->path, std::ios_base::app | std::ios_base::out);
-
-    log << std::endl << message;
-    log.close();
+    updateLastLine(message + "\n");
 }
 
 void FileLogger::updateLastLine(std::string message) {

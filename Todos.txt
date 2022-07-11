@@ -10,3 +10,4 @@ Todos
 [ ] Start New Table generation
 [ ] Write solving results to file to collect better structured benchmark data
 [ ] After lookup table generation is finished run performance test on 100 random scrambles
+[ ] Benchmark two Duplicate state detection methods

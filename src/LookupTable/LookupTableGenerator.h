@@ -8,8 +8,11 @@
 #include "../Model/RubiksCubeState.h"
 
 class LookupTableGenerator {
+
+    enum GenerationMode {IterativeDeepeningDepthFirstSearchMode, InverseStateIndexSearchMode};
+
     typedef uint64_t(*IndexCalculator)(RubiksCubeState&);
-    typedef RubiksCubeState&(*StateCalculator)(uint64_t);
+    typedef RubiksCubeState(*StateCalculator)(uint64_t);
 
     const char UNINITIALIZED = -1;
 
@@ -23,10 +26,12 @@ class LookupTableGenerator {
         char currentDepth;
         std::atomic_int64_t reachedStates;
         std::atomic_int64_t currentDepthStates;
+        std::atomic_int64_t processedStates;
 
         std::mutex lookupTableMutex;
         std::mutex consoleMutex;
         
+        GenerationMode generationMode;
         Logger* logger;
 
         bool hasGenerationFinished();
@@ -37,7 +42,7 @@ class LookupTableGenerator {
         bool GetReachedFlag(uint64_t index);
 
         // Work horses
-        void IterativeDeepeningDFS(RubiksCubeState& state, char depth, char maxDepth, Turn lastTurn, vector<Turn> turnsToExplore);
+        void IterativeDeepeningDepthFirstSearch(RubiksCubeState& state, char depth, char maxDepth, Turn lastTurn, vector<Turn> turnsToExplore);
         void InverseStateIndexSearch(char depth, uint64_t startIndex, uint64_t endIndex);
 
     public:
@@ -51,7 +56,7 @@ class LookupTableGenerator {
 
         void StartLogger(long long loggingInterval);
         void WriteLookupTableToFile(string path);
-        void PopulateWithIterativeDeepeningDFS(char maxDepth, int threadCount);
-        void PopulateWithInverseIndexSearch(int threadCount);
+        void PopulateWithIterativeDeepeningDepthFirstSearch(char maxDepth, int threadCount);
+        void PopulateWithInverseStateIndexSearch(int threadCount);
         
 };

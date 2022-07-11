@@ -9,7 +9,7 @@ using std::string;
 
 namespace LookupTable {
     typedef uint64_t(*IndexCalculator)(RubiksCubeState&);
-    typedef RubiksCubeState&(*StateCalculator)(uint64_t);
+    typedef RubiksCubeState(*StateCalculator)(uint64_t);
 
     extern PermutationIndexer<8>     cornerIndexer;
     extern PermutationIndexer<12, 7> eGroupIndexer;
@@ -44,6 +44,10 @@ namespace LookupTable {
     uint64_t GetEdgePermutationLookupIndex(RubiksCubeState& state);
     uint64_t GetEdgeLookupIndex(RubiksCubeState& state);
     
+
+    RubiksCubeState GetCornerStateFromIndex(uint64_t index);
+    RubiksCubeState GetEdgeStateFromIndex(uint64_t index);
+
     //void TestCornerLookupCaluclation();
     //void SetStateToCornerStateByIndex(int index, RubiksCubeState& state);
     
