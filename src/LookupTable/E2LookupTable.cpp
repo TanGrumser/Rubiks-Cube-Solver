@@ -10,7 +10,7 @@ void LookupTable::LoadE2LookupTable() {
 }
 
 void LookupTable::GenerateE2LookupTable() { 
-    GenerateLookupTable(LookupTable::E2_LOOKUP_TABLE_PATH, GetE2LookupIndex, EDGE_STATES_COUNT); 
+    //PopulateLookupTableWithIDDFS(LookupTable::E2_LOOKUP_TABLE_PATH, GetE2LookupIndex, EDGE_STATES_COUNT); 
 }
 
 char LookupTable::GetE2StateDistance(RubiksCubeState& state) {

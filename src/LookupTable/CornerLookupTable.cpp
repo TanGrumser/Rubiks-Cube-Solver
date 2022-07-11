@@ -2,14 +2,28 @@
 #include <iostream>
 #include <iomanip> 
 #include "LookupTable.h" 
+#include "LookupTableGenerator.h" 
 #include "../Model/RubiksCubeState.h"
 #include "../Utils/FileManagement.h"
 #include "../Utils/PermutationIndexer.h"
+#include "../Utils/Logging/ConsoleLogger.h"
 
 char* cornerLookupTable;
 
 void LookupTable::GenerateCornerLookupTable() { 
-    GenerateLookupTable(LookupTable::CORNER_LOOKUP_TABLE_PATH, GetCornerLookupIndex, CORNER_STATES_COUNT); 
+    ConsoleLogger logger("Corner Lookup Table Generation");
+
+    LookupTableGenerator generator(
+        CORNER_STATES_COUNT, 
+        GetCornerLookupIndex, 
+        0, 
+        &logger
+    );
+
+    generator.StartLogger(1000);
+    generator.PopulateWithIterativeDeepeningDFS(9, 6); 
+    generator.PopulateWithInverseIndexSearch(6); 
+    generator.WriteLookupTableToFile(CORNER_LOOKUP_TABLE_PATH);
 }
 
 void LookupTable::LoadCornerLookupTable() {

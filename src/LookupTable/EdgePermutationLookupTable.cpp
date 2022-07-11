@@ -4,7 +4,7 @@
 char* edgePermutationLookupTable;
 
 void LookupTable::GenerateEdgePermutationLookupTable() { 
-    GenerateLookupTable(LookupTable::EDGE_PERMUTATION_LOOKUP_TABLE_PATH, GetEdgePermutationLookupIndex, FULL_EDGE_PERMUTATIONS_COUNT); 
+    //PopulateLookupTableWithIDDFS(LookupTable::EDGE_PERMUTATION_LOOKUP_TABLE_PATH, GetEdgePermutationLookupIndex, FULL_EDGE_PERMUTATIONS_COUNT); 
 }
 
 void LookupTable::LoadEdgePermutationLookupTable() {

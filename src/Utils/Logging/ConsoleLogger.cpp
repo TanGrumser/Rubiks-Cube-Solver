@@ -7,7 +7,7 @@ ConsoleLogger::ConsoleLogger(std::string jobDescription) {
 }
 
 void ConsoleLogger::logNewLine(std::string message) {
-    std::cout << std::endl << message;
+    std::cout << '\r' << message << std::endl;
 }
 
 void ConsoleLogger::updateLastLine(std::string message) {

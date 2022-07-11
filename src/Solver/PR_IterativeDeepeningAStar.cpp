@@ -24,10 +24,7 @@ using std::vector;
 
 int Search(vector<RubiksCubeState*>* path, int depth, int bound, Turn lastTurn, int* minBound, vector<Turn> nextTurns, bool* isSolutionFound);
 vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubiksCubeState*> stateSequence);
-const int MAX_BOUND = 100000;
-const int SOLUTION_FOUND = -1;
 unsigned long long traversedStates = 0;
-unsigned long long duplicateStates = 0;
 std::atomic_int32_t traversedStatesAtDepth;
 
 RubiksCubeStateShift* shift;
@@ -70,7 +67,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState) {
           moves[i] = new array<Turn, 50>();
           newBounds[i] = 0xff;
           RubiksCubeState state(startState);
-          std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i, LookupTable::threadCount);
+          std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i, Solver::threadCount);
           array<Turn, 50>* movesStack = moves[i];
 
           std::thread thread = std::thread([&state, bound, movesStack, newBounds, i, exploredTurns, solved]() {
@@ -80,7 +77,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState) {
           threads[i] = std::move(thread);
         }
 
-        for (int i = 0; i < LookupTable::threadCount; i++) {
+        for (int i = 0; i < Solver::threadCount; i++) {
             threads[i].join();
 
             if (newBounds[i] == 0xFF) {
@@ -91,12 +88,12 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState) {
             }
         }
 
-        bound = newBound;
+        cout << "IDA* Finished bound " << (bound < 10 ? " " : "") << (unsigned)bound << ". "
+             << "Elapsed time: " << timer.GetFormattedTimeInSeconds() << ". "
+             << "Traversed staes at this bound: " << traversedStatesAtDepth
+             << endl;
 
-        cout << "IDA*: Finished bound " << (unsigned)bound
-              << ".  Elapsed time: " << timer.GetFormattedTimeInSeconds() << ". " <<
-              "traversed staes at this bound: " << traversedStatesAtDepth
-              << endl;
+        bound = newBound;
     }
 
     vector<Turn> moveVec;
@@ -129,7 +126,7 @@ void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* moves, i
       curNode = nodeStack.top();
       nodeStack.pop();
 
-      // Keep the list of moves.  The moves end at 0xFF.
+      // Keep the list of moves.
       moves->at(curNode.depth) = Turn::Empty();
 
       if (curNode.depth != 0)

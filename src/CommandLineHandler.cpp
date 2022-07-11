@@ -49,7 +49,7 @@ void CommandLineHandler::start(int argc, char *argv[]) {
         if (((string) argv[i]).compare("-threads") == 0) {
             std::cout << "Set threads" << endl;
             Solver::threadCount = std::atoi(argv[i + 1]);
-            LookupTable::threadCount = std::atoi(argv[i + 1]);
+            //LookupTable::threadCount = std::atoi(argv[i + 1]);
         }
 
         if (((string) argv[i]).compare("-t") == 0) {
@@ -63,30 +63,24 @@ void CommandLineHandler::start(int argc, char *argv[]) {
         }
     }
     
-    LookupTable::LoadLookupTables();
-
-    std::cout << "corner: " << (int)LookupTable::GetCornerStateDistance(state) << endl;
-    std::cout << "e1: "     << (int)LookupTable::GetE1StateDistance(state) << endl;
-    std::cout << "e2: "     << (int)LookupTable::GetE2StateDistance(state) << endl;
-
-    //SolveCube(state);
-    //LookupTable::GenerateCornerLookupTable();
+    LookupTable::GenerateCornerLookupTable();
 }
 
 void SolveCube(RubiksCubeState& state) {
+    vector<Turn> solution;
     StopWatch* timer = new StopWatch();
+    timer->StartTimer();
 
     std::cout << "Loading lookup tables and duplicate state table." << endl;
-        LookupTable::LoadLookupTables();
+        LookupTable::LoadCornerLookupTable();
+        LookupTable::LoadE1LookupTable();
+        LookupTable::LoadE2LookupTable();
         //DuplicateState::LoadDuplicateStateIndex();
-        DuplicateState::LoadDuplicateStateTurnIndex();
-    std::cout << "Finished loading in " << timer->GetFormattedTimeInSeconds() << endl;
+        //DuplicateState::LoadDuplicateStateTurnIndex();
+    std::cout << "Finished loading in " << timer->GetFormattedTimeInSeconds() << endl << endl;
 
-    timer->StartTimer();
     
     std::cout << "Starting solve." << endl;
-    vector<Turn> solution;
-
 
     timer->StartTimer();
     

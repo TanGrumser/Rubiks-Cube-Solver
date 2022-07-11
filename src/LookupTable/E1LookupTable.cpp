@@ -4,7 +4,7 @@
 char* e1LookupTable;
 
 void LookupTable::GenerateE1LookupTable() { 
-    GenerateLookupTable(LookupTable::E1_LOOKUP_TABLE_PATH, GetE1LookupIndex, EDGE_STATES_COUNT); 
+    //PopulateLookupTableWithIDDFS(LookupTable::E1_LOOKUP_TABLE_PATH, GetE1LookupIndex, EDGE_STATES_COUNT); 
 }
 
 void LookupTable::LoadE1LookupTable() {

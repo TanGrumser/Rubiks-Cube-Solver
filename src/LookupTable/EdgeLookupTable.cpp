@@ -4,7 +4,7 @@
 char* edgeLookupTable;
 
 void LookupTable::GenerateEdgeLookupTable(string path) {
-    GenerateLookupTable(path.compare("") == 0 ?  LookupTable::EDGE_LOOKUP_TABLE_PATH : path, GetEdgeLookupIndex, FULL_EDGE_STATES_COUNT); 
+    //PopulateLookupTableWithIDDFS(path.compare("") == 0 ?  LookupTable::EDGE_LOOKUP_TABLE_PATH : path, GetEdgeLookupIndex, FULL_EDGE_STATES_COUNT); 
 }
 
 void LookupTable::LoadEdgeLookupTable() {

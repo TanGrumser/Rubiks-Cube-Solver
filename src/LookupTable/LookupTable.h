@@ -1,19 +1,19 @@
 #pragma once
 
 #include <string>
+
 #include "../Model/RubiksCubeState.h"
-#include <iostream>
 #include "../Utils/PermutationIndexer.h"
 
 using std::string;
 
 namespace LookupTable {
-    typedef uint64_t(*IndexCalculation)(RubiksCubeState&);
+    typedef uint64_t(*IndexCalculator)(RubiksCubeState&);
     typedef RubiksCubeState&(*StateCalculator)(uint64_t);
-    
-    extern PermutationIndexer<8> cornerIndexer;
+
+    extern PermutationIndexer<8>     cornerIndexer;
     extern PermutationIndexer<12, 7> eGroupIndexer;
-    extern PermutationIndexer<12> edgeIndexer;
+    extern PermutationIndexer<12>    edgeIndexer;
 
     extern int threadCount;
     
@@ -23,9 +23,8 @@ namespace LookupTable {
     const string EDGE_PERMUTATION_LOOKUP_TABLE_PATH = "LookupTables\\edgePermutationLookupTable";
     const string EDGE_LOOKUP_TABLE_PATH             = "LookupTables\\fullEdgeLookupTable";
 
-    void GenerateLookupTable(string path, IndexCalculation indexCalculator, uint64_t maxReachableStates);
-    void LoadLookupTables();
-
+    void PopulateLookupTableWithIDDFS(string path, IndexCalculator indexCalculator, uint64_t maxReachableStates);
+ 
     void LoadCornerLookupTable();
     void LoadE1LookupTable();
     void LoadE2LookupTable();
@@ -54,4 +53,3 @@ namespace LookupTable {
     void GenerateEdgePermutationLookupTable();
     void GenerateEdgeLookupTable(string path = "");
 }
-
