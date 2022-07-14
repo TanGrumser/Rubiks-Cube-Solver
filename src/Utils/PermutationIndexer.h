@@ -122,6 +122,41 @@ public:
 
     return lehmer;
   }
+
+  void TestPermutationGenerator() {
+    PermutationIndexer<6> indexer;
+
+    for (int rep = 0; rep < 1000; rep++) {
+        array<unsigned, 6> perm = {11, 11, 11, 11, 11, 11};
+
+        for (int i = 0; i < 6; i++) {
+            bool unset = true;
+            unsigned trie = 0;
+            
+            while (unset) {
+                unsigned random = rand() % 6u;
+
+                if (perm[random] == 11) {
+                    perm[random] = i;
+                    unset = false;
+                }
+
+                trie++;
+            }
+        }
+
+        array<unsigned ,6> recosntruction = indexer.getPermutation(indexer.rank(perm));
+        
+        for (int i = 0; i < 6; i++) {
+            if (perm[i] != recosntruction[i]) {
+                std::cout << "Fail";
+                break;
+            }
+        }
+    }
+
+    std::cout << "Sucess" << std::endl;
+  }
 };
 
 // Static member definitions.

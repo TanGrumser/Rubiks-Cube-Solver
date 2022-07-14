@@ -26,7 +26,6 @@ void CommandLineHandler::start(int argc, char *argv[]) {
     ConsoleLogger consoleLogger("");
     Logger* logger = &consoleLogger;
 
-
     //Parse all command line arguments.
     for (int i = 1; i < argc; i++) {
         if (((string) argv[i]).compare("--generateLookupTable") == 0 || ((string) argv[i]).compare("-glt") == 0) {
@@ -98,6 +97,7 @@ void SolveCube(RubiksCubeState& state, Logger* logger) {
     vector<Turn> solution;
     StopWatch timer;
     LookupTable::LoadAllLookupTables();
+    DuplicateState::LoadDuplicateStateIndex();
 
     timer.StartTimer();
 
