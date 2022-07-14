@@ -6,11 +6,6 @@
 #include "../Utils/FileManagement.h"
 #include "../Utils/utils.h"
 
-// TOOD move this somewhere more 
-PermutationIndexer<8>     LookupTable::cornerIndexer;
-PermutationIndexer<12, 7> LookupTable::eGroupIndexer;
-PermutationIndexer<12>    LookupTable::edgeIndexer;
-
 void LookupTableGenerator::WriteLookupTableToFile(string path) {
     FileManagement::WriteBufferToFile(path, lookupTable.data(), lookupTableSize);
 }
@@ -92,7 +87,7 @@ void LookupTableGenerator::GenerationLogger(long long loggingInterval) {
         std::this_thread::sleep_for(std::chrono::milliseconds(loggingInterval));
     }
 
-    std::cout << "Finished Logger" << endl;
+    logger->logNewLine("Toal time required: " + timer.GetFormattedTimeInSeconds());
 }
 
 // ----------- kickoff methods ---------------------------
@@ -100,8 +95,12 @@ void LookupTableGenerator::GenerationLogger(long long loggingInterval) {
 void LookupTableGenerator::PopulateWithIterativeDeepeningDepthFirstSearch(char maxDepth, int threadCount) {
     std::vector<std::thread> threads(threadCount);
     generationMode = GenerationMode::IterativeDeepeningDepthFirstSearchMode;
+    StopWatch timer;
 
     while (!hasGenerationFinished() && currentDepth <= maxDepth) {
+        currentDepthStates = 0;
+        timer.StartTimer();
+
         for (int i = 0; i < threadCount; i++) {
             std::vector<Turn> exploredTurns = Turn::GetSubsetTurns(i, threadCount);
             
@@ -117,13 +116,12 @@ void LookupTableGenerator::PopulateWithIterativeDeepeningDepthFirstSearch(char m
         }
         
         consoleMutex.lock();
-        logger->logNewLine("Reached states at depth " + to_string(currentDepth) + " are " + to_string(currentDepthStates) + "                                                                                               ");
+        logger->logNewLine("Reached states at depth " + to_string(currentDepth) + " are " + to_string(currentDepthStates) + " step took " + timer.GetFormattedTimeInSeconds());
         consoleMutex.unlock();
 
         // Reset all reached state flags.
         ClenaupReachedFlags();
 
-        currentDepthStates = 0;
         currentDepth++;
     }
 }
@@ -131,8 +129,10 @@ void LookupTableGenerator::PopulateWithIterativeDeepeningDepthFirstSearch(char m
 void LookupTableGenerator::PopulateWithInverseStateIndexSearch(int threadCount) {
     std::vector<std::thread> threads(threadCount);
     generationMode = GenerationMode::InverseStateIndexSearchMode;
+    StopWatch timer;
 
     while (!hasGenerationFinished()) {
+        timer.StartTimer();
         processedStates = 0;
         currentDepthStates = 0;
 
@@ -155,7 +155,7 @@ void LookupTableGenerator::PopulateWithInverseStateIndexSearch(int threadCount) 
         }
         
         consoleMutex.lock();
-        logger->logNewLine("Reached states at depth " + to_string(currentDepth) + " are " + to_string(currentDepthStates) + "                                                                                               ");
+        logger->logNewLine("Reached states at depth " + to_string(currentDepth) + " are " + to_string(currentDepthStates) + " step took " + timer.GetFormattedTimeInSeconds());
         consoleMutex.unlock();
 
         currentDepth++;

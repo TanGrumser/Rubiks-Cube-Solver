@@ -46,7 +46,7 @@ struct PrioritizedMove {
     }
 };
 
-vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState) {
+vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Logger* logger) {
     atomic_bool* solved = new atomic_bool(startState.Equals(RubiksCubeState::InitialState()));
     uint8_t bound = Solver::GetDistanceHeuristic(startState, 100);
     vector<array<Turn, 50>*> moves(Solver::threadCount, new array<Turn, 50>);
@@ -88,10 +88,11 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState) {
             }
         }
 
-        cout << "IDA* Finished bound " << (bound < 10 ? " " : "") << (unsigned)bound << ". "
-             << "Elapsed time: " << timer.GetFormattedTimeInSeconds() << ". "
-             << "Traversed staes at this bound: " << traversedStatesAtDepth
-             << endl;
+        logger->logNewLine( 
+            "IDA* Finished bound " +  to_string(bound) + ". " + 
+            "Elapsed time: " + timer.GetFormattedTimeInSeconds() + ". " + 
+            "Traversed states at this bound: " + to_string(traversedStatesAtDepth)
+        );
 
         bound = newBound;
     }

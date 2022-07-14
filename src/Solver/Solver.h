@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "../Model/RubiksCubeState.h"
+#include "../Utils/Logging/Logger.h"
 
 namespace Solver {
     extern int heuristicMode;
@@ -16,7 +17,7 @@ namespace Solver {
      * @param startState a state of a rubics cube, for which the shortest sequence of moves will be searched for, that solves the cube.
      * @return A vector<Turn> of the moves, that will solve the cube, when applied to the start state.
      */
-    vector<Turn> PR_IterativeDeepeningAStar(RubiksCubeState& startState);
+    vector<Turn> PR_IterativeDeepeningAStar(RubiksCubeState& startState, Logger* logger);
     
     /**
      * @brief 

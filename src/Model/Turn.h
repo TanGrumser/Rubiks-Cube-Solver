@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 using namespace std;
 
@@ -69,6 +70,28 @@ struct Turn {
 
         return Turn(index);
     }
+    /**
+     * Convert a string representing a shuffle to the internal representation of a turn.
+     * The turns must follow the format [side](' / 2) e.g. "L", "l", "U2", "b'", "L'" or "r2"
+     * String must follow the format "Turn Turn ... Turn"
+     * 
+     * @param shuffleString the string representation of the turn.
+     * @return internal representation of the turn.
+     */
+    static vector<Turn> parseShuffle(string shuffleString) {
+        const char DELIMITER = ' ';
+        vector<Turn> turns;
+        size_t pos = 0;
+        std::string token;
+
+        while ((pos = shuffleString.find(DELIMITER)) != std::string::npos) {
+            token = shuffleString.substr(0, pos);
+            turns.push_back(Turn::Parse(token));
+            shuffleString.erase(0, pos + 1);
+        }
+
+        return turns;
+    }
 
 string ToString() {
         string result = "";
@@ -83,10 +106,10 @@ string ToString() {
             case 3: result += "B"; break;
             case 4: result += "L"; break;
             case 5: result += "D"; break;
+            default: throw std::runtime_error("invalid turn index: " + index);
         }
 
         switch (angle) {
-            case 0: result += " "; break;
             case 1: result += "2"; break;
             case 2: result += "'"; break;
         }

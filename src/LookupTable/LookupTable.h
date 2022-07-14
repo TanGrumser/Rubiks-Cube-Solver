@@ -16,15 +16,17 @@ namespace LookupTable {
     extern PermutationIndexer<12>    edgeIndexer;
 
     extern int threadCount;
+    extern bool areLookupTablesLoaded;
     
     const string CORNER_LOOKUP_TABLE_PATH           = "LookupTables\\cornerLookupTable";
-    const string E1_LOOKUP_TABLE_PATH               = "LookupTables\\bigLowerEdgeLookupTable";
-    const string E2_LOOKUP_TABLE_PATH               = "LookupTables\\bigUpperEdgeLookupTable";
+    const string E1_LOOKUP_TABLE_PATH               = "LookupTables\\e1LookupTable";
+    const string E2_LOOKUP_TABLE_PATH               = "LookupTables\\e2LookupTable";
     const string EDGE_PERMUTATION_LOOKUP_TABLE_PATH = "LookupTables\\edgePermutationLookupTable";
     const string EDGE_LOOKUP_TABLE_PATH             = "../../../../global_data/grumser/edgeLookupTable";
 
     void PopulateLookupTableWithIDDFS(string path, IndexCalculator indexCalculator, uint64_t maxReachableStates);
- 
+    
+    void LoadAllLookupTables();
     void LoadCornerLookupTable();
     void LoadE1LookupTable();
     void LoadE2LookupTable();
@@ -46,6 +48,9 @@ namespace LookupTable {
     
 
     RubiksCubeState GetCornerStateFromIndex(uint64_t index);
+    RubiksCubeState GetE1StateFromIndex(uint64_t index);
+    RubiksCubeState GetE2StateFromIndex(uint64_t index);
+    RubiksCubeState GetEdgePermutationStateFromIndex(uint64_t index);
     RubiksCubeState GetEdgeStateFromIndex(uint64_t index);
 
     //void TestCornerLookupCaluclation();

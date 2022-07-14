@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 inline bool exists_test0 (const std::string& name) {
     std::ifstream f(name.c_str());
@@ -55,6 +56,40 @@ char* FileManagement::LoadBufferFromFile(std::string path, uint64_t* bufferSize)
 
     return 0;
 }
+
+void FileManagement::writeLinesToFile(std::string path, std::vector<std::string> lines) {
+    std::ofstream file(path, std::ofstream::out);
+
+    if (file.is_open()) {
+        //store array contents to text file
+        for (int i = 0; i < lines.capacity(); i++) {
+            file << lines[i] << (i != lines.capacity() - 1 ? "\n" : "");
+        }
+     
+        file.close();
+    } else {
+        throw new std::runtime_error("Cannot write to file: " + path);
+    }
+}
+
+std::vector<std::string> FileManagement::parseALlLines(std::string path) {
+    std::vector<std::string> lines;
+    std::string line;
+    std::ifstream file (path);
+
+    if (file.is_open()) {
+        while (getline(file, line)) {
+            lines.push_back(line);
+        }
+        
+        file.close();
+    } else { 
+        throw new std::runtime_error("Cannot open file: " + path);
+    }
+
+    return lines;
+}
+
 
 void FileManagement::CompareFiles(std::string firstPath, std::string secondPath) {
     uint64_t* localSize = new uint64_t(0);

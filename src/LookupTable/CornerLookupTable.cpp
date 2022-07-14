@@ -17,13 +17,13 @@ void LookupTable::GenerateCornerLookupTable() {
 
     LookupTableGenerator generator(
         CORNER_STATES_COUNT, 
-        GetCornerLookupIndex, 
-        LookupTable::GetCornerStateFromIndex, 
+        GetCornerLookupIndex,
+        LookupTable::GetCornerStateFromIndex,
         &logger
     );
 
     generator.StartLogger(100);
-    generator.PopulateWithIterativeDeepeningDepthFirstSearch(7, 6);
+    generator.PopulateWithIterativeDeepeningDepthFirstSearch(8, 6);
     generator.PopulateWithInverseStateIndexSearch(8);
     generator.WriteLookupTableToFile(CORNER_LOOKUP_TABLE_PATH);
 }
@@ -31,6 +31,12 @@ void LookupTable::GenerateCornerLookupTable() {
 void LookupTable::LoadCornerLookupTable() {
     uint64_t* size = new uint64_t(0);
     cornerLookupTable = FileManagement::LoadBufferFromFile(CORNER_LOOKUP_TABLE_PATH, size);
+    delete size;
+
+    if (cornerLookupTable == nullptr) {
+        GenerateCornerLookupTable();
+        LoadCornerLookupTable();
+    }
 }
 
 char LookupTable::GetCornerStateDistance(RubiksCubeState& state) {
@@ -60,9 +66,23 @@ uint64_t LookupTable::GetCornerLookupIndex(RubiksCubeState& state) {
 }
 
 RubiksCubeState LookupTable::GetCornerStateFromIndex(uint64_t index) {
-    StateIndex stateIndex;
-    stateIndex.cornerIndex = index;
-    stateIndex.edgeIndex = 0;
+    RubiksCubeState result;
+    
+    uint64_t cornerPermutationIndex = index / CORNER_ROTATIONS_COUNT;
+    uint64_t cornerRotationIndex    = index % CORNER_ROTATIONS_COUNT;
+    
+    array<unsigned, 8> cornerIndicies = StateIndexReverser::cornerIndexer.getPermutation(cornerPermutationIndex);
+    
+    unsigned rotationSum = 0;
 
-    return StateIndexReverser::GetStateFromIndex(stateIndex);
+    for (int i = 0; i < 8; i++) {
+        result.corners[i].index = cornerIndicies[i];
+        result.corners[i].rotation = (cornerRotationIndex / powersOfThree[i]) % 3u;
+
+        rotationSum += result.corners[i].rotation;
+    }
+
+    result.corners[8 - 1].rotation = (21u - rotationSum) % 3u;
+
+    return result;
 }

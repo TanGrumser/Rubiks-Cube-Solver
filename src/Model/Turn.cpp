@@ -12,7 +12,7 @@ Turn Turn::Random() {
     if (!randomSeedSet) {
         std::random_device rd; // obtain a random number from hardware
         gen = std::mt19937(rd()); // seed the generator
-        distr = std::uniform_int_distribution<>(0, 18);
+        distr = std::uniform_int_distribution<>(0, 17);
     }
 
     return Turn(distr(gen));

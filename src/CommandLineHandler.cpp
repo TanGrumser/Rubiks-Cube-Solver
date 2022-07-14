@@ -10,14 +10,22 @@
 #include "LookupTable/LookupTable.h"
 #include "Utils/FileManagement.h"
 #include "DuplicateStateDetection/DuplicateState.h"
+#include "Utils/Logging/Logger.h"
+#include "Utils/Logging/ConsoleLogger.h"
+#include "Utils/Logging/FileLogger.h"
 
-void SolveCube(RubiksCubeState& state);
-void ParseFile(std::string path);
+void SolveCube(RubiksCubeState& state, Logger* logger);
+void parseFile(std::string path);
+void solveShufflesFromFile(string path, Logger* logger);
 void GenerateLookupTable(int table);
 void PrintHelp();
+void generateShufflesFile(string path, int numShuffles, int shuffleLenght);
 
 void CommandLineHandler::start(int argc, char *argv[]) {
     RubiksCubeState state = RubiksCubeState::InitialState().Copy();
+    ConsoleLogger consoleLogger("");
+    Logger* logger = &consoleLogger;
+
 
     //Parse all command line arguments.
     for (int i = 1; i < argc; i++) {
@@ -52,6 +60,24 @@ void CommandLineHandler::start(int argc, char *argv[]) {
             //LookupTable::threadCount = std::atoi(argv[i + 1]);
         }
 
+        if (((string) argv[i]).compare("-loadFile") == 0) {
+            string path = argv[i + 1];
+            solveShufflesFromFile(path, logger);
+        }
+
+        if (((string) argv[i]).compare("-logTo") == 0) {
+            string path = argv[i + 1];
+            logger = new FileLogger(path, "");
+        }
+
+        if (((string) argv[i]).compare("-generateShufflesFile") == 0) {
+            string path = argv[i + 1];
+            int numShuffles = std::atoi(argv[i + 2]);
+            int shuffleLenght = std::atoi(argv[i + 3]);
+            
+            generateShufflesFile(path, numShuffles, shuffleLenght);
+        }
+
         if (((string) argv[i]).compare("-t") == 0) {
             string turnString = (string) argv[i + 1];
             vector<string> turns = StringUtils::Split(turnString, " ");
@@ -61,48 +87,85 @@ void CommandLineHandler::start(int argc, char *argv[]) {
                 state.ApplyTurn(turn);
             }
         }
-    }
-    
-    LookupTable::GenerateEdgeLookupTable();
-}
 
-void SolveCube(RubiksCubeState& state) {
-    vector<Turn> solution;
-    StopWatch* timer = new StopWatch();
-    timer->StartTimer();
-
-    std::cout << "Loading lookup tables and duplicate state table." << endl;
-        LookupTable::LoadCornerLookupTable();
-        LookupTable::LoadE1LookupTable();
-        LookupTable::LoadE2LookupTable();
-        //DuplicateState::LoadDuplicateStateIndex();
-        //DuplicateState::LoadDuplicateStateTurnIndex();
-    std::cout << "Finished loading in " << timer->GetFormattedTimeInSeconds() << endl << endl;
-
-    
-    std::cout << "Starting solve." << endl;
-
-    timer->StartTimer();
-    
-    switch (Solver::solverIndex) {
-        case 0: solution = Solver::PR_IterativeDeepeningAStar(state); break;
-        case 1: solution = Solver::SR_IterativeDeepeningAStar(state); break; // XXX
-
-        default: throw std::runtime_error("Specified solver index isn't refferencing a solver: " + Solver::solverIndex);
-    }
-
-    timer->StopTimer();
-
-    std::cout << "Time required: " << timer->GetFormattedTimeInSeconds() << endl;
-
-    for (int i = 0; i < solution.size(); i++) {
-        std::cout << solution[i].ToString();
-
-        if (i < solution.size() - 1) {
-            std::cout << " ";
+        if (((string) argv[i]).compare("-solve") == 0) {
+            SolveCube(state, logger);
         }
     }
 }
+
+void SolveCube(RubiksCubeState& state, Logger* logger) {
+    vector<Turn> solution;
+    StopWatch timer;
+    LookupTable::LoadAllLookupTables();
+
+    timer.StartTimer();
+
+    logger->logNewLine("Starting to solve cube with IDA*.");
+    
+    solution = Solver::PR_IterativeDeepeningAStar(state, logger); 
+
+    logger->logNewLine("Time required: " + timer.GetFormattedTimeInSeconds());
+
+    string solutionString;
+
+    for (int i = 0; i < solution.size(); i++) {
+        solutionString += solution[i].ToString();
+
+        if (i < solution.size() - 1) {
+            solutionString += " ";
+        }
+    }
+
+    logger->logNewLine("Solution:\n" + solutionString + "\n");
+}
+
+void generateShufflesFile(string path, int numShuffles, int shuffleLenght) {
+    std::vector<string> shufflesStrings;
+
+    for (int i = 0; i < numShuffles; i++) {
+        string shuffleString;
+        Turn lastTurn = Turn::Empty();
+
+        for (int j = 0; j < shuffleLenght; j++) {
+            Turn randomTurn;
+
+            do {
+                randomTurn = Turn::Random();
+            } while (randomTurn.IsTurnBacktracking(lastTurn));
+
+            if (randomTurn.index >= 18 || randomTurn.index < 0) {
+                std::cout << randomTurn.index << endl;
+            }
+
+            shuffleString += randomTurn.ToString() + (j != shuffleLenght - 1 ? " " : "");
+            lastTurn = randomTurn;
+        }
+
+        shufflesStrings.push_back(shuffleString);
+    }
+
+    FileManagement::writeLinesToFile(path, shufflesStrings);
+}
+
+void solveShufflesFromFile(string path, Logger* logger) {
+    vector<string> lines = FileManagement::parseALlLines(path);
+
+    LookupTable::LoadAllLookupTables();
+
+    for (string line : lines) {
+        vector<Turn> shuffle = Turn::parseShuffle(line);
+        RubiksCubeState state = RubiksCubeState::InitialState().Copy();
+
+        for (Turn turn : shuffle) {
+            state.ApplyTurn(turn);
+        }
+
+        logger->logNewLine("Starting solve of shuffle\n" + line);
+        SolveCube(state, logger);
+    }
+}
+
 void GenerateLookupTable(int lookupTableIndex) {
     switch (lookupTableIndex)
     {
@@ -116,7 +179,7 @@ void GenerateLookupTable(int lookupTableIndex) {
     }
 }
 
-void ParseFile(std::string path) {
+void parseFile(std::string path) {
     std::cout << "Parsing file" << std::endl;
     uint64_t* size = new uint64_t();
     char* lookupTable = FileManagement::LoadBufferFromFile(path, size);
