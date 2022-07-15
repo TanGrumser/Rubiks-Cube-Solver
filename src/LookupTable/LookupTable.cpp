@@ -27,3 +27,24 @@ void LookupTable::LoadAllLookupTables() {
         areLookupTablesLoaded = true;
     }
 }
+
+void LookupTable::TestStateReconstruction() {
+    for (int i = 0; i < 100; i++) {
+        RubiksCubeState state = RubiksCubeState::InitialState().Copy();
+
+        for (int j = 0; j < 100; j++) {
+            state.ApplyTurn(Turn::Random());
+        }
+
+        uint64_t e1Index = LookupTable::GetE2LookupIndex(state);
+        RubiksCubeState reconstruction = LookupTable::GetE2StateFromIndex(e1Index);
+        uint64_t reconstructionIndex = LookupTable::GetE2LookupIndex(reconstruction);
+        
+        if (e1Index != reconstructionIndex) {
+            std::cout << "fail" << endl;
+            return;
+        }
+    }
+
+    std::cout << "sucess" << endl;
+}

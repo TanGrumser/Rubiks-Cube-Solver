@@ -4,12 +4,15 @@
 #include <array>
 #include <bitset>
 #include <iostream>
+#include <algorithm>
+#include <vector>
 
 using std::size_t;
 using std::array;
 using std::bitset;
 using std::cout;
 using std::endl;
+using std::vector;
 
 // Calculate nPk: n!/(n-k)!.
 unsigned pick(unsigned n, unsigned k);
@@ -156,6 +159,62 @@ public:
     }
 
     std::cout << "Sucess" << std::endl;
+  }
+
+  void TestSparsePermutationReconstruction() {
+    PermutationIndexer<12, 7> indexer;
+
+    for (int rep = 0; rep < 10; rep++) {
+        array<unsigned, 7> perm = {13, 13, 13, 13, 13, 13, 13};
+        vector<unsigned> usedValues;
+
+        for (int i = 0; i < 7; i++) {
+            unsigned value = 13;
+
+            do {
+                value = std::rand() % 12u;
+            } while (std::find(usedValues.begin(), usedValues.end(), value) != usedValues.end());
+
+            usedValues.push_back(value);
+        }
+
+        for (int i = 0; i < 7; i++) {
+            bool unset = true;
+            unsigned trie = 0;
+            
+            while (unset) {
+                unsigned random = rand() % 7u;
+
+                if (perm[random] == 13) {
+                    perm[random] = usedValues[random];
+                    unset = false;
+                }
+
+                trie++;
+            }
+        }
+
+        array<unsigned, 7> recosntruction = indexer.getPermutation(indexer.rank(perm));
+        
+        for (int i = 0; i < 6; i++) {
+            if (perm[i] != recosntruction[i]) {
+                std::cout << "Fail" << endl;
+                break;
+            }
+        }
+
+        for (int i = 0; i < 7; i++) {
+            std::cout << perm[i] << " ";
+        }
+
+        std::cout << "| ";
+
+        for (int i = 0; i < 7; i++) {
+            std::cout << recosntruction[i] << " ";
+        }
+
+        std::cout << std::endl;
+    }
   }
 };
 

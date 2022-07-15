@@ -189,7 +189,11 @@ valgrind --tool=callgrind
 kcachegrind 
 
 
+Egde lookup table generation
 
+Reached states at depth 0 are 1
+Reached states at depth 1 are 18
+Reached states at depth 2 are 243
 Reached states at depth 3 are 3240
 Reached states at depth 4 are 42807
 Reached states at depth 5 are 555866
@@ -199,7 +203,9 @@ Reached states at depth 8 are 1050559626
 Reached states at depth 9 are 11588911021
 Reached states at depth 10 are 110409721989
 Reached states at depth 11 are 552734197682
-Elapsed Time: 1484920s, reachedStates: 916190359032, progress: 93.3940%, depth: 12, states at depth: 240311474767, duplicates: 1341379001693
+Reached states at depth 12 are 304786076626
+Reached states at depth 13 are 330335518
+Reached states at depth 14 are 248
 
 Add this to compileOptions.txt to enable full edge lookup table usage.
 -D USE_FULL_EGDE_LT

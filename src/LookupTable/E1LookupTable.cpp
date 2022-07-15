@@ -17,7 +17,8 @@ void LookupTable::GenerateE1LookupTable() {
     );
 
     generator.StartLogger(100);
-    generator.PopulateWithIterativeDeepeningDepthFirstSearch(10, 6);
+    generator.PopulateWithIterativeDeepeningDepthFirstSearch(7, 6);
+    generator.PopulateWithInverseStateIndexSearch(8);
     generator.WriteLookupTableToFile(E1_LOOKUP_TABLE_PATH);
 }
 
@@ -57,5 +58,26 @@ uint64_t LookupTable::GetE1LookupIndex(RubiksCubeState& state) {
 } 
 
 RubiksCubeState LookupTable::GetE1StateFromIndex(uint64_t index) {
-    throw std::runtime_error("Unitilized exception");
+    const unsigned UNUSED_EDGE_INDEX = 11;
+
+    RubiksCubeState result;
+    
+    uint64_t edgePermutationIndex = index / BIG_EDGE_ROTATION_COUNT;
+    uint64_t edgeRotationIndex    = index % BIG_EDGE_ROTATION_COUNT;
+    
+    array<unsigned, 7> edgeIndicies = StateIndexReverser::eGroupIndexer.getPermutation(edgePermutationIndex);
+
+    // Since the E1 state is only dependent on the position and rotations of edges with an index less than 8, 
+    // we can set all other edges to some arbitrary index, that does not interfere with the relevenat indicies.
+    // in this case the index 11 is used.
+    for (int i = 0; i < 12; i++) {
+        result.edges[i].index = UNUSED_EDGE_INDEX;
+    }
+
+    for (int i = 0; i < 7; i++) {
+        result.edges[edgeIndicies[i]].index = i;
+        result.edges[edgeIndicies[i]].rotation = edgeRotationIndex >> i & 1u; // simulates dividing by 2^i but is faster
+    }
+
+    return result;
 }

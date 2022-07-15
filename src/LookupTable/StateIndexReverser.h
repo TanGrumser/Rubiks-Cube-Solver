@@ -9,6 +9,7 @@
 
 namespace StateIndexReverser {
     static PermutationIndexer<8> cornerIndexer;
+    static PermutationIndexer<12, 7> eGroupIndexer;
     static PermutationIndexer<12> egdeIndexer;
 
     RubiksCubeState GetStateFromIndex(StateIndex index);

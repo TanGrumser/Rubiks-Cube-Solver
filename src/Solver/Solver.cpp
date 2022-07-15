@@ -22,32 +22,42 @@ int Solver::GetDistanceHeuristic(RubiksCubeState& from, int bound) {
     if (estMoves > bound)
     return estMoves;
 
-    estMoves = LookupTable::GetE2StateDistance(from);
 
-    if (estMoves > bound)
-    return estMoves;
+    #ifdef USE_FULL_EDGE_LT
+        estMoves = LookupTable::GetEdgeStateDistance(from);
 
-    if (estMoves > max)
-    max = estMoves;
+        if (estMoves > bound)
+        return estMoves;
 
-    estMoves = LookupTable::GetE1StateDistance(from);
+        if (estMoves > max)
+        max = estMoves;
+    #else
+        estMoves = LookupTable::GetE2StateDistance(from);
 
-    if (estMoves > bound)
-    return estMoves;
+        if (estMoves > bound)
+        return estMoves;
 
-    if (estMoves > max)
-    max = estMoves;
+        if (estMoves > max)
+        max = estMoves;
 
-    /*
-    estMoves = LookupTable::GetEdgePermutationStateDistance(from);
+        estMoves = LookupTable::GetE1StateDistance(from);
 
-    if (estMoves > bound)
-    return estMoves;
+        if (estMoves > bound)
+        return estMoves;
 
-    if (estMoves > max)
-    max = estMoves;
-    */
+        if (estMoves > max)
+        max = estMoves;
+        
+        // Edge Permutation Lookup
+        estMoves = LookupTable::GetEdgePermutationStateDistance(from);
 
+        if (estMoves > bound)
+        return estMoves;
+
+        if (estMoves > max)
+        max = estMoves;
+    #endif
+    
     // Return the max estimate if none exceeds the bound.
     return max;
 }

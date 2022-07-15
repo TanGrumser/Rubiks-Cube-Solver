@@ -57,5 +57,26 @@ uint64_t LookupTable::GetE2LookupIndex(RubiksCubeState& state) {
 }
 
 RubiksCubeState LookupTable::GetE2StateFromIndex(uint64_t index) {
-    throw std::runtime_error("Unitilized exception");
+    const unsigned UNUSED_EDGE_INDEX = 0;
+
+    RubiksCubeState result;
+    
+    uint64_t edgePermutationIndex = index / BIG_EDGE_ROTATION_COUNT;
+    uint64_t edgeRotationIndex    = index % BIG_EDGE_ROTATION_COUNT;
+    
+    array<unsigned, 7> edgeIndicies = StateIndexReverser::eGroupIndexer.getPermutation(edgePermutationIndex);
+
+    // Since the E2 state is only dependent on the position and rotations of edges with an index greater than 4, 
+    // we can set all other edges to some arbitrary index, that does not interfere with the relevenat indicies.
+    // in this case the index 0 is used.
+    for (int i = 0; i < 12; i++) {
+        result.edges[i].index = UNUSED_EDGE_INDEX;
+    }
+
+    for (int i = 0; i < 7; i++) {
+        result.edges[edgeIndicies[i]].index = i + 5;
+        result.edges[edgeIndicies[i]].rotation = edgeRotationIndex >> i & 1u; // simulates dividing by 2^i but is faster
+    }
+
+    return result;
 }

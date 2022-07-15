@@ -5,9 +5,11 @@ Todos
     [x] Write function
     
 [x] Table Generation Meta Data to saved to file
-[ ] Test File Manager writing 1TB to file
 [x] Table generation uses inverse lexicographic rank function at depth > 10
 [x] Start New Table generation
-[ ] Write solving results to file to collect better structured benchmark data
+[x] Write solving results to file to collect better structured benchmark data
+[x] Write e group inverse state geeration method.
+[ ] Test it
 [ ] After lookup table generation is finished run performance test on 100 random scrambles
 [ ] Benchmark two Duplicate state detection methods
+[ ] check edge lookup table
