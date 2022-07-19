@@ -9,8 +9,8 @@
 
 namespace DuplicateState {
     
-    const string DUPLICATE_STATE_PATH = "LookupTables\\duplicateStates";
-    const string TURN_INDEX_DUPLICATE_STATE_PATH = "LookupTables\\duplicateStatesTurnIndex";
+    const string DUPLICATE_STATE_PATH = "LookupTables/duplicateStates";
+    const string TURN_INDEX_DUPLICATE_STATE_PATH = "LookupTables/duplicateStatesTurnIndex";
 
     const uint64_t NUMBER_OF_PATHS_AT_DEPTH[10] = {
         1ull,
