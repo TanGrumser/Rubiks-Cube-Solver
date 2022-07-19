@@ -29,6 +29,10 @@ void CommandLineHandler::start(int argc, char *argv[]) {
 
     //Parse all command line arguments.
     for (int i = 1; i < argc; i++) {
+        if (((string) argv[i]).compare("-dsmd") == 0) {
+            DuplicateState::maxDepth = std::atoi(argv[i + 1]);
+        }
+
         if (((string) argv[i]).compare("--generateLookupTable") == 0 || ((string) argv[i]).compare("-glt") == 0) {
             GenerateLookupTable(std::atoi(argv[i + 1]));
         }
@@ -86,10 +90,6 @@ void CommandLineHandler::start(int argc, char *argv[]) {
         if (((string) argv[i]).compare("-threads") == 0) {
             std::cout << "Set threads" << endl;
             Solver::threadCount = std::atoi(argv[i + 1]);
-        }
-
-        if (((string) argv[i]).compare("-dsmd") == 0) {
-            DuplicateState::maxDepth = std::atoi(argv[i + 1]);
         }
 
         if (((string) argv[i]).compare("-loadFile") == 0) {

@@ -13,7 +13,7 @@ void EvaluateStateTurnIndex(RubiksCubeState& state, char depth, Turn lastTurn, s
 
 
 bool DuplicateState::PruneByTurnIndex(array<Turn, 50> moves, int size) {
-    if (size > 7) {
+    if (size > 8) {
         return false;
     }
 

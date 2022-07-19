@@ -46,11 +46,15 @@ namespace DuplicateState {
     bool IsStateContained(StateIndex index);
     void ResetAllStates();
 
-    inline bool PruneState(RubiksCubeState& state, RubiksCubeStateShift shift, uint8_t depth, array<Turn, 50> moves, int size) {
+    inline bool PruneState(RubiksCubeState& state, RubiksCubeStateShift shift, uint8_t depth, array<Turn, 50> moves) {
+        if (depth > maxDepth) {
+            return false;
+        }
+        
         switch (mode) {
             case Mode::OFF:         return false;
-            case Mode::STATE_INDEX: return WasStateReached(shift.GetShiftedState(state), depth);;
-            case Mode::TURN_INDEX:  return PruneByTurnIndex(moves, size);
+            case Mode::STATE_INDEX: return WasStateReached(shift.GetShiftedState(state), depth);
+            case Mode::TURN_INDEX:  return PruneByTurnIndex(moves, depth);
 
             default: return false;
         }

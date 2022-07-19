@@ -153,7 +153,7 @@ void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* moves, i
             cubeCopy.ApplyTurn(move);
 
             // if this state was reached via another path, we don't need to traverse it any further
-            if (DuplicateState::PruneState(cubeCopy, *shift, curNode.depth + 1, *moves, 50)) {
+            if (DuplicateState::PruneState(cubeCopy, *shift, curNode.depth + 1, *moves)) {
               duplicatesFound++;
               continue;
             }
