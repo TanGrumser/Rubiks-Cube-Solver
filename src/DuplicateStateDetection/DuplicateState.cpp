@@ -98,7 +98,7 @@ void DuplicateState::LoadDuplicateStateIndex() {
 
 void DuplicateState::GenerateLookupTable() {
     RubiksCubeState& initialState = RubiksCubeState::InitialState().Copy();
-    const int MAX_DEPTH = 7;
+    const int MAX_DEPTH = DuplicateState::maxDepth;
     vector<Turn> lastTurns;
 
     for (int depth = 0; depth <= MAX_DEPTH; depth++) {
