@@ -91,12 +91,6 @@ void CommandLineHandler::start(int argc, char *argv[]) {
             SolveCube(state, logger);
         }
     }
-
-    /*
-    LookupTable::LoadE1LookupTable();
-    int val = (int)LookupTable::GetE1StateDistance(state);
-    std::cout << "val: " << val << endl;
-    */
 }
 
 void SolveCube(RubiksCubeState& state, Logger* logger) {
