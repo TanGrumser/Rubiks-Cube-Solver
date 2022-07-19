@@ -128,7 +128,6 @@ void SolveCube(RubiksCubeState& state, Logger* logger) {
     vector<Turn> solution;
     StopWatch timer;
     LookupTable::LoadAllLookupTables();
-    DuplicateState::LoadDuplicateStateIndex();
 
     timer.StartTimer();
 
@@ -192,11 +191,13 @@ void solveShufflesFromFile(string path, Logger* logger) {
             
             case 1:
                 logger->logNewLine("\n-------- Starting to solve with state index duplicate state detection. -----------------\n");
+                DuplicateState::LoadDuplicateStateIndex();
                 DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
             break;
             
             case 2:
                 logger->logNewLine("\n-------- Starting to solve with turn index duplicate state detection. -----------------\n");
+                DuplicateState::LoadDuplicateStateTurnIndex();
                 DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
             break;
         }

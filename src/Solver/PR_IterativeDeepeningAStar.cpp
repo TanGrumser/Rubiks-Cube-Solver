@@ -53,6 +53,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
     vector<array<Turn, 50>*> moves(Solver::threadCount, new array<Turn, 50>);
     array<Turn, 50> solutionMoves;
     StopWatch timer;
+    duplicatesFound = 0;
 
     shift = new RubiksCubeStateShift(startState);
 
