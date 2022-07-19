@@ -20,6 +20,7 @@ void solveShufflesFromFile(string path, Logger* logger);
 void GenerateLookupTable(int table);
 void PrintHelp();
 void generateShufflesFile(string path, int numShuffles, int shuffleLenght);
+void GenerateDuplciateStateLookupTable(int lookupTableIndex);
 
 void CommandLineHandler::start(int argc, char *argv[]) {
     RubiksCubeState state = RubiksCubeState::InitialState().Copy();
@@ -32,8 +33,35 @@ void CommandLineHandler::start(int argc, char *argv[]) {
             GenerateLookupTable(std::atoi(argv[i + 1]));
         }
 
+        if (((string) argv[i]).compare("--generateDuplicateStateLookupTable") == 0 || ((string) argv[i]).compare("-gdslt") == 0) {
+            GenerateDuplciateStateLookupTable(std::atoi(argv[i + 1]));
+        }
+
         if (((string) argv[i]).compare("--ds") == 0) {
-            DuplicateState::active = true;
+            int index = std::atoi(argv[i + 1]);
+            string answer;
+            
+            switch (index) {
+                case 0:
+                    DuplicateState::mode = DuplicateState::Mode::OFF;
+                    answer = "Deactivated duplcite State detetction.";
+                break;
+
+                case 1:
+                    DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
+                    answer = "Using state indexing for dulciate state detection.";
+                break;
+
+                case 2:
+                    DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
+                    answer = "Using turn indexing for dulciate state detection.";
+                break;
+
+            default:
+                break;
+            }
+
+            logger->logNewLine(answer);
         }
 
         if (((string) argv[i]).compare("--help") == 0) {
@@ -149,20 +177,42 @@ void generateShufflesFile(string path, int numShuffles, int shuffleLenght) {
 }
 
 void solveShufflesFromFile(string path, Logger* logger) {
-    vector<string> lines = FileManagement::parseALlLines(path);
+    
+    //XXX this is used quick and dirty to compare dsd three times.
 
-    LookupTable::LoadAllLookupTables();
-
-    for (string line : lines) {
-        vector<Turn> shuffle = Turn::parseShuffle(line);
-        RubiksCubeState state = RubiksCubeState::InitialState().Copy();
-
-        for (Turn turn : shuffle) {
-            state.ApplyTurn(turn);
+    for (int i = 0; i < 3; i++) {
+        switch(i) {
+            case 0:
+                logger->logNewLine("\n-------- Starting to solve without duplicate state detection. -----------------\n");
+                DuplicateState::mode = DuplicateState::Mode::OFF;
+            break;
+            
+            case 1:
+                logger->logNewLine("\n-------- Starting to solve with state index duplicate state detection. -----------------\n");
+                DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
+            break;
+            
+            case 2:
+                logger->logNewLine("\n-------- Starting to solve with turn index duplicate state detection. -----------------\n");
+                DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
+            break;
         }
 
-        logger->logNewLine("Starting solve of shuffle\n" + line);
-        SolveCube(state, logger);
+        vector<string> lines = FileManagement::parseALlLines(path);
+
+        LookupTable::LoadAllLookupTables();
+
+        for (string line : lines) {
+            vector<Turn> shuffle = Turn::parseShuffle(line);
+            RubiksCubeState state = RubiksCubeState::InitialState().Copy();
+
+            for (Turn turn : shuffle) {
+                state.ApplyTurn(turn);
+            }
+
+            logger->logNewLine("Starting solve of shuffle\n" + line);
+            SolveCube(state, logger);
+        }
     }
 }
 
@@ -175,6 +225,15 @@ void GenerateLookupTable(int lookupTableIndex) {
         case 4: LookupTable::GenerateEdgePermutationLookupTable(); break;
         case 5: LookupTable::GenerateEdgeLookupTable(); break;
             
+        default: throw std::runtime_error("Provided lookup table index is invalid: " + lookupTableIndex);
+    }
+}
+
+void GenerateDuplciateStateLookupTable(int lookupTableIndex) {
+    switch (lookupTableIndex) {
+        case 0: DuplicateState::GenerateLookupTable(); break;
+        case 1: DuplicateState::GenerateTurnBasedLookupTable(); break;
+
         default: throw std::runtime_error("Provided lookup table index is invalid: " + lookupTableIndex);
     }
 }

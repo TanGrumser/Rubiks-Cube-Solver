@@ -24,9 +24,11 @@ std::mutex duplicateStateLookup;
 void EvaluateState(RubiksCubeState& state, char depth, Turn lastTurn, std::vector<Turn> exploredTurns, char maxDepth, vector<Turn> lastTurns); 
 
 namespace DuplicateState {
-    bool active = false;
+    Mode mode = Mode::OFF;
+    uint8_t maxDepth = 7;
     int foundDuplicates = 0;
 }
+
 
 bool DuplicateState::IsStateContained(StateIndex index) {
     return duplicateReachableStates2.find(index) != duplicateReachableStates2.end();
