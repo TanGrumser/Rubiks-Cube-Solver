@@ -49,11 +49,13 @@ void CommandLineHandler::start(int argc, char *argv[]) {
 
                 case 1:
                     DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
+                    DuplicateState::LoadDuplicateStateIndex();
                     answer = "Using state indexing for dulciate state detection.";
                 break;
 
                 case 2:
                     DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
+                    DuplicateState::LoadDuplicateStateTurnIndex();
                     answer = "Using turn indexing for dulciate state detection.";
                 break;
 
