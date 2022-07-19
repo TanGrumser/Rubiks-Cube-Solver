@@ -184,7 +184,7 @@ void solveShufflesFromFile(string path, Logger* logger) {
     
     //XXX this is used quick and dirty to compare dsd three times.
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
         switch(i) {
             case 0:
                 logger->logNewLine("\n-------- Starting to solve without duplicate state detection. -----------------\n");
@@ -192,15 +192,31 @@ void solveShufflesFromFile(string path, Logger* logger) {
             break;
             
             case 1:
-                logger->logNewLine("\n-------- Starting to solve with state index duplicate state detection. -----------------\n");
+                logger->logNewLine("\n-------- Starting to solve with state index duplicate state detection (max depth 7). -----------------\n");
                 DuplicateState::LoadDuplicateStateIndex();
                 DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
+                DuplicateState::maxDepth = 7;
             break;
             
             case 2:
-                logger->logNewLine("\n-------- Starting to solve with turn index duplicate state detection. -----------------\n");
+                logger->logNewLine("\n-------- Starting to solve with turn index duplicate state detection (max depth 7). -----------------\n");
                 DuplicateState::LoadDuplicateStateTurnIndex();
                 DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
+                DuplicateState::maxDepth = 7;
+            break;
+
+            case 3:
+                logger->logNewLine("\n-------- Starting to solve with state index duplicate state detection (max depth 8). -----------------\n");
+                DuplicateState::LoadDuplicateStateIndex();
+                DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
+                DuplicateState::maxDepth = 8;
+            break;
+            
+            case 4:
+                logger->logNewLine("\n-------- Starting to solve with turn index duplicate state detection (max depth 8). -----------------\n");
+                DuplicateState::LoadDuplicateStateTurnIndex();
+                DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
+                DuplicateState::maxDepth = 8;
             break;
         }
 
