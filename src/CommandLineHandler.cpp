@@ -181,60 +181,20 @@ void generateShufflesFile(string path, int numShuffles, int shuffleLenght) {
 }
 
 void solveShufflesFromFile(string path, Logger* logger) {
-    
-    //XXX this is used quick and dirty to compare dsd three times.
+    vector<string> lines = FileManagement::parseALlLines(path);
 
-    for (int i = 0; i < 5; i++) {
-        switch(i) {
-            case 0:
-                logger->logNewLine("\n-------- Starting to solve without duplicate state detection. -----------------\n");
-                DuplicateState::mode = DuplicateState::Mode::OFF;
-            break;
-            
-            case 1:
-                logger->logNewLine("\n-------- Starting to solve with state index duplicate state detection (max depth 7). -----------------\n");
-                DuplicateState::LoadDuplicateStateIndex();
-                DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
-                DuplicateState::maxDepth = 7;
-            break;
-            
-            case 2:
-                logger->logNewLine("\n-------- Starting to solve with turn index duplicate state detection (max depth 7). -----------------\n");
-                DuplicateState::LoadDuplicateStateTurnIndex();
-                DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
-                DuplicateState::maxDepth = 7;
-            break;
+    LookupTable::LoadAllLookupTables();
 
-            case 3:
-                logger->logNewLine("\n-------- Starting to solve with state index duplicate state detection (max depth 8). -----------------\n");
-                DuplicateState::LoadDuplicateStateIndex();
-                DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
-                DuplicateState::maxDepth = 8;
-            break;
-            
-            case 4:
-                logger->logNewLine("\n-------- Starting to solve with turn index duplicate state detection (max depth 8). -----------------\n");
-                DuplicateState::LoadDuplicateStateTurnIndex();
-                DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
-                DuplicateState::maxDepth = 8;
-            break;
+    for (string line : lines) {
+        vector<Turn> shuffle = Turn::parseShuffle(line);
+        RubiksCubeState state = RubiksCubeState::InitialState().Copy();
+
+        for (Turn turn : shuffle) {
+            state.ApplyTurn(turn);
         }
 
-        vector<string> lines = FileManagement::parseALlLines(path);
-
-        LookupTable::LoadAllLookupTables();
-
-        for (string line : lines) {
-            vector<Turn> shuffle = Turn::parseShuffle(line);
-            RubiksCubeState state = RubiksCubeState::InitialState().Copy();
-
-            for (Turn turn : shuffle) {
-                state.ApplyTurn(turn);
-            }
-
-            logger->logNewLine("Starting solve of shuffle\n" + line);
-            SolveCube(state, logger);
-        }
+        logger->logNewLine("Starting solve of shuffle\n" + line);
+        SolveCube(state, logger);
     }
 }
 

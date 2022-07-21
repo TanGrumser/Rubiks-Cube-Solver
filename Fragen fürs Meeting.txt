@@ -209,3 +209,13 @@ Reached states at depth 14 are 248
 
 Add this to compileOptions.txt to enable full edge lookup table usage.
 -D USE_FULL_EGDE_LT
+
+PyPlot (MatPlot Lib) für die Grafiken
+
+indizierung eines binary aenärer heap
+
+folklore 
+
+speedup paraleliesierung
+
+we also show with a simple parrallel impelemtnation that our appraoch can be 
