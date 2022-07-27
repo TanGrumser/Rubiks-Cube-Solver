@@ -92,8 +92,12 @@ void CommandLineHandler::start(int argc, char *argv[]) {
         }
     }
 
+    LookupTable::LoadEdgeLookupTable();
+    char distance = LookupTable::GetEdgeStateDistance(state);
+
+    std::cout << (int)distance << endl;
+
     /*
-    LookupTable::LoadE1LookupTable();
     int val = (int)LookupTable::GetE1StateDistance(state);
     std::cout << "val: " << val << endl;
     */
