@@ -1,5 +1,7 @@
+from logging import addLevelName
 from pickletools import uint8
 from tokenize import Number, String
+import matplotlib.pyplot as plt
 
 import re
 import sys
@@ -35,6 +37,55 @@ class Solve:
 
         return string
 
+def addlabels(x, y, labels):
+    for i in range(len(x)):
+        plt.text(x[i], y[i], labels[i], ha = 'center')
+
+def showDistanceDistributionRelative(solves: list[Solve]):
+    x = [13, 14, 15, 16, 17, 18, 19, 20]
+    y = [0, 0, 0, 0, 0, 0, 0, 0]
+    labels = []
+    percentages = []
+
+    for solve in solves:
+        y[solve.distance - 13] += 1
+
+    for count in y:
+        percentages.append(float(count) / float(len(solves)) * 100)
+        labels.append(str(round(float(count) / float(len(solves)) * 100, 2)) + "%")
+    
+    plt.bar(x, percentages)
+
+    plt.title("Distance Distribution Relative (5000 solves)")
+    #plt.margins(y=0.3)
+    plt.xlabel("distance")
+    plt.ylabel("probability (%)")
+    
+    addlabels(x, percentages, labels)
+
+    plt.show()
+
+def showDistanceDistributionAbsolute(solves: list[Solve]):
+    x = [13, 14, 15, 16, 17, 18, 19, 20]
+    y = [0, 0, 0, 0, 0, 0, 0, 0]
+    labels = []
+
+    for solve in solves:
+        y[solve.distance - 13] += 1
+
+    for count in y:
+        labels.append(count)
+    
+    plt.bar(x, y)
+
+    plt.title("Distance Distribution Absoulte (5000 solves)")
+
+    plt.xlabel("distance")
+    plt.ylabel("occuerences")
+    
+    addlabels(x, y, labels)
+
+    plt.show()
 
 def main():
     index = 0
@@ -59,7 +110,7 @@ def main():
         time += solve.totalTime
         states += solve.totalStates
 
-    print(float(states) / float(time))
+    showDistanceDistributionRelative(solves)
         
 
 
