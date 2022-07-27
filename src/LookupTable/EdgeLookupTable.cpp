@@ -41,7 +41,7 @@ void LookupTable::LoadEdgeLookupTable() {
 }
 
 char LookupTable::GetEdgeStateDistance(RubiksCubeState& state) {
-    int index = GetEdgeLookupIndex(state);
+    uint64_t index = GetEdgeLookupIndex(state);
     return edgeLookupTable[index];
 }
 

@@ -20,6 +20,7 @@ void solveShufflesFromFile(string path, Logger* logger);
 void GenerateLookupTable(int table);
 void PrintHelp();
 void generateShufflesFile(string path, int numShuffles, int shuffleLenght);
+void GenerateDuplciateStateLookupTable(int lookupTableIndex);
 
 void CommandLineHandler::start(int argc, char *argv[]) {
     RubiksCubeState state = RubiksCubeState::InitialState().Copy();
@@ -28,12 +29,45 @@ void CommandLineHandler::start(int argc, char *argv[]) {
 
     //Parse all command line arguments.
     for (int i = 1; i < argc; i++) {
+        if (((string) argv[i]).compare("-dsmd") == 0) {
+            DuplicateState::maxDepth = std::atoi(argv[i + 1]);
+        }
+
         if (((string) argv[i]).compare("--generateLookupTable") == 0 || ((string) argv[i]).compare("-glt") == 0) {
             GenerateLookupTable(std::atoi(argv[i + 1]));
         }
 
+        if (((string) argv[i]).compare("--generateDuplicateStateLookupTable") == 0 || ((string) argv[i]).compare("-gdslt") == 0) {
+            GenerateDuplciateStateLookupTable(std::atoi(argv[i + 1]));
+        }
+
         if (((string) argv[i]).compare("--ds") == 0) {
-            DuplicateState::active = true;
+            int index = std::atoi(argv[i + 1]);
+            string answer;
+            
+            switch (index) {
+                case 0:
+                    DuplicateState::mode = DuplicateState::Mode::OFF;
+                    answer = "Deactivated duplcite State detetction.";
+                break;
+
+                case 1:
+                    DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
+                    DuplicateState::LoadDuplicateStateIndex();
+                    answer = "Using state indexing for dulciate state detection.";
+                break;
+
+                case 2:
+                    DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
+                    DuplicateState::LoadDuplicateStateTurnIndex();
+                    answer = "Using turn indexing for dulciate state detection.";
+                break;
+
+            default:
+                break;
+            }
+
+            logger->logNewLine(answer);
         }
 
         if (((string) argv[i]).compare("--help") == 0) {
@@ -56,7 +90,6 @@ void CommandLineHandler::start(int argc, char *argv[]) {
         if (((string) argv[i]).compare("-threads") == 0) {
             std::cout << "Set threads" << endl;
             Solver::threadCount = std::atoi(argv[i + 1]);
-            //LookupTable::threadCount = std::atoi(argv[i + 1]);
         }
 
         if (((string) argv[i]).compare("-loadFile") == 0) {
@@ -91,23 +124,12 @@ void CommandLineHandler::start(int argc, char *argv[]) {
             SolveCube(state, logger);
         }
     }
-
-    LookupTable::LoadEdgeLookupTable();
-    char distance = LookupTable::GetEdgeStateDistance(state);
-
-    std::cout << (int)distance << endl;
-
-    /*
-    int val = (int)LookupTable::GetE1StateDistance(state);
-    std::cout << "val: " << val << endl;
-    */
 }
 
 void SolveCube(RubiksCubeState& state, Logger* logger) {
     vector<Turn> solution;
     StopWatch timer;
     LookupTable::LoadAllLookupTables();
-    DuplicateState::LoadDuplicateStateIndex();
 
     timer.StartTimer();
 
@@ -185,6 +207,15 @@ void GenerateLookupTable(int lookupTableIndex) {
         case 4: LookupTable::GenerateEdgePermutationLookupTable(); break;
         case 5: LookupTable::GenerateEdgeLookupTable(); break;
             
+        default: throw std::runtime_error("Provided lookup table index is invalid: " + lookupTableIndex);
+    }
+}
+
+void GenerateDuplciateStateLookupTable(int lookupTableIndex) {
+    switch (lookupTableIndex) {
+        case 0: DuplicateState::GenerateLookupTable(); break;
+        case 1: DuplicateState::GenerateTurnBasedLookupTable(); break;
+
         default: throw std::runtime_error("Provided lookup table index is invalid: " + lookupTableIndex);
     }
 }

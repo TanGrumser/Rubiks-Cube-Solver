@@ -13,7 +13,7 @@ void EvaluateStateTurnIndex(RubiksCubeState& state, char depth, Turn lastTurn, s
 
 
 bool DuplicateState::PruneByTurnIndex(array<Turn, 50> moves, int size) {
-    if (size > 7) {
+    if (size > 8) {
         return false;
     }
 
@@ -30,7 +30,7 @@ void DuplicateState::LoadDuplicateStateTurnIndex() {
 
 void DuplicateState::GenerateTurnBasedLookupTable() {
     RubiksCubeState& initialState = RubiksCubeState::InitialState().Copy();
-    const int MAX_DEPTH = 7;
+    const int MAX_DEPTH = DuplicateState::maxDepth;
     vector<Turn> lastTurns;
     duplicateTurnIndexStates = (char*)malloc(sizeof(char) * DuplicateState::NUMBER_OF_PATHS_AT_DEPTH[MAX_DEPTH]);
 

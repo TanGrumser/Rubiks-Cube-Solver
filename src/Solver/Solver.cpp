@@ -40,6 +40,7 @@ int Solver::GetDistanceHeuristic(RubiksCubeState& from, int bound) {
         if (estMoves > max)
         max = estMoves;
 
+        // E1 State Lookup
         estMoves = LookupTable::GetE1StateDistance(from);
 
         if (estMoves > bound)
@@ -47,7 +48,7 @@ int Solver::GetDistanceHeuristic(RubiksCubeState& from, int bound) {
 
         if (estMoves > max)
         max = estMoves;
-        
+
         // Edge Permutation Lookup
         estMoves = LookupTable::GetEdgePermutationStateDistance(from);
 

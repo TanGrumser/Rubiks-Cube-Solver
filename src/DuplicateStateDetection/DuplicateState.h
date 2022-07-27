@@ -6,11 +6,18 @@
 #include "../Model/RubiksCubeState.h"
 #include "../Model/StateIndex.h"
 #include "../Utils/Constants.h"
+#include "../Model/RubiksCubeStateShift.h"
 
 namespace DuplicateState {
     
-    const string DUPLICATE_STATE_PATH = "LookupTables\\duplicateStates";
-    const string TURN_INDEX_DUPLICATE_STATE_PATH = "LookupTables\\duplicateStatesTurnIndex";
+    enum Mode {
+        OFF,
+        STATE_INDEX,
+        TURN_INDEX
+    };
+
+    const string DUPLICATE_STATE_PATH = "LookupTables/duplicateStates";
+    const string TURN_INDEX_DUPLICATE_STATE_PATH = "LookupTables/duplicateStatesTurnIndex";
 
     const uint64_t NUMBER_OF_PATHS_AT_DEPTH[10] = {
         1ull,
@@ -25,7 +32,8 @@ namespace DuplicateState {
         1ull + 18ull + 18ull * 18ull + 18ull * 18ull * 18ull + 18ull * 18ull * 18ull * 18ull + 18ull * 18ull * 18ull * 18ull * 18ull + 18ull * 18ull * 18ull * 18ull * 18ull * 18ull + 18ull * 18ull * 18ull * 18ull * 18ull * 18ull * 18ull + 18ull * 18ull * 18ull * 18ull * 18ull * 18ull * 18ull * 18ull + 18ull * 18ull * 18ull * 18ull * 18ull * 18ull * 18ull * 18ull * 18ull
     };
 
-    extern bool active;
+    extern Mode mode;
+    extern uint8_t maxDepth;
     extern int foundDuplicates;
 
     void GenerateLookupTable();
@@ -37,4 +45,18 @@ namespace DuplicateState {
     bool PruneByTurnIndex(array<Turn, 50> moves, int size);
     bool IsStateContained(StateIndex index);
     void ResetAllStates();
+
+    inline bool PruneState(RubiksCubeState& state, RubiksCubeStateShift shift, uint8_t depth, array<Turn, 50> moves) {
+        if (depth > maxDepth) {
+            return false;
+        }
+        
+        switch (mode) {
+            case Mode::OFF:         return false;
+            case Mode::STATE_INDEX: return WasStateReached(shift.GetShiftedState(state), depth);
+            case Mode::TURN_INDEX:  return PruneByTurnIndex(moves, depth);
+
+            default: return false;
+        }
+    }
 }

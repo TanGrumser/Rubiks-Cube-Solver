@@ -53,6 +53,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
     vector<array<Turn, 50>*> moves(Solver::threadCount, new array<Turn, 50>);
     array<Turn, 50> solutionMoves;
     StopWatch timer;
+    duplicatesFound = 0;
 
     shift = new RubiksCubeStateShift(startState);
 
@@ -93,7 +94,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
             "IDA* Finished bound " +  to_string(bound) + ". " + 
             "Elapsed time: " + timer.GetFormattedTimeInSeconds() + ". " + 
             "Traversed states at this bound: " + to_string(traversedStatesAtDepth) +
-            (DuplicateState::active ? " duplicate States found: " + to_string(duplicatesFound) : "")
+            (DuplicateState::mode != DuplicateState::Mode::OFF ? " duplicate States found: " + to_string(duplicatesFound) : "")
         );
 
         bound = newBound;
@@ -152,7 +153,7 @@ void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* moves, i
             cubeCopy.ApplyTurn(move);
 
             // if this state was reached via another path, we don't need to traverse it any further
-            if (DuplicateState::active && curNode.depth < 7 && DuplicateState::WasStateReached(shift->GetShiftedState(cubeCopy), curNode.depth + 1)) {
+            if (DuplicateState::PruneState(cubeCopy, *shift, curNode.depth + 1, *moves)) {
               duplicatesFound++;
               continue;
             }

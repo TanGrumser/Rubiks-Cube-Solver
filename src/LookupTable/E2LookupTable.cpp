@@ -23,12 +23,13 @@ void LookupTable::GenerateE2LookupTable() {
     LookupTableGenerator generator(
         BIG_EDGE_STATES_COUNT, 
         GetE2LookupIndex,
-        GetE2StateFromIndex, // unused, since it won't work
+        GetE2StateFromIndex,
         &logger
     );
 
-    generator.StartLogger(100);
-    generator.PopulateWithIterativeDeepeningDepthFirstSearch(10, 6);
+    generator.StartLogger(1000);
+    generator.PopulateWithIterativeDeepeningDepthFirstSearch(7, 6);
+    generator.PopulateWithInverseStateIndexSearch(8);
     generator.WriteLookupTableToFile(E2_LOOKUP_TABLE_PATH);
 }
 
@@ -39,11 +40,11 @@ char LookupTable::GetE2StateDistance(RubiksCubeState& state) {
 
 uint64_t LookupTable::GetE2LookupIndex(RubiksCubeState& state) {
     int rotationIndex = 0;
-    array<unsigned int , 7> edgePerm;
+    array<unsigned, 7> edgePerm;
     
     // TODO this can be optimized by couting the entries in edgePerm set and stopping if all edges have been found already.
     for (int i = 0; i < 12; i++) {
-        unsigned int& edgeIndex = state.edges[i].index;
+        unsigned& edgeIndex = state.edges[i].index;
 
         if (edgeIndex > 4) {
             edgePerm[edgeIndex - 5] = i;
@@ -51,7 +52,7 @@ uint64_t LookupTable::GetE2LookupIndex(RubiksCubeState& state) {
         }
     }
 
-    int permutaionIndex = LookupTable::eGroupIndexer.rank(edgePerm);
+    unsigned permutaionIndex = LookupTable::eGroupIndexer.rank(edgePerm);
 
     return permutaionIndex * BIG_EDGE_ROTATION_COUNT + rotationIndex;
 }
