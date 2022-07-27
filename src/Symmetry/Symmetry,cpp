@@ -1,0 +1,7 @@
+#include "Symmetry.h"
+
+#include "../Model/RubiksCubeState.h"
+
+void Symmetry::ApplyTo(RubicsCubeState& state) {
+    
+}

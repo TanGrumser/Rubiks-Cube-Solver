@@ -31,6 +31,7 @@ void CommandLineHandler::start(int argc, char *argv[]) {
     for (int i = 1; i < argc; i++) {
         if (((string) argv[i]).compare("-dsmd") == 0) {
             DuplicateState::maxDepth = std::atoi(argv[i + 1]);
+            std::cout << "Set max depth bound for duplicate state detection to" << DuplicateState::maxDepth << std::endl;
         }
 
         if (((string) argv[i]).compare("--generateLookupTable") == 0 || ((string) argv[i]).compare("-glt") == 0) {

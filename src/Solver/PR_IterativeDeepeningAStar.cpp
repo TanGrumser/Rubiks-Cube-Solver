@@ -57,13 +57,14 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
 
     shift = new RubiksCubeStateShift(startState);
 
-    timer.StartTimer();
 
     while (!*solved) {
         std::vector<std::thread> threads(Solver::threadCount);
         traversedStatesAtDepth = 0;
         int* newBounds = new int[Solver::threadCount];
         int newBound = 0xFF;
+        
+        timer.StartTimer();
 
         for (int i = 0; i < Solver::threadCount; i++) {
           moves[i] = new array<Turn, 50>();
