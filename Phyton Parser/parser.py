@@ -1,7 +1,7 @@
 from logging import addLevelName
 from pickletools import uint8
 from tokenize import Number, String
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 import re
 import sys
@@ -131,29 +131,11 @@ def showDistanceDistributionAbsolute(solves: list[Solve]):
     plt.show()
 
 def main():
-    index = 0
-
-    if (len(sys.argv) > 1):
-        index = int(sys.argv[1])
-
     solves = collectData()
-    
-    solveLenghts = []
-    lengthsCount = {}
-    
-    for solve in solves:
-        lengthsCount[solve.distance] = lengthsCount.setdefault(solve.distance, 0) + 1
-        solveLenghts.append(solve.distance)
-    
-    shortestSolves = getSolvesWithDistance(14, solves)
-    states = 0
-    time = 0.0
 
-    for solve in shortestSolves:
-        time += solve.totalTime
-        states += solve.totalStates
-
-    showDistanceDistributionRelative(solves)
+    with open('shuffleSolutionPairs.txt', 'a') as the_file:
+        for solve in solves:
+            the_file.write(solve.shuffle + solve.solution)
         
 
 

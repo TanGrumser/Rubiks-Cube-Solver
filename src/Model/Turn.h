@@ -90,6 +90,8 @@ struct Turn {
             shuffleString.erase(0, pos + 1);
         }
 
+        turns.push_back(Turn::Parse(shuffleString));
+
         return turns;
     }
 

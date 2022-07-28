@@ -20,6 +20,8 @@
 
 using std::vector;
 
+const int SOLVED = 0xFF;
+const int UNINITIALIZED = 0xFE;
 
 
 int Search(vector<RubiksCubeState*>* path, int depth, int bound, Turn lastTurn, int* minBound, vector<Turn> nextTurns, bool* isSolutionFound);
@@ -62,7 +64,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
         std::vector<std::thread> threads(Solver::threadCount);
         traversedStatesAtDepth = 0;
         int* newBounds = new int[Solver::threadCount];
-        int newBound = 0xFF;
+        int newBound = UNINITIALIZED;
         
         timer.StartTimer();
 
@@ -83,7 +85,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
         for (int i = 0; i < Solver::threadCount; i++) {
             threads[i].join();
 
-            if (newBounds[i] == 0xFF) {
+            if (newBounds[i] == SOLVED) {
               solutionMoves = *moves[i];
               *solved = true;
             } else if (newBounds[i] < newBound) {
@@ -138,7 +140,7 @@ void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* moves, i
         (*moves)[curNode.depth - 1] = curNode.move;
 
       if (curNode.depth == bound && curNode.cube.Equals(RubiksCubeState::InitialState())) {
-          *nextBound = 0xFF;
+          *nextBound = SOLVED;
           *solved = true;
           break;
       } else {
