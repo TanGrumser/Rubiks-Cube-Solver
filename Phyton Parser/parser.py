@@ -62,7 +62,50 @@ def showDistanceDistributionRelative(solves: list[Solve]):
     plt.ylabel("probability (%)")
     
     addlabels(x, percentages, labels)
+    plt.show()
 
+def showStatesAtDepth(solves: list[Solve]):
+    depthValues = [[] for x in range(7)]
+    pos = [14, 15, 16, 17, 18, 19, 20]
+    x = []
+    y = []
+    labels = []
+
+    for solve in solves:
+        x.append(solve.distance)
+        y.append(solve.totalStates)
+        depthValues[solve.distance - 14].append(solve.totalStates)
+
+    #plt.scatter(x, y)
+
+    plt.title("States at Depth")
+    plt.xlabel("Distance (moves)")
+    plt.ylabel("Traversed States")
+    
+    #addlabels(x, percentages, labels)
+    plt.boxplot(depthValues, positions=pos)
+    plt.show()
+
+def showTimesAtDepth(solves: list[Solve]):
+    depthValues = [[] for x in range(7)]
+    pos = [14, 15, 16, 17, 18, 19, 20]
+    x = []
+    y = []
+    labels = []
+
+    for solve in solves:
+        x.append(solve.distance)
+        y.append(solve.totalTime)
+        depthValues[solve.distance - 14].append(solve.totalTime)
+
+    #plt.scatter(x, y, c="grey", s=150, edgecolors='none', cmap = 'jet', marker='s')
+
+    plt.title("Runtimes at Depth")
+    plt.xlabel("Distance (moves)")
+    plt.ylabel("Runtime (seconds)")
+    
+    #addlabels(x, percentages, labels)
+    plt.boxplot(depthValues, positions=pos)
     plt.show()
 
 def showDistanceDistributionAbsolute(solves: list[Solve]):
