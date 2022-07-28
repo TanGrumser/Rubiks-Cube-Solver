@@ -127,7 +127,7 @@ void CommandLineHandler::start(int argc, char *argv[]) {
         }
     }
 
-    parseFile(LookupTable::E1_LOOKUP_TABLE_PATH);
+    parseFile(LookupTable::EDGE_LOOKUP_TABLE_PATH);
 }
 
 void SolveCube(RubiksCubeState& state, Logger* logger) {
