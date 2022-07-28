@@ -13,6 +13,7 @@
 #include "Utils/Logging/Logger.h"
 #include "Utils/Logging/ConsoleLogger.h"
 #include "Utils/Logging/FileLogger.h"
+#include "Utils/robin-map/robin_map.h"
 
 void SolveCube(RubiksCubeState& state, Logger* logger);
 void parseFile(std::string path);
@@ -126,7 +127,7 @@ void CommandLineHandler::start(int argc, char *argv[]) {
         }
     }
 
-    parseFile(LookupTable::EDGE_LOOKUP_TABLE_PATH);
+    parseFile(LookupTable::E1_LOOKUP_TABLE_PATH);
 }
 
 void SolveCube(RubiksCubeState& state, Logger* logger) {
@@ -227,25 +228,29 @@ void parseFile(std::string path) {
     std::cout << "Parsing file" << std::endl;
     uint64_t* size = new uint64_t();
     char* lookupTable = FileManagement::LoadBufferFromFile(path, size);
-
-    std::vector<int> occurences(12, 0);
+    tsl::robin_map<char, uint64_t> occurencesMap;
+    
+    std::vector<int> occurences(15, 0);
     std::cout << "size: " << *size << endl;
     
-    for (int i = 0; i < *size; i++) {        
-        if (lookupTable[i] != -1) {
-            occurences[lookupTable[i]]++;
+    for (uint64_t i = 0; i < *size; i++) {
+        if (occurencesMap.find(lookupTable[i]) == occurencesMap.end()) {
+            occurencesMap[lookupTable[i]] = 0;
         }
-        
+
+        occurencesMap[lookupTable[i]]++;
     }
 
-    int sum = 0;
+    uint64_t sum = 0;
 
-    for (int i = 0; i < 12; i++) {
-        std::cout << occurences[i] << endl;
-        sum+= occurences[i];
+    for (const std::pair<char, uint64_t> occurence : occurencesMap) {
+        std::cout << (int)occurence.first << " occured " << occurence.second << endl;
+
+        if (14 >= occurence.first)
+        sum += occurence.second;
     }
 
-    std::cout << "sum: " << sum << endl;
+    std::cout << "sum of values below 14: " << sum << endl;
 }
 
 void PrintHelp() {
