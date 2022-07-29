@@ -9,10 +9,13 @@
 #include "LookupTable/LookupTable.h"
 #include "Utils/FileManagement.h"
 
+void checkShuffleSolvePair(std::string path);
+
+
 int main(int argc, char *argv[]) {
 
     CommandLineHandler::start(argc, argv);
-
+    
     return 0;
 }
 
@@ -25,33 +28,26 @@ void checkShuffleSolvePair(std::string path) {
 
     std::cout << "Unsolved at " << lines.size() << endl;
 
-    for (int i = 0; i < 4; i += 2) {
+    for (int i = 0; i < lines.size(); i += 2) {
         std::vector<Turn> shuffle = Turn::parseShuffle(lines[i]);
         std::vector<Turn> solution = Turn::parseShuffle(lines[i + 1]);
 
         RubiksCubeState cube = RubiksCubeState::InitialState().Copy();
 
         for (Turn turn : shuffle) {
-            std::cout << turn.ToString() << " ";
             cube.ApplyTurn(turn);
         }
-
-        std::cout << endl;
 
         for (Turn turn : solution) {
-            std::cout << turn.ToString() << " ";
             cube.ApplyTurn(turn);
         }
-        std::cout << endl;
         
         total++;
 
         if (!cube.Equals(RubiksCubeState::InitialState())) {
             unsolved++;
-            std::cout << "unsolved!" << endl;
         } else {
             solved++;
-            std::cout << "unsolved!" << endl;
         }
     }
 
