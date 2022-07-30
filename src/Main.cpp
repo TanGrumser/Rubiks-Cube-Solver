@@ -14,8 +14,8 @@ void checkShuffleSolvePair(std::string path);
 
 int main(int argc, char *argv[]) {
 
-    CommandLineHandler::start(argc, argv);
-    
+    //CommandLineHandler::start(argc, argv);
+    checkShuffleSolvePair("dsResults.txt");
     return 0;
 }
 

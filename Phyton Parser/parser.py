@@ -133,6 +133,9 @@ def showDistanceDistributionAbsolute(solves: list[Solve]):
 def main():
     solves = collectData()
 
+    #for solve in solves:
+    #    if solve.distance == 14:
+    #        print(solve.shuffle + "\n" + solve.solution)
     with open('dsResults.txt', 'a') as the_file:
         for solve in solves:
             the_file.write(solve.shuffle + solve.solution)
@@ -149,7 +152,7 @@ def getSolvesWithDistance(distance: int, solves: list[Solve]) -> list[Solve]:
     return filteredSolves
 
 def collectData() -> list[Solve]:
-    file = open("dsTestLog.txt", "r")
+    file = open("../newFiveLog.txt", "r")
     lines = file.readlines()
     solves = []
 
