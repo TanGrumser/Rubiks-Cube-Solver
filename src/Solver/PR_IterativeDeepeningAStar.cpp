@@ -27,8 +27,8 @@ const int UNINITIALIZED = 0xFE;
 int Search(vector<RubiksCubeState*>* path, int depth, int bound, Turn lastTurn, int* minBound, vector<Turn> nextTurns, bool* isSolutionFound);
 vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubiksCubeState*> stateSequence);
 unsigned long long traversedStates = 0;
-std::atomic_int32_t traversedStatesAtDepth;
-std::atomic_int32_t duplicatesFound(0);
+std::atomic_int64_t traversedStatesAtDepth;
+std::atomic_int64_t duplicatesFound(0);
 
 RubiksCubeStateShift* shift;
 
