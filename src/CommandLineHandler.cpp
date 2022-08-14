@@ -196,16 +196,45 @@ void solveShufflesFromFile(string path, Logger* logger) {
 
     LookupTable::LoadAllLookupTables();
 
-    for (string line : lines) {
-        vector<Turn> shuffle = Turn::parseShuffle(line);
-        RubiksCubeState state = RubiksCubeState::InitialState().Copy();
+    for (int i = 0; i < 4; i++) {
+        switch (i) {
+        case 0: 
+            logger->logNewLine("Shifted State Index Duplicate State Detexction (Max Depth: 7)");
+            DuplicateState::LoadDuplicateStateIndex();
+            DuplicateState::maxDepth = 7;
+        break;
 
-        for (Turn turn : shuffle) {
-            state.ApplyTurn(turn);
+        case 1: 
+            logger->logNewLine("Shifted State Index Duplicate State Detexction (Max Depth: 8)");
+            DuplicateState::maxDepth = 8;
+        break;
+
+        case 2: 
+            logger->logNewLine("Turn Index Duplicate State Detexction (Max Depth: 7)");
+            DuplicateState::LoadDuplicateStateTurnIndex();
+            DuplicateState::maxDepth = 7;
+        break;
+
+        case 3: 
+            logger->logNewLine("Turn Index Duplicate State Detexction (Max Depth: 8)");
+            DuplicateState::maxDepth = 8;
+        break;
+        
+        default:
+            break;
         }
 
-        logger->logNewLine("Starting solve of shuffle\n" + line);
-        SolveCube(state, logger);
+        for (int j = 0; j < 100; j++) {
+            vector<Turn> shuffle = Turn::parseShuffle(lines[j]);
+            RubiksCubeState state = RubiksCubeState::InitialState().Copy();
+
+            for (Turn turn : shuffle) {
+                state.ApplyTurn(turn);
+            }
+
+            logger->logNewLine("Starting solve of shuffle\n" + lines[j]);
+            SolveCube(state, logger);
+        }
     }
 }
 
