@@ -11,11 +11,51 @@
 
 void checkShuffleSolvePair(std::string path);
 
+int GetPermutationIndex(array<unsigned, 8> perm) {
+    int result = 0;
+
+    const int coefficients[] = {
+        1 * 2 * 3 * 4 * 5 * 6 * 7, 
+        1 * 2 * 3 * 4 * 5 * 6,
+        1 * 2 * 3 * 4 * 5,
+        1 * 2 * 3 * 4,
+        1 * 2 * 3,
+        1 * 2,
+        1
+    };
+
+    for (int i = 0; i < 8 - 1; i++) {
+        int position = 0;
+
+        // i is the index of the piece we're looking for, j is the position of the piece.
+        for (int j = 0; j < 8; j++) {
+            if (perm[j] == i) {
+                result += position * coefficients[i];
+                result += position * cornerPermutationCoefficients[i];
+                break;
+            }
+
+            if (i < perm[j]) {
+                position++;
+            }
+        }
+    }
+
+    return result;
+}
 
 int main(int argc, char *argv[]) {
+    /*
+    PermutationIndexer<8> indexex;
 
-    //CommandLineHandler::start(argc, argv);
-    checkShuffleSolvePair("dsResults.txt");
+    array<unsigned, 8> perm = {4,1,2,0,7,5,6,3};
+
+    std::cout << "old method yields: " << GetPermutationIndex(perm) << endl;
+    std::cout << "new method yields: " << indexex.rank(perm) << endl;
+
+    */
+    CommandLineHandler::start(argc, argv);
+    //checkShuffleSolvePair("fiveResults.txt");
     return 0;
 }
 

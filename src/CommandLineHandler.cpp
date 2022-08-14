@@ -64,6 +64,11 @@ void CommandLineHandler::start(int argc, char *argv[]) {
                     DuplicateState::LoadDuplicateStateTurnIndex();
                     answer = "Using turn indexing for dulciate state detection.";
                 break;
+                
+                case 3:
+                    DuplicateState::mode = DuplicateState::Mode::HASH_TABLE;
+                    answer = "Storing every node visited in hashtable.";
+                break;
 
             default:
                 break;
@@ -137,6 +142,10 @@ void SolveCube(RubiksCubeState& state, Logger* logger) {
 
     logger->logNewLine("Starting to solve cube with IDA*.");
     
+    #if SORT_SUCCESSORS
+    logger->logNewLine("Sorting successors.");
+    #endif
+
     solution = Solver::PR_IterativeDeepeningAStar(state, logger); 
 
     logger->logNewLine("Time required: " + timer.GetFormattedTimeInSeconds());

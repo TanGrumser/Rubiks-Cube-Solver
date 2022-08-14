@@ -1,10 +1,12 @@
 from logging import addLevelName
 from pickletools import uint8
 from tokenize import Number, String
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 import re
 import sys
+
+from numpy import may_share_memory
 
 
 class Entry:
@@ -37,6 +39,42 @@ class Solve:
 
         return string
 
+def getMedianOfStates(solves: list[Solve]):
+    solves.sort(key=lambda x: x.totalStates)
+    return solves[int(len(solves) / 2)].totalStates
+
+def getMinMaxOfStates(solves: list[Solve]):
+    solves.sort(key=lambda x: x.totalStates)
+    return solves[0].totalStates, solves[len(solves) - 1].totalStates
+
+def getAverageOfStates(solves: list[Solve]):
+    sum = 0
+    for solve in solves:
+        sum += solve.totalStates
+    return sum / len(solves)
+
+def getAverageOfDistance(solves: list[Solve]):
+    sum = 0
+    for solve in solves:
+        sum += solve.distance
+    
+    return float(sum) / float(len(solves))
+
+def getMedianOfDistance(solves: list[Solve]):
+    solves.sort(key=lambda x: x.distance)
+    return solves[int(len(solves) / 2)].distance
+
+def getMedianOfTime(solves: list[Solve]):
+    solves.sort(key=lambda x: x.totalTime)
+    return solves[int(len(solves) / 2)].totalTime
+
+def getAverageOfTime(solves: list[Solve]):
+    sum = 0.0
+    for solve in solves:
+        sum += solve.totalTime
+    
+    return float(sum) / float(len(solves))
+
 def addlabels(x, y, labels):
     for i in range(len(x)):
         plt.text(x[i], y[i], labels[i], ha = 'center')
@@ -51,15 +89,15 @@ def showDistanceDistributionRelative(solves: list[Solve]):
         y[solve.distance - 13] += 1
 
     for count in y:
-        percentages.append(float(count) / float(len(solves)) * 100)
-        labels.append(str(round(float(count) / float(len(solves)) * 100, 2)) + "%")
+        percentages.append(float(count) / float(len(solves)))
+        labels.append(str(round(float(count) / float(len(solves)), 2)) + "")
     
     plt.bar(x, percentages)
 
     plt.title("Distance Distribution Relative (5000 solves)")
     #plt.margins(y=0.3)
     plt.xlabel("distance")
-    plt.ylabel("probability (%)")
+    plt.ylabel("density")
     
     addlabels(x, percentages, labels)
     plt.show()
@@ -130,15 +168,44 @@ def showDistanceDistributionAbsolute(solves: list[Solve]):
 
     plt.show()
 
-def main():
-    solves = collectData()
+def printTable(solves : list[Solve]):
+    solves.sort(key=lambda x: x.distance)
+    for solve in solves:
+        print(str(solve.distance) + " & " + str(solve.totalStates) + " & " + str(round(solve.totalTime, 2)))
 
+def main():
+    solves = collectData("newFiveLogNoDuplicates.txt")
+    solvesDD = collectData("fiveLogDs1Dsmd7.txt")
+
+    sameLenght = 0
+    
+    for i in range(len(solvesDD)):
+        if solves[i].distance != solvesDD[i].distance:
+            print(i)
+            break
+
+    #print(sameLenght)
+
+    #print(getMedianOfTime(solves))
+    #print(getAverageOfTime(solves))
+    #print(getMedianOfStates(solves))
+    #print(getAverageOfStates(solves))
+    #print(getAverageOfDistance(solves))
+    #print(getMedianOfDistance(solves))
+    #min, max = getMinMaxOfStates(solves)
+    #print(min, max)
+    #showDistanceDistributionAbsolute(solves)
+
+    #printTable(solves)
+
+    #print("minmax: " + str(min) + ", " + str(max))
     #for solve in solves:
     #    if solve.distance == 14:
     #        print(solve.shuffle + "\n" + solve.solution)
-    with open('dsResults.txt', 'a') as the_file:
-        for solve in solves:
-            the_file.write(solve.shuffle + solve.solution)
+    #with open('fiveResults.txt', 'a') as the_file:
+    #    for solve in solves:
+    #        the_file.write(solve.shuffle + solve.solution)
+
         
 
 
@@ -151,8 +218,8 @@ def getSolvesWithDistance(distance: int, solves: list[Solve]) -> list[Solve]:
 
     return filteredSolves
 
-def collectData() -> list[Solve]:
-    file = open("../newFiveLog.txt", "r")
+def collectData(path) -> list[Solve]:
+    file = open(path, "r")
     lines = file.readlines()
     solves = []
 

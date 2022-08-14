@@ -29,34 +29,67 @@ namespace DuplicateState {
     int foundDuplicates = 0;
 }
 
+tsl::robin_map<StateIndex, int, StateIndexHasher> testHashTable;
 
 bool DuplicateState::IsStateContained(StateIndex index) {
     return duplicateReachableStates2.find(index) != duplicateReachableStates2.end();
 }
 
+bool DuplicateState::PruneWithHashTable(StateIndex index, int depth) {
+    if (testHashTable.find(index) != testHashTable.end()) {
+
+        // we check if it was already reached in the search with the current max depth and return if so, 
+        // since all following states will be processed already.
+        
+        //std::cout << testHashTable[index] << std::endl;
+        if (testHashTable[index] <= depth) {
+            return true;
+        } else {
+            // if it hasn't been reached in the current search we set it's flag, so no other path will process follwing states again and continiue.
+            duplicateStateLookup.lock();
+            testHashTable[index] = depth;
+        }
+    } else {
+        duplicateStateLookup.lock();
+        testHashTable[index] = depth;
+    }
+
+    duplicateStateLookup.unlock();
+    //duplicateStateLookup.unlock();
+
+    return false;
+}
+
 bool DuplicateState::WasStateReached(StateIndex index, int depth) {
     if (duplicateReachableStates2.find(index) != duplicateReachableStates2.end()) {
-        duplicateStateLookup.lock();
+        //duplicateStateLookup.lock();
 
         // we check if it was already reached in the search with the current max depth and return if so, 
         // since all following states will be processed already.
         if (duplicateReachableStates2[index] <= depth) {
-            duplicateStateLookup.unlock();
+            //duplicateStateLookup.unlock();
             return true;
         } else {
             // if it hasn't been reached in the current search we set it's flag, so no other path will process follwing states again and continiue.
             duplicateReachableStates2[index] = depth;
         }
 
-        duplicateStateLookup.unlock();
+        //duplicateStateLookup.unlock();
     }
 
     return false;
 }
 
 void DuplicateState::ResetAllStates() {
-    for(auto it = duplicateReachableStates2.begin(); it != duplicateReachableStates2.end(); ++it) {
-        it.value() = 100;
+
+    if (mode == Mode::HASH_TABLE) {
+        for(auto it = testHashTable.begin(); it != testHashTable.end(); ++it) {
+            it.value() = 100;
+        }
+    } else {
+        for(auto it = duplicateReachableStates2.begin(); it != duplicateReachableStates2.end(); ++it) {
+            it.value() = 100;
+        }
     }
 }
 

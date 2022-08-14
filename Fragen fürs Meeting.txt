@@ -129,8 +129,6 @@ kcachegrind
 Big Edge Lookup Table entries
 
 
-
-
 1
 15
 191
@@ -148,18 +146,18 @@ sum: 510935040
 
 Corners: 
 
-1
-18
-243
-2874
-28000
-205416
-1168516
-5402628
-20776176
-45391616
-15139616
-64736
+    1
+    18
+    243
+    2874
+    28000
+    205416
+    1168516
+    5402628
+    20776176
+    45391616
+    15139616
+    64736
 
 Egde permutations
 
@@ -191,21 +189,21 @@ kcachegrind
 
 Egde lookup table generation
 
-Reached states at depth 0 are 1
-Reached states at depth 1 are 18
-Reached states at depth 2 are 243
-Reached states at depth 3 are 3240
-Reached states at depth 4 are 42807
-Reached states at depth 5 are 555866
-Reached states at depth 6 are 7070103
-Reached states at depth 7 are 87801812
-Reached states at depth 8 are 1050559626
-Reached states at depth 9 are 11588911021
-Reached states at depth 10 are 110409721989
-Reached states at depth 11 are 552734197682
-Reached states at depth 12 are 304786076626
-Reached states at depth 13 are 330335518
-Reached states at depth 14 are 248
+Reached states at depth 0 are 1 + 
+Reached states at depth 1 are 18 + 
+Reached states at depth 2 are 243 + 
+Reached states at depth 3 are 3240 + 
+Reached states at depth 4 are 42807 + 
+Reached states at depth 5 are 555866 + 
+Reached states at depth 6 are 7070103 + 
+Reached states at depth 7 are 87801812 + 
+Reached states at depth 8 are 1050559626 + 
+Reached states at depth 9 are 11588911021 + 
+Reached states at depth 10 are 110409721989 + 
+Reached states at depth 11 are 552734197682 + 
+Reached states at depth 12 are 304786076626 + 
+Reached states at depth 13 are 330335518 + 
+Reached states at depth 14 are 248 + 
 
 Add this to compileOptions.txt to enable full edge lookup table usage.
 -D USE_FULL_EGDE_LT

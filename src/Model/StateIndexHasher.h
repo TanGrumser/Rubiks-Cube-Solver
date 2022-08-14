@@ -4,6 +4,7 @@
 #include <functional>
 
 template <class T>
+
 inline void hash_combine(std::size_t & s, const T & v) {    
     s ^= std::hash<T>{}(v) + 0x9e3779b9 + (s<< 6) + (s>> 2);
 }
@@ -17,7 +18,7 @@ struct StateIndexHasher {
     hash_combine(h, k.edgeIndex);
     hash_combine(h, k.cornerIndex);
 
-    return h;
-    return (k.cornerIndex * k.edgeIndex) ^ k.cornerIndex  ^ k.edgeIndex; 
+    //return h;
+    return (k.cornerIndex * k.edgeIndex) ^ (k.cornerIndex << 6) ^ (k.edgeIndex >> 2); 
   }
 };

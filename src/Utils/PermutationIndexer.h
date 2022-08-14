@@ -32,6 +32,7 @@ class PermutationIndexer {
   // reverse order.
   static array<unsigned, K> factorials;
 
+  // TODO changes 12 to N
   static array<array<unsigned, 12>, (1 << N) - 1> nthZero;
 
 public:
@@ -100,30 +101,32 @@ public:
     // Convert the Lehmer code to base-10.
     unsigned index = 0;
 
-    for (unsigned i = 0; i < K; ++i)
+    for (unsigned i = 0; i < K; ++i){
       index += lehmer[i] * this->factorials[i];
+    }
 
     return index;
   }
 
   array<unsigned, K> getPermutation(uint64_t rank) const {
-    // This will hold the Lehmer code (in a factorial number system).
-    array<unsigned, K> lehmer;
+    // This will hold the reconstructed permutation.
+    array<unsigned, K> perm;
 
     // Set of "seen" digits in the permutation.
     bitset<N> seen;
 
-    lehmer[0] = rank / this->factorials[0];
-    seen[lehmer[0]] = 1;
+    perm[0] = rank / this->factorials[0];
+    seen[perm[0]] = 1;
 
     for (unsigned i = 1; i < K; ++i) {
-      unsigned perm = (rank % this->factorials[i - 1]) / this->factorials[i];
+      // Extract the i-th lehmer value of the factorial lehmer code.
+      unsigned lehmer = (rank % this->factorials[i - 1]) / this->factorials[i];
       
-      lehmer[i] = nthZero[seen.to_ulong()][perm];
-      seen[lehmer[i]] = 1;
+      perm[i] = nthZero[seen.to_ulong()][lehmer];
+      seen[perm[i]] = 1;
     }
 
-    return lehmer;
+    return perm;
   }
 
   void TestPermutationGenerator() {
@@ -222,6 +225,8 @@ public:
 template <size_t N, size_t K>
 array<unsigned, (1 << N) - 1> PermutationIndexer<N, K>::onesCountLookup;
 
+// This member stores the position of the n-th zero for all permutaions.
+//nthZero[b][n] stores the positiion of the n-th zero for the binary number b.
 template <size_t N, size_t K>
 array<array<unsigned, 12>, (1 << N) - 1> PermutationIndexer<N, K>::nthZero;
 

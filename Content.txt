@@ -17,7 +17,7 @@ Abstract
         God's number is 20 and how it was found, non optimal algorithms and how they work,
 
 
-2. Solving the cube optimally / Preliminaries
+2. Preliminaries
     Solving the RC is a graph problem, reieterating properties of known shortest path algorithms, correctness proof
     
     2.1 A naive approach
@@ -78,15 +78,14 @@ Abstract
     3.2 Full egde pattern database
 
 4. Implementation
+    Some comments on the concrete implementation
+    All of our code and experimetnal data ist avaliable at: [Github Link]
 
-    3.2 Method in action
-        Usage in IDA*, final pseudo code
-
-4. Evaluation
+5. Evaluation
     Benachmarks, Comparison to state of the art, bottlenecks of code (Hash table, cache misses lookup table, lex. rank calculation), Hash table alternatives?
 
 
-5. Conclusion
+6. Conclusion
     Traversed state improvment, Korf IDA* hypothesis analysis, further work, inverse lookup table usage
 
 
@@ -100,12 +99,7 @@ Put all contributions in chapter 4, lookup table generation only explained as im
 
 Questions
     Where should the github refference be listed -> Implementation
-        All of our code and experimetnal data ist avaliable at: [Github Link]
+        
 
     Literature for everything? (Time space complexitiy for BFS, DFS)
         Richtig sauber eigneltich mit algorithmen buch. [Sequential and parallel algorithms and data structures]
-
-Anmeldung 15. Main Ende 14. September
-
-Todo: Dominik benchmarks schicken
-

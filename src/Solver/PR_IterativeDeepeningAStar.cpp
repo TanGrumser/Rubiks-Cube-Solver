@@ -101,6 +101,10 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
         );
 
         bound = newBound;
+        
+        if (DuplicateState::mode == DuplicateState::Mode::STATE_INDEX || DuplicateState::mode == DuplicateState::Mode::HASH_TABLE) {
+          DuplicateState::ResetAllStates();
+        }
     }
 
     vector<Turn> moveVec;
@@ -166,7 +170,12 @@ void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* moves, i
             if (estSuccMoves <= bound) {
               // If the twisted cube is estimated to take fewer move than the
               // current bound, push it, otherwise it's pruned.
+
+              #if SORT_SUCCESSORS
               successors.push({cubeCopy, move, estSuccMoves});
+              #else 
+              nodeStack.push({cubeCopy, move, (uint8_t)(curNode.depth + 1)});
+              #endif 
             } else if (estSuccMoves < *nextBound) {
               // The next bound is the minimum of all successor node moves that's
               // greater than the current bound. 
@@ -175,6 +184,7 @@ void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* moves, i
           }
         }
 
+      #if SORT_SUCCESSORS
         while (!successors.empty()) {
           // Push the nodes in sorted order.
           nodeStack.push({
@@ -185,6 +195,7 @@ void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* moves, i
 
           successors.pop();
         }
+      #endif 
       }
     }
 }

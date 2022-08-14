@@ -1,0 +1,263 @@
+
+Starting solve of shuffle
+R' L U' L U R L' F2 R B2 U L2 D B U2 D L' F' L2 U R L2 D F L2 D' R2 L2 U2 D' L B' D B' D' L' F' D' B L F' B L' D2 R2 U2 L' F' B' U2 L2 F R2 F B U F' B R' B U' B2 R2 U' B2 R' B' R U2 L2 F' U2 D' F' D' L' F2 L' U L U' R2 U F2 R' D' F' U' D' B L' U' B2 D2 R' F2 L2 B L U
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.001089s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.001022s. Traversed states at this bound: 60
+IDA* Finished bound 11. Elapsed time: 0.001977s. Traversed states at this bound: 782
+IDA* Finished bound 12. Elapsed time: 0.009687s. Traversed states at this bound: 11121
+IDA* Finished bound 13. Elapsed time: 0.078213s. Traversed states at this bound: 141527
+IDA* Finished bound 14. Elapsed time: 0.898225s. Traversed states at this bound: 1778603
+IDA* Finished bound 15. Elapsed time: 11.385624s. Traversed states at this bound: 22678044
+IDA* Finished bound 16. Elapsed time: 139.517338s. Traversed states at this bound: 292538630
+IDA* Finished bound 17. Elapsed time: 1416.908119s. Traversed states at this bound: 3213966464
+Time required: 1568.817143s
+Solution:
+B' L U2 R' D2 F2 B' L U' R2 U' R2 U2 F2 B L2 U
+
+Starting solve of shuffle
+R2 U' F' L' U2 B L' B' D2 B D F L D2 L2 F' L' D B2 D2 B' L' F' U2 L U' B2 D2 L B U' R F' B R2 D' F R L2 F L F2 U2 F L2 F R U B U' R2 U' L2 B2 U2 L' D2 F U R2 D' F' L B L2 B2 L' U' B' L' B D2 B' D' B2 U2 D' F' R2 U2 F L2 D' F2 L' U' R2 L F L2 U F2 B R L B D2 F D L'
+Starting to solve cube with IDA*.
+IDA* Finished bound 10. Elapsed time: 0.000971s. Traversed states at this bound: 25
+IDA* Finished bound 11. Elapsed time: 0.001478s. Traversed states at this bound: 449
+IDA* Finished bound 12. Elapsed time: 0.008208s. Traversed states at this bound: 7078
+IDA* Finished bound 13. Elapsed time: 0.061258s. Traversed states at this bound: 102384
+IDA* Finished bound 14. Elapsed time: 0.713833s. Traversed states at this bound: 1439737
+IDA* Finished bound 15. Elapsed time: 9.532174s. Traversed states at this bound: 19641116
+IDA* Finished bound 16. Elapsed time: 125.489480s. Traversed states at this bound: 265657388
+IDA* Finished bound 17. Elapsed time: 191.616259s. Traversed states at this bound: 442403840
+Time required: 327.441637s
+Solution:
+B R2 L' B2 U' B2 U2 B L D F D' R2 D2 F D' B2
+
+Starting solve of shuffle
+U R L2 D' F2 R2 F2 B2 U2 D R' L U' R' L2 B2 R' B D' R2 D B' L2 F2 D' L2 F2 B2 R B U2 L F L2 U D2 R' L2 D2 F' U2 B2 D' B2 L' U F' U R F R2 F2 B2 D' B' L' D' B D B R' B U L F2 D' F D F' B2 R' L2 F' B2 L B2 L2 F' L' U L2 D R' B2 U' F' B2 U L2 F D2 R U' R U2 D B2 R2 D2 L'
+Starting to solve cube with IDA*.
+IDA* Finished bound 8. Elapsed time: 0.000953s. Traversed states at this bound: 18
+IDA* Finished bound 9. Elapsed time: 0.000869s. Traversed states at this bound: 19
+IDA* Finished bound 10. Elapsed time: 0.000891s. Traversed states at this bound: 110
+IDA* Finished bound 11. Elapsed time: 0.001678s. Traversed states at this bound: 985
+IDA* Finished bound 12. Elapsed time: 0.011304s. Traversed states at this bound: 11750
+IDA* Finished bound 13. Elapsed time: 0.081080s. Traversed states at this bound: 144885
+IDA* Finished bound 14. Elapsed time: 0.924998s. Traversed states at this bound: 1820642
+IDA* Finished bound 15. Elapsed time: 11.578399s. Traversed states at this bound: 23248682
+IDA* Finished bound 16. Elapsed time: 146.180467s. Traversed states at this bound: 300904814
+IDA* Finished bound 17. Elapsed time: 1868.544814s. Traversed states at this bound: 3925904990
+IDA* Finished bound 18. Elapsed time: 6827.694867s. Traversed states at this bound: 15611946747
+Time required: 8855.051797s
+Solution:
+L F' U2 L' B2 R2 L2 B' L F2 B L2 D' B2 U R' D' F2
+
+Starting solve of shuffle
+D B' L2 B' D R' L U' B' U' B R L2 F2 L B2 R' B2 L2 D2 L B U D F D2 R B2 U' L B2 L U B' U' F' R2 F2 B D2 R L B U B2 D' L B L B2 D' F2 B' U' R F' R2 F2 R' U2 L2 D' L2 B L B2 R2 D2 R L B' U F D' F' L' B' L2 D2 F L U' D F2 R2 U L2 F' R B' R' L2 F2 U2 L F R' L' F U2
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.001151s. Traversed states at this bound: 19
+IDA* Finished bound 10. Elapsed time: 0.000850s. Traversed states at this bound: 65
+IDA* Finished bound 11. Elapsed time: 0.001125s. Traversed states at this bound: 727
+IDA* Finished bound 12. Elapsed time: 0.007349s. Traversed states at this bound: 8899
+IDA* Finished bound 13. Elapsed time: 0.063607s. Traversed states at this bound: 116532
+IDA* Finished bound 14. Elapsed time: 0.760514s. Traversed states at this bound: 1518953
+IDA* Finished bound 15. Elapsed time: 9.808850s. Traversed states at this bound: 20044652
+IDA* Finished bound 16. Elapsed time: 127.863608s. Traversed states at this bound: 265901841
+IDA* Finished bound 17. Elapsed time: 1687.483629s. Traversed states at this bound: 3537971776
+IDA* Finished bound 18. Elapsed time: 8213.463167s. Traversed states at this bound: 18546728585
+Time required: 10039.517608s
+Solution:
+B' R' L' U2 F' D' B' U2 L2 U2 L2 F R U D R' U D
+
+Starting solve of shuffle
+U B2 D2 L F R U' D2 B L' B U D2 L2 D' L U2 F R' D B2 R2 F' B L B' U D' R' B2 U2 B U' D2 B2 L F' L2 F' B2 L2 U2 R2 L' U R B R2 L D2 L2 F2 D' L U2 R' B2 R' D B' D B2 R D' R L' U' B2 U' D F U2 L2 F U2 R L2 D' R D2 L2 D' R2 L' F L F' D B L2 B L2 D' B2 D' F2 B2 R2 L U'
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.000992s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.001047s. Traversed states at this bound: 42
+IDA* Finished bound 11. Elapsed time: 0.001101s. Traversed states at this bound: 595
+IDA* Finished bound 12. Elapsed time: 0.014500s. Traversed states at this bound: 7870
+IDA* Finished bound 13. Elapsed time: 0.057686s. Traversed states at this bound: 108102
+IDA* Finished bound 14. Elapsed time: 0.689889s. Traversed states at this bound: 1462045
+IDA* Finished bound 15. Elapsed time: 9.593939s. Traversed states at this bound: 19846443
+IDA* Finished bound 16. Elapsed time: 126.243133s. Traversed states at this bound: 267330164
+IDA* Finished bound 17. Elapsed time: 1683.937491s. Traversed states at this bound: 3587970776
+IDA* Finished bound 18. Elapsed time: 15688.460038s. Traversed states at this bound: 35649620591
+Time required: 17509.028522s
+Solution:
+F2 R' L2 F2 U' R F' U F L2 B U2 D' F' R' U2 L' D'
+
+Starting solve of shuffle
+F D2 L' F' U2 D2 F' D' L' D2 B' R D' B2 L' U2 L F' R2 B R2 D' F2 U' L' F2 U2 R B' U2 B L U' F' U2 R2 F' B D B U F D2 R' L2 U2 R2 L D' B U2 L F U2 R2 U2 F D R' U2 L' B' R' F' U2 F D' B' R2 B D R D B' D R L U2 B L D L' U2 D' B' R F' L2 F' D R D2 F2 B D' B' D2 L F' L2
+Starting to solve cube with IDA*.
+IDA* Finished bound 10. Elapsed time: 0.010457s. Traversed states at this bound: 30
+IDA* Finished bound 11. Elapsed time: 0.001332s. Traversed states at this bound: 373
+IDA* Finished bound 12. Elapsed time: 0.006524s. Traversed states at this bound: 7208
+IDA* Finished bound 13. Elapsed time: 0.058456s. Traversed states at this bound: 104259
+IDA* Finished bound 14. Elapsed time: 0.726733s. Traversed states at this bound: 1460008
+IDA* Finished bound 15. Elapsed time: 9.705328s. Traversed states at this bound: 19932373
+IDA* Finished bound 16. Elapsed time: 128.660824s. Traversed states at this bound: 269465083
+IDA* Finished bound 17. Elapsed time: 1719.753153s. Traversed states at this bound: 3619457675
+IDA* Finished bound 18. Elapsed time: 2833.013960s. Traversed states at this bound: 6446445836
+Time required: 4691.961178s
+Solution:
+B2 R2 F' D2 R2 L B2 L U L U2 L U2 F2 D' B D2 L2
+
+Starting solve of shuffle
+F B' L2 D R' U' R2 U F2 R' F2 D L2 F' R2 B2 R2 L' F' B' R2 D' F U2 R' D' F D2 F R L F' D' R2 D2 R2 B' U' L B' D F R F' U2 F U2 D L' D R D R' D2 F' B' D L D F' R2 U D2 B D F' D F' L' U' L' U' F R' U2 R U' F B2 D' R2 U2 B U' B U B2 U2 L B2 U2 L' U B' U D2 F' B' R2 B'
+Starting to solve cube with IDA*.
+IDA* Finished bound 10. Elapsed time: 0.000959s. Traversed states at this bound: 42
+IDA* Finished bound 11. Elapsed time: 0.001068s. Traversed states at this bound: 568
+IDA* Finished bound 12. Elapsed time: 0.006472s. Traversed states at this bound: 7837
+IDA* Finished bound 13. Elapsed time: 0.057971s. Traversed states at this bound: 105557
+IDA* Finished bound 14. Elapsed time: 0.718780s. Traversed states at this bound: 1448720
+IDA* Finished bound 15. Elapsed time: 9.571909s. Traversed states at this bound: 19759692
+IDA* Finished bound 16. Elapsed time: 126.955647s. Traversed states at this bound: 267260126
+IDA* Finished bound 17. Elapsed time: 1704.922152s. Traversed states at this bound: 3595860262
+IDA* Finished bound 18. Elapsed time: 2423.608889s. Traversed states at this bound: 5551432244
+Time required: 4265.866324s
+Solution:
+D R2 L2 U2 D' L' U' F R' U' F' D' L2 D2 F' U2 L' U2
+
+Starting solve of shuffle
+D2 R B' D2 L' B2 D2 F' R' U' L2 D2 L2 D2 R D F L2 D2 R F2 R' D F' D F' L2 U' L' D' F2 L D2 R2 L2 U D R' D' B2 R' F' U' R' L' B2 R' L D' B' U2 D' F2 D F' U2 L' U' B2 R2 L U2 R2 U' L F' D L' D2 F D F' R D B R' L' B2 D F D' R' D' B' U2 B' D' B2 D' L2 F L2 B' R' F' B L2 F D' L2
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.001035s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.009561s. Traversed states at this bound: 41
+IDA* Finished bound 11. Elapsed time: 0.001257s. Traversed states at this bound: 647
+IDA* Finished bound 12. Elapsed time: 0.007752s. Traversed states at this bound: 8880
+IDA* Finished bound 13. Elapsed time: 0.063205s. Traversed states at this bound: 118258
+IDA* Finished bound 14. Elapsed time: 0.791986s. Traversed states at this bound: 1584964
+IDA* Finished bound 15. Elapsed time: 10.406093s. Traversed states at this bound: 21126481
+IDA* Finished bound 16. Elapsed time: 133.217202s. Traversed states at this bound: 281247241
+IDA* Finished bound 17. Elapsed time: 269.203834s. Traversed states at this bound: 609788372
+Time required: 413.722437s
+Solution:
+R U F2 L D2 B' R2 B U' D L D B' R' D' F' L2
+
+Starting solve of shuffle
+F D B2 U' F' L' F' B2 R2 B U' F2 R' D' R2 B2 R' D F L U2 L' D2 B2 U2 B2 R' F' R L U' L' B L2 U2 B' D R2 F L' U' R F B' U2 R D B' L D' L' U2 D2 R B D F L2 F' B2 D' R' B R L' D' L2 D R2 U2 R F2 U R' F' L2 B L' F' U2 D' F' B' R' U L B2 U B R2 F U' L' D' B2 L2 D L U' R'
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.000961s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.009867s. Traversed states at this bound: 96
+IDA* Finished bound 11. Elapsed time: 0.001775s. Traversed states at this bound: 1154
+IDA* Finished bound 12. Elapsed time: 0.013482s. Traversed states at this bound: 13487
+IDA* Finished bound 13. Elapsed time: 0.103476s. Traversed states at this bound: 162409
+IDA* Finished bound 14. Elapsed time: 1.144640s. Traversed states at this bound: 1968601
+IDA* Finished bound 15. Elapsed time: 13.931371s. Traversed states at this bound: 24512188
+IDA* Finished bound 16. Elapsed time: 166.102919s. Traversed states at this bound: 310382595
+IDA* Finished bound 17. Elapsed time: 676.293880s. Traversed states at this bound: 1487353520
+Time required: 857.622109s
+Solution:
+U F U' D R B D' F' U2 L2 B2 U B2 U F' D2 L2
+
+Starting solve of shuffle
+D R U D' B2 L2 B2 D2 L2 U2 D' L2 B2 U2 L' F U D B' U' D2 L' F' L F' B' L F' R F2 R' L2 D' F D' L F U' B L' B D2 F2 B' D B2 R2 U2 D F2 L2 B2 U L D L' B' L' B' R' F B2 R2 U' B2 U2 D2 L' B2 L' B2 L' D' B R U2 B' R' L' D B L U B L D F2 R2 L' U R' D2 R2 L2 B' R' F2 B D' B
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.000926s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.000959s. Traversed states at this bound: 36
+IDA* Finished bound 11. Elapsed time: 0.000924s. Traversed states at this bound: 370
+IDA* Finished bound 12. Elapsed time: 0.005667s. Traversed states at this bound: 5388
+IDA* Finished bound 13. Elapsed time: 0.049633s. Traversed states at this bound: 76555
+IDA* Finished bound 14. Elapsed time: 0.605135s. Traversed states at this bound: 1086384
+IDA* Finished bound 15. Elapsed time: 8.176141s. Traversed states at this bound: 15299921
+IDA* Finished bound 16. Elapsed time: 110.406071s. Traversed states at this bound: 213726268
+IDA* Finished bound 17. Elapsed time: 1481.292964s. Traversed states at this bound: 2964271314
+IDA* Finished bound 18. Elapsed time: 125.950849s. Traversed states at this bound: 287129265
+Time required: 1726.510554s
+Solution:
+L' B' R2 D' R2 D2 L D L' U L' B R U' F R B' L2
+
+Starting solve of shuffle
+D L2 D B2 U' B2 D R2 F2 D' R2 L2 B' R D F' U2 D2 B U' B D2 L2 D2 B' D R U F L F2 R2 L D R U' L B U2 D' R L2 U D' B' R' L2 B' L' D2 R B' L2 F2 R2 F2 D L2 F' R L' D2 F2 R D2 R B R2 D R2 U2 R2 D' B R D F L2 U' D' F L' B2 L U L' F' D2 B2 U2 R' F' B' R B L2 U D2 F2 U
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.001005s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.000838s. Traversed states at this bound: 39
+IDA* Finished bound 11. Elapsed time: 0.001095s. Traversed states at this bound: 565
+IDA* Finished bound 12. Elapsed time: 0.006763s. Traversed states at this bound: 8270
+IDA* Finished bound 13. Elapsed time: 0.062785s. Traversed states at this bound: 112214
+IDA* Finished bound 14. Elapsed time: 0.765836s. Traversed states at this bound: 1509902
+IDA* Finished bound 15. Elapsed time: 10.179874s. Traversed states at this bound: 20328295
+IDA* Finished bound 16. Elapsed time: 135.839732s. Traversed states at this bound: 272885480
+IDA* Finished bound 17. Elapsed time: 1765.413321s. Traversed states at this bound: 3655890621
+IDA* Finished bound 18. Elapsed time: 1379.588990s. Traversed states at this bound: 3154903729
+Time required: 3291.884530s
+Solution:
+L F' L2 D2 R' B' D2 L2 F2 R L2 B2 U' D2 F' R F' D'
+
+Starting solve of shuffle
+B' R B R2 B2 R D2 L' D2 B U2 L' D' F U2 F R2 D2 R2 U2 B' D' B2 U2 D2 R' F R' U2 D2 L2 D B2 D B' D2 F' D2 R' U B D' F U' R' D L2 B' L D R2 D B2 U' B U' F' L F D' B' D R2 B' R L' U D2 F B U' F' U2 L2 D2 B2 R2 B' R B' L D B R U F' B U2 B D2 L' F2 D2 L D F L2 U R L2
+Starting to solve cube with IDA*.
+IDA* Finished bound 10. Elapsed time: 0.000973s. Traversed states at this bound: 44
+IDA* Finished bound 11. Elapsed time: 0.001416s. Traversed states at this bound: 720
+IDA* Finished bound 12. Elapsed time: 0.008336s. Traversed states at this bound: 9977
+IDA* Finished bound 13. Elapsed time: 0.069033s. Traversed states at this bound: 133011
+IDA* Finished bound 14. Elapsed time: 0.874866s. Traversed states at this bound: 1759803
+IDA* Finished bound 15. Elapsed time: 11.320425s. Traversed states at this bound: 23185250
+IDA* Finished bound 16. Elapsed time: 146.628502s. Traversed states at this bound: 304938181
+IDA* Finished bound 17. Elapsed time: 400.947123s. Traversed states at this bound: 923766488
+Time required: 559.870153s
+Solution:
+B2 R2 F' L' D B' L B D' R' U2 F D' F2 L D B'
+
+Starting solve of shuffle
+D' R' U R U2 R2 L2 U2 R U' L' D2 B2 U R' F' B D B L' F' B2 U F2 D B D2 B' D' R2 L D2 F' R' D' R' L2 F D' B D' R F D' L F' D2 B2 R L2 F R L' F' R' D' B R2 U' D R U' F R' L' B' R2 B D R' D2 B U' B' R2 F' R2 U2 F' B' U2 D2 B2 U2 B2 L' U F' L D' F R' B' R2 D2 B' D F' R2 F2
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.000877s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.000848s. Traversed states at this bound: 54
+IDA* Finished bound 11. Elapsed time: 0.001128s. Traversed states at this bound: 626
+IDA* Finished bound 12. Elapsed time: 0.011845s. Traversed states at this bound: 8540
+IDA* Finished bound 13. Elapsed time: 0.060508s. Traversed states at this bound: 114152
+IDA* Finished bound 14. Elapsed time: 0.732501s. Traversed states at this bound: 1527604
+IDA* Finished bound 15. Elapsed time: 9.798520s. Traversed states at this bound: 20412789
+IDA* Finished bound 16. Elapsed time: 128.694767s. Traversed states at this bound: 272897839
+IDA* Finished bound 17. Elapsed time: 1714.977612s. Traversed states at this bound: 3645239202
+IDA* Finished bound 18. Elapsed time: 510.234608s. Traversed states at this bound: 1157560307
+Time required: 2364.541526s
+Solution:
+L2 U2 R' F R2 F U F U' D' R D L' U' B' D' F2 D
+
+Starting solve of shuffle
+B' D B R F' L' B U F2 D2 R' B' R2 F U' L2 F2 D2 R' D' F2 L B2 R' B2 R B' L U F' L2 B' D B U' R F2 R2 L' F L2 U L' D B' U' B U L' U L D L2 B D' L' U2 B2 R' U2 D B L D' R' F2 R2 D F L' D R' D F2 U2 L' D2 R2 F2 L' B L B2 R' F' B U B R L F R U2 F' R U D B' R2 F2
+Starting to solve cube with IDA*.
+IDA* Finished bound 8. Elapsed time: 0.000987s. Traversed states at this bound: 18
+IDA* Finished bound 9. Elapsed time: 0.000879s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.000892s. Traversed states at this bound: 51
+IDA* Finished bound 11. Elapsed time: 0.001344s. Traversed states at this bound: 726
+IDA* Finished bound 12. Elapsed time: 0.008995s. Traversed states at this bound: 10088
+IDA* Finished bound 13. Elapsed time: 0.073095s. Traversed states at this bound: 130805
+IDA* Finished bound 14. Elapsed time: 0.882567s. Traversed states at this bound: 1704942
+IDA* Finished bound 15. Elapsed time: 11.445895s. Traversed states at this bound: 22245263
+IDA* Finished bound 16. Elapsed time: 144.022229s. Traversed states at this bound: 290674940
+IDA* Finished bound 17. Elapsed time: 1864.267650s. Traversed states at this bound: 3813942150
+IDA* Finished bound 18. Elapsed time: 2436.972510s. Traversed states at this bound: 5525604830
+Time required: 4457.713574s
+Solution:
+D' R2 U' D2 F' U F L' B' R2 L U B U' L' U' B2 R
+
+Starting solve of shuffle
+F D2 R2 B2 U' R2 F' U' L2 U B R B2 R2 U2 L' U2 F R2 L2 F2 L2 D2 B2 L2 U' F2 D' L' B D L' B2 R U' B' U2 B' D' L' B L2 F B' U' B2 R2 U' F2 R2 U' F2 D R U F2 B' U' F R L' F2 D R' U' L D' R' L B2 L' D F' U' F2 R' D' F2 L2 D' L D' F U R2 F U' F' U F B' U' B D F L2 B' U R2 B2
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.001019s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.000844s. Traversed states at this bound: 39
+IDA* Finished bound 11. Elapsed time: 0.001232s. Traversed states at this bound: 570
+IDA* Finished bound 12. Elapsed time: 0.007584s. Traversed states at this bound: 8265
+IDA* Finished bound 13. Elapsed time: 0.062182s. Traversed states at this bound: 110389
+IDA* Finished bound 14. Elapsed time: 0.747366s. Traversed states at this bound: 1486801
+IDA* Finished bound 15. Elapsed time: 10.005594s. Traversed states at this bound: 19992317
+IDA* Finished bound 16. Elapsed time: 114.221837s. Traversed states at this bound: 252691102
+Time required: 125.066068s
+Solution:
+U' B2 U2 L2 U2 R U B' D2 L F' D L' D2 L F2
+
+Starting solve of shuffle
+F' L B2 L2 D' L' U L B2 D' R L' D F2 B L F L' B2 U R F R' B' D L' F B' U2 B D2 F L U' D' F B' D2 R U2 L F2 U2 R L2 B2 R2 U D' F B' L F' U2 R2 U D2 B R U2 B2 R B L' D' B2 L D2 F' B2 R U D' F' L' U' R' B' U D2 L' U' L' B2 U2 L F2 D L D' R2 L' D F' B' U' R' L D' F'
+Starting to solve cube with IDA*.
+IDA* Finished bound 9. Elapsed time: 0.000976s. Traversed states at this bound: 18
+IDA* Finished bound 10. Elapsed time: 0.000978s. Traversed states at this bound: 62
+IDA* Finished bound 11. Elapsed time: 0.001337s. Traversed states at this bound: 798
+IDA* Finished bound 12. Elapsed time: 0.011474s. Traversed states at this bound: 11147
+IDA* Finished bound 13. Elapsed time: 0.094513s. Traversed states at this bound: 149800
+IDA* Finished bound 14. Elapsed time: 1.105321s. Traversed states at this bound: 1982846
+IDA* Finished bound 15. Elapsed time: 14.192499s. Traversed states at this bound: 25999960
+IDA* Finished bound 16. Elapsed time: 175.677331s. Traversed states at this bound: 338180470
+IDA* Finished bound 17. Elapsed time: 2215.864266s. Traversed states at this bound: 4393569972
+IDA* Finished bound 18. Elapsed time: 2909.216067s. Traversed states at this bound: 6663715350
+Time required: 5316.190028s
+Solution:
+D' L B' U' L' F2 L2 U2 D F R2 F2 D' F B' U2 D B2

@@ -13,7 +13,8 @@ namespace DuplicateState {
     enum Mode {
         OFF,
         STATE_INDEX,
-        TURN_INDEX
+        TURN_INDEX,
+        HASH_TABLE
     };
 
     const string DUPLICATE_STATE_PATH = "LookupTables/duplicateStates";
@@ -43,6 +44,7 @@ namespace DuplicateState {
     void LoadDuplicateStateTurnIndex();
     bool WasStateReached(StateIndex index, int depth);
     bool PruneByTurnIndex(array<Turn, 50> moves, int size);
+    bool PruneWithHashTable(StateIndex index, int depth);
     bool IsStateContained(StateIndex index);
     void ResetAllStates();
 
@@ -55,6 +57,7 @@ namespace DuplicateState {
             case Mode::OFF:         return false;
             case Mode::STATE_INDEX: return WasStateReached(shift.GetShiftedState(state), depth);
             case Mode::TURN_INDEX:  return PruneByTurnIndex(moves, depth);
+            case Mode::HASH_TABLE:  return PruneWithHashTable(state.GetLookupIndex(), depth);
 
             default: return false;
         }
