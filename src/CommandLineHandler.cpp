@@ -201,22 +201,26 @@ void solveShufflesFromFile(string path, Logger* logger) {
         case 0: 
             logger->logNewLine("Shifted State Index Duplicate State Detexction (Max Depth: 7)");
             DuplicateState::LoadDuplicateStateIndex();
+            DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
             DuplicateState::maxDepth = 7;
         break;
 
         case 1: 
             logger->logNewLine("Shifted State Index Duplicate State Detexction (Max Depth: 8)");
+            DuplicateState::mode = DuplicateState::Mode::STATE_INDEX;
             DuplicateState::maxDepth = 8;
         break;
 
         case 2: 
             logger->logNewLine("Turn Index Duplicate State Detexction (Max Depth: 7)");
             DuplicateState::LoadDuplicateStateTurnIndex();
+            DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
             DuplicateState::maxDepth = 7;
         break;
 
         case 3: 
             logger->logNewLine("Turn Index Duplicate State Detexction (Max Depth: 8)");
+            DuplicateState::mode = DuplicateState::Mode::TURN_INDEX;
             DuplicateState::maxDepth = 8;
         break;
         
@@ -224,7 +228,7 @@ void solveShufflesFromFile(string path, Logger* logger) {
             break;
         }
 
-        for (int j = 0; j < 100; j++) {
+        for (int j = 0; j < 1; j++) {
             vector<Turn> shuffle = Turn::parseShuffle(lines[j]);
             RubiksCubeState state = RubiksCubeState::InitialState().Copy();
 

@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 
     */
     CommandLineHandler::start(argc, argv);
-    //checkShuffleSolvePair("fiveResults.txt");
+
     return 0;
 }
 

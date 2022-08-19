@@ -26,9 +26,8 @@ const int UNINITIALIZED = 0xFE;
 
 int Search(vector<RubiksCubeState*>* path, int depth, int bound, Turn lastTurn, int* minBound, vector<Turn> nextTurns, bool* isSolutionFound);
 vector<Turn> GenerateTurnSequenceFromStateSequence(vector<RubiksCubeState*> stateSequence);
-unsigned long long traversedStates = 0;
 std::atomic_int64_t traversedStatesAtDepth;
-std::atomic_int64_t duplicatesFound(0);
+std::atomic_int64_t duplicatesFoundAtDepth(0);
 
 RubiksCubeStateShift* shift;
 
@@ -55,7 +54,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
     vector<array<Turn, 50>*> moves(Solver::threadCount, new array<Turn, 50>);
     array<Turn, 50> solutionMoves;
     StopWatch timer;
-    duplicatesFound = 0;
+    duplicatesFoundAtDepth = 0;
 
     shift = new RubiksCubeStateShift(startState);
 
@@ -63,6 +62,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
     while (!*solved) {
         std::vector<std::thread> threads(Solver::threadCount);
         traversedStatesAtDepth = 0;
+        duplicatesFoundAtDepth = 0;
         int* newBounds = new int[Solver::threadCount];
         int newBound = UNINITIALIZED;
         
@@ -97,7 +97,7 @@ vector<Turn> Solver::PR_IterativeDeepeningAStar(RubiksCubeState& startState, Log
             "IDA* Finished bound " +  to_string(bound) + ". " + 
             "Elapsed time: " + timer.GetFormattedTimeInSeconds() + ". " + 
             "Traversed states at this bound: " + to_string(traversedStatesAtDepth) +
-            (DuplicateState::mode != DuplicateState::Mode::OFF ? " duplicate States found: " + to_string(duplicatesFound) : "")
+            (DuplicateState::mode != DuplicateState::Mode::OFF ? " duplicate States found: " + to_string(duplicatesFoundAtDepth) : "")
         );
 
         bound = newBound;
@@ -161,7 +161,7 @@ void idaSearch(RubiksCubeState& startState, int bound, array<Turn, 50>* moves, i
 
             // if this state was reached via another path, we don't need to traverse it any further
             if (DuplicateState::PruneState(cubeCopy, *shift, curNode.depth + 1, *moves)) {
-              duplicatesFound++;
+              duplicatesFoundAtDepth++;
               continue;
             }
 
