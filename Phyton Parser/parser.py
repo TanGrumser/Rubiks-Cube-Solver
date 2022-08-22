@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from logging import addLevelName
 from pickletools import uint8
 from tokenize import Number, String
@@ -21,6 +22,7 @@ class Solve:
         self.shuffle = shuffle
         self.solution = solution
         self.totalTime = totalTime
+        self.totalTimeEffective = 0
         self.steps = steps
         self.distance = solution.count(" ") + 1
         
@@ -30,6 +32,7 @@ class Solve:
         for step in steps:
             self.totalStates += step.states
             self.totalDuplicates += step.duplicates
+            self.totalTimeEffective += step.time
 
     def toSting(self):
         string = "shuffle: " + self.shuffle + "solution: " + self.solution + "\ntotal solve time: " + str(self.totalTime) + "total states: " + str(self.totalStates) + "\ntotal duplicates: " + str(self.totalDuplicates) + "\n"
@@ -42,6 +45,29 @@ class Solve:
 def getMedianOfStates(solves: list[Solve]):
     solves.sort(key=lambda x: x.totalStates)
     return solves[int(len(solves) / 2)].totalStates
+
+def getNodesPerSecondSingle(solve: Solve):
+    return solve.totalStates / solve.totalTime
+
+def getNodesPerSecond(solves: list[Solve]):
+    totalTime = 0
+    totalStates = 0
+
+    for solve in solves:
+        totalTime += solve.totalTime
+        totalStates += solve.totalStates
+
+    return totalStates / totalTime
+
+def getNodesPerSecondEffective(solves: list[Solve]):
+    totalTime = 0
+    totalStates = 0
+
+    for solve in solves:
+        totalTime += solve.totalTimeEffective
+        totalStates += solve.totalStates
+
+    return totalStates / totalTime
 
 def getMinMaxOfStates(solves: list[Solve]):
     solves.sort(key=lambda x: x.totalStates)
@@ -173,40 +199,50 @@ def printTable(solves : list[Solve]):
     for solve in solves:
         print(str(solve.distance) + " & " + str(solve.totalStates) + " & " + str(round(solve.totalTime, 2)))
 
-def main():
-    solves = collectData("newFiveLogNoDuplicates.txt")
-    solvesDD = collectData("fiveLogDs1Dsmd7.txt")
+def printStats(solves : list[Solve]):
+    print("Median Time: ", getMedianOfTime(solves))
+    print("Average Time: ", getAverageOfTime(solves))
+    print("Median Nodes: ", getMedianOfStates(solves))
+    print("Average Nodes: ", getAverageOfStates(solves))
+    print("MedianDistance: ", getMedianOfDistance(solves))
+    print("Average Distance: ", getAverageOfDistance(solves))
+    print("Nodes/s: ", getNodesPerSecond(solves))
+    print("Nodes/s (eff.): ", getNodesPerSecondEffective(solves))
+    min, max = getMinMaxOfStates(solves)
+    print("Min, Max: ", min, max)
 
-    sameLenght = 0
+def printStatsTable(solvesList : list[list[Solve]]):
+    functions = [getMedianOfTime, getAverageOfTime, getMedianOfStates, getAverageOfStates, getNodesPerSecond]
+
+    for func in functions:
+        line = ""
+        for i in range(len(solvesList)):
+            line += str(round(func(solvesList[i]), 2))
+            
+            if i != len(solvesList) - 1:
+                line += " & "
+            else:
+                line += " \\\\"
+            
+        print(line)
     
-    for i in range(len(solvesDD)):
-        if solves[i].distance != solvesDD[i].distance:
-            print(i)
-            break
+def main():
+    solves = collectData("variosDSLog20.txt")
+    #solvesNoDs = collectData("newFiveLogNoDuplicates.txt")
 
-    #print(sameLenght)
+    index7 = solves[0 : 10]
+    index8 = solves[10 : 20]
+    turn7 = solves[20 : 30]
+    turn8 = solves[30 : 40]
+    
+    sets = [index7, index8, turn7, turn8]
 
-    #print(getMedianOfTime(solves))
-    #print(getAverageOfTime(solves))
-    #print(getMedianOfStates(solves))
-    #print(getAverageOfStates(solves))
-    #print(getAverageOfDistance(solves))
-    #print(getMedianOfDistance(solves))
-    #min, max = getMinMaxOfStates(solves)
-    #print(min, max)
-    #showDistanceDistributionAbsolute(solves)
-
-    #printTable(solves)
-
-    #print("minmax: " + str(min) + ", " + str(max))
-    #for solve in solves:
-    #    if solve.distance == 14:
-    #        print(solve.shuffle + "\n" + solve.solution)
-    #with open('fiveResults.txt', 'a') as the_file:
-    #    for solve in solves:
-    #        the_file.write(solve.shuffle + solve.solution)
-
-        
+    #printStatsTable(sets)
+    for i in range (10):
+        if solves[i].totalStates < solves[i + 10].totalStates:
+            print (i)
+            print (solves[i].totalStates)
+            print (solves[i + 10].totalStates)
 
 
 def getSolvesWithDistance(distance: int, solves: list[Solve]) -> list[Solve]:
@@ -218,7 +254,7 @@ def getSolvesWithDistance(distance: int, solves: list[Solve]) -> list[Solve]:
 
     return filteredSolves
 
-def collectData(path) -> list[Solve]:
+def collectData(path, begin = 0, end = 5000) -> list[Solve]:
     file = open(path, "r")
     lines = file.readlines()
     solves = []
@@ -245,6 +281,6 @@ def collectData(path) -> list[Solve]:
             
             solves.append(solve)
     
-    return solves
+    return solves[begin : end]
 
 main()
